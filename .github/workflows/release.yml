@@ -24,7 +24,7 @@ jobs:
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
 
       - name: Install deps
-        run: pnpm ci
+        run: pnpm run ci
 
       - name: Build
         run: pnpm run build
@@ -56,4 +56,3 @@ jobs:
           release_name: ${{ steps.changelog.outputs.tag }}
           body: ${{ steps.changelog.outputs.clean_changelog }}
 
-          
