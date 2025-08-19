@@ -3,6 +3,9 @@ on:
   push:
     branches:
       - 'releases/*'
+      
+permissions:
+  contents: write
 
 jobs:
   release:
@@ -12,10 +15,10 @@ jobs:
         uses: actions/checkout@v5
 
       - name: Install deps
-        run: npm ci
+        run: pnpm ci
 
       - name: Build
-        run: npm run build
+        run: pnpm run build
 
       - run: git add dist -f
 
