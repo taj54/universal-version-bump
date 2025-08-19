@@ -1,0 +1,37 @@
+name: 'release'
+on:
+  push:
+    branches:
+      - 'releases/*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - run: git add dist -f
+
+      - name: Generate changelog
+        id: changelog
+        uses: ./
+        with:
+          github-token: ${{ secrets.github_token }}
+          create-summary: true
+
+      - name: Create Release
+        uses: actions/create-release@v1
+        if: steps.changelog.outputs.skipped != 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.github_token }}
+        with:
+          tag_name: ${{ steps.changelog.outputs.tag }}
+          release_name: ${{ steps.changelog.outputs.tag }}
+          body: ${{ steps.changelog.outputs.clean_changelog }}
