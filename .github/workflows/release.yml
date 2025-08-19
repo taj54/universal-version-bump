@@ -31,10 +31,6 @@ jobs:
       - name: Install deps
         run: pnpm install --frozen-lockfile
 
-
-      - name: Install deps
-        run: pnpm run ci
-
       - name: Build
         run: pnpm run build
 
