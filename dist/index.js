@@ -3,7 +3,8 @@
  * Universal Version Bump
  *
  * Description: A GitHub Action to automatically bump versions across any app (Node, Python, PHP, Docker, etc.)
- * Author: Taj
+ * Author: Taj <tajulislamj200@gmail.com>
+ * Homepage: https://github.com/taj54/universal-version-bump#readme
  * License: MIT
  */
 /******/ (() => { // webpackBootstrap

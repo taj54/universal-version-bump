@@ -10,7 +10,8 @@ const banner = `/**
  * ${pkg.displayName || pkg.name}
  *
  * Description: ${pkg.description}
- * Author: ${pkg.author.name || "Unknown"}
+ * Author: ${pkg.author.name || "Unknown"} <${pkg.author.email || "Unknown"}>
+ * Homepage: ${pkg.homepage || "Unknown"}
  * License: ${pkg.license || "MIT"}
  */\n`;
 

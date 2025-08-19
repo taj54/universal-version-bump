@@ -8,7 +8,19 @@
     "build": "pnpm exec ts-node scripts/build.ts",
     "test": "echo \"No tests yet\""
   },
-  "keywords": [],
+  "keywords": [
+    "actions",
+    "changelog",
+    "commits"
+  ],
+  "homepage": "https://github.com/taj54/universal-version-bump#readme",
+  "bugs": {
+    "url": "https://github.com/taj54/universal-version-bump/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/taj54/universal-version-bump.git"
+  },
   "license": "MIT",
   "author": {
     "name": "Taj",
