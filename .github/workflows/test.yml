@@ -1,11 +1,23 @@
 name: Test Action
+
 on: [push]
+
+permissions:
+  contents: write
 
 jobs:
   bump:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # so tags are available
+
+      - name: Set up Git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
       - uses: ./
         with:
-          release_type: patch
+          release_type: minor
