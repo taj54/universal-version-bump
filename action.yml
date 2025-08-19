@@ -1,0 +1,26 @@
+name: "Universal Version Bump"
+description: "A GitHub Action to automatically bump versions across any app (Node, Python, PHP, Docker, etc.)"
+author: "Taj"
+branding:
+  icon: "chevrons-up"
+  color: "blue"
+
+inputs:
+  release_type:
+    description: "Select the version bump type (patch, minor, major)"
+    required: true
+    default: "patch"
+  git_tag:
+    description: "Whether to create a Git tag after bump"
+    required: false
+    default: "true"
+
+outputs:
+  new_version:
+    description: "The new bumped version"
+  tag:
+    description: "The created Git tag (if enabled)"
+
+runs:
+  using: "node16"
+  main: "dist/index.js"

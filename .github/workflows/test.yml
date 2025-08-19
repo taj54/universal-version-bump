@@ -1,0 +1,11 @@
+name: Test Action
+on: [push]
+
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./
+        with:
+          release_type: patch

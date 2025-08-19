@@ -1,0 +1,31 @@
+{
+  "name": "universal-version-bump",
+  "displayName": "Universal Version Bump",
+  "version": "0.0.1",
+  "description": "A GitHub Action to automatically bump versions across any app (Node, Python, PHP, Docker, etc.)",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "pnpm exec ts-node scripts/build.ts",
+    "test": "echo \"No tests yet\""
+  },
+  "keywords": [],
+  "license": "MIT",
+  "author": {
+    "name": "Taj",
+    "email": "tajulislamj200@gmail.com"
+  },
+  "packageManager": "pnpm@10.13.1",
+  "dependencies": {
+    "@actions/core": "^1.11.1",
+    "@actions/exec": "^1.1.1",
+    "semver": "^7.7.2"
+  },
+  "devDependencies": {
+    "@types/node": "^24.3.0",
+    "@types/semver": "^7.7.0",
+    "@vercel/ncc": "^0.38.3",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.2",
+    "yaml": "^2.8.1"
+  }
+}
