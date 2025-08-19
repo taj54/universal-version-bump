@@ -18,8 +18,8 @@ async function run() {
 
     core.setOutput("new_version", version);
 
-    await exec.exec("git", ["config", "user.name", "github-actions"]);
-    await exec.exec("git", ["config", "user.email", "github-actions@github.com"]);
+    await exec.exec("git", ["config", "user.name", "github-actions[bot]"]);
+    await exec.exec("git", ["config", "user.email", "github-actions[bot]@users.noreply.github.com"]);
     await exec.exec("git", ["commit", "-am", `chore: bump version to ${version}`]);
     await exec.exec("git", ["tag", `v${version}`]);
     await exec.exec("git", ["push", "origin", "HEAD", "--tags"]);
