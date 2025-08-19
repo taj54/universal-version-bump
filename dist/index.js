@@ -1,5 +1,5 @@
 /**
- * universal-version-bump v0.0.2
+ * universal-version-bump v0.1.1
  * Universal Version Bump
  *
  * Description: A GitHub Action to automatically bump versions across any app (Node, Python, PHP, Docker, etc.)
@@ -28405,8 +28405,8 @@ async function run() {
             fs.writeFileSync("package.json", JSON.stringify(pkg, null, 2));
         }
         core.setOutput("new_version", version);
-        await exec.exec("git", ["config", "user.name", "github-actions"]);
-        await exec.exec("git", ["config", "user.email", "github-actions@github.com"]);
+        await exec.exec("git", ["config", "user.name", "github-actions[bot]"]);
+        await exec.exec("git", ["config", "user.email", "github-actions[bot]@users.noreply.github.com"]);
         await exec.exec("git", ["commit", "-am", `chore: bump version to ${version}`]);
         await exec.exec("git", ["tag", `v${version}`]);
         await exec.exec("git", ["push", "origin", "HEAD", "--tags"]);
