@@ -1,6 +1,6 @@
 # Universal Version Bump
 
-[![CI](https://github.com/Taj/universal-version-bump/actions/workflows/test.yml/badge.svg)](https://github.com/Taj/universal-version-bump/actions/workflows/test.yml)
+[![CI](https://github.com/taj54/universal-version-bump/actions/workflows/test.yml/badge.svg)](https://github.com/taj54/universal-version-bump/actions/workflows/test.yml)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 A GitHub Action to automatically bump versions for any project that has a version file.
