@@ -23,6 +23,15 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+            version: 10.13.1 
+
+      - name: Install deps
+        run: pnpm install --frozen-lockfile
+
+
       - name: Install deps
         run: pnpm run ci
 
