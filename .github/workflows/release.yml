@@ -6,7 +6,7 @@ on:
       - 'releases/*'
 
 permissions:
-  contents: write 
+  contents: write  # allow pushing tags & creating releases
 
 jobs:
   release:
@@ -15,7 +15,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v5
         with:
-          fetch-depth: 0
+          fetch-depth: 0  # ensure full history & tags
+
+      - name: Set up Git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
 
       - name: Install deps
         run: pnpm ci
@@ -23,14 +29,22 @@ jobs:
       - name: Build
         run: pnpm run build
 
-      - run: git add dist -f
+      - name: Add build artifacts
+        run: git add dist -f
 
       - name: Generate changelog
         id: changelog
         uses: ./
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }} 
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           create-summary: true
+
+      - name: Push tag
+        if: steps.changelog.outputs.skipped != 'true'
+        run: |
+          git commit -m "chore: bump version to ${{ steps.changelog.outputs.tag }}" || echo "No changes"
+          git tag ${{ steps.changelog.outputs.tag }}
+          git push origin HEAD --tags
 
       - name: Create Release
         uses: actions/create-release@v1
