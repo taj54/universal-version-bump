@@ -1,6 +1,6 @@
 import semver from "semver";
 import { Updater } from "../interface";
-import { DockerUpdater, GoUpdater, NodeUpdater, PythonUpdater, RustUpdater  } from "../updaters";
+import { DockerUpdater, GoUpdater, NodeUpdater, PHPUpdater, PythonUpdater, RustUpdater  } from "../updaters";
 
 const updaters: Updater[] = [
   new NodeUpdater(),
@@ -8,6 +8,7 @@ const updaters: Updater[] = [
   new RustUpdater(),
   new GoUpdater(),
   new DockerUpdater(),
+  new PHPUpdater(),
 ];
 
 export function detectPlatform(): string {
