@@ -1,9 +1,9 @@
 name: 'release'
 
 on:
-  push:
-    branches:
-      - 'releases/*'
+  release:
+    types: [created]
+  workflow_dispatch:
 
 permissions:
   contents: write  # allow pushing tags & creating releases
@@ -41,6 +41,7 @@ jobs:
         id: changelog
         uses: ./
         with:
+          release_type: 'patch'
           github-token: ${{ secrets.GITHUB_TOKEN }}
           create-summary: true
 
