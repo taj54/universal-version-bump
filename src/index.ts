@@ -1,26 +1,27 @@
 import * as core from "@actions/core";
 import * as exec from "@actions/exec";
-import * as fs from "fs";
+import { detectPlatform, updateVersion } from "./utils";
 import semver from "semver";
 
 async function run() {
   try {
-    const releaseType = core.getInput("release_type") || "patch";
+    const releaseType = (core.getInput("release_type") || "patch") as semver.ReleaseType;
 
-    let version = "0.1.0";
+    const platform = detectPlatform();
+    core.info(`Detected platform: ${platform}`);
 
-    if (fs.existsSync("package.json")) {
-      const pkg = JSON.parse(fs.readFileSync("package.json", "utf8"));
-      version = semver.inc(pkg.version, releaseType as semver.ReleaseType) || pkg.version;
-      pkg.version = version;
-      fs.writeFileSync("package.json", JSON.stringify(pkg, null, 2));
-    }
-
+    const version = updateVersion(platform, releaseType);
     core.setOutput("new_version", version);
 
+    // Git Commit & Tag
     await exec.exec("git", ["config", "user.name", "github-actions[bot]"]);
     await exec.exec("git", ["config", "user.email", "github-actions[bot]@users.noreply.github.com"]);
-    await exec.exec("git", ["commit", "-am", `chore: bump version to ${version}`]);
+
+    await exec.exec("git", ["add", "-A"]);
+    await exec.exec("git", ["diff-index", "--quiet", "HEAD"]).catch(async () => {
+      await exec.exec("git", ["commit", "-m", `chore: bump version to ${version}`]);
+    });
+
     await exec.exec("git", ["tag", `v${version}`]);
     await exec.exec("git", ["push", "origin", "HEAD", "--tags"]);
 
@@ -30,4 +31,3 @@ async function run() {
 }
 
 run();
-
