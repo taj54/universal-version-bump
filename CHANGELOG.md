@@ -4,6 +4,10 @@ All notable changes for each version of the Ambient Music extension.
 
 ---
 
+## 0.2.0
+
+- refactor: add multi-platform support
+
 ## 0.1.8
 
 - chore: bump version to 0.1.8
