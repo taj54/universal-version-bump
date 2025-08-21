@@ -16,6 +16,12 @@ jobs:
         uses: actions/checkout@v5
         with:
           fetch-depth: 0  # ensure full history & tags
+      
+      - name: Bump version
+        id: version_bump
+        uses: ./
+        with:
+          release_type: 'patch'
 
       - name: Set up Git identity
         run: |
@@ -36,14 +42,6 @@ jobs:
 
       - name: Add build artifacts
         run: git add dist -f
-
-      - name: Bump version
-        id: version_bump
-        uses: ./
-        with:
-          release_type: 'patch'
-
-      
 
       - name: Create Release
         uses: actions/create-release@v1
