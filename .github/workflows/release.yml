@@ -37,28 +37,20 @@ jobs:
       - name: Add build artifacts
         run: git add dist -f
 
-      - name: Generate changelog
-        id: changelog
+      - name: Bump version
+        id: version_bump
         uses: ./
         with:
           release_type: 'patch'
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          create-summary: true
 
-      - name: Push tag
-        if: steps.changelog.outputs.skipped != 'true'
-        run: |
-          git commit -m "chore: bump version to ${{ steps.changelog.outputs.tag }}" || echo "No changes"
-          git tag ${{ steps.changelog.outputs.tag }}
-          git push origin HEAD --tags
+      
 
       - name: Create Release
         uses: actions/create-release@v1
-        if: steps.changelog.outputs.skipped != 'true' && steps.changelog.outputs.tag != ''
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ steps.changelog.outputs.tag }}
-          release_name: ${{ steps.changelog.outputs.tag }}
-          body: ${{ steps.changelog.outputs.clean_changelog }}
+          tag_name: v${{ steps.version_bump.outputs.new_version }}
+          release_name: v${{ steps.version_bump.outputs.new_version }}
+          body: 'Initial release'
 
