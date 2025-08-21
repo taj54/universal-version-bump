@@ -16,9 +16,6 @@ on:
 jobs:
   bump-version:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write        
-      pull-requests: write   
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
@@ -40,42 +37,23 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      # Create release branch first
-      - name: Create release branch
-        run: |
-          NEW_VERSION=$(node -p "require('./package.json').version")
-          echo "current_version=$NEW_VERSION" >> $GITHUB_ENV
-          echo "Checking out release branch..."
-          git checkout -b release/temp || true
-
-      # Bump version & commit on the new branch
-      - name: Bump version and commit
+      - name: Generate new version
+        id: version
         run: |
           NEW_VERSION=$(pnpm version ${{ inputs.release_type }} --no-git-tag-version | awk '{print $NF}')
           echo "new_version=$NEW_VERSION" >> $GITHUB_ENV
-          echo "New version: $NEW_VERSION"
 
+      - name: Create new branch
+        run: |
+          git checkout -b release/${{ env.new_version }}
+
+      - name: Commit & Push changes
+        run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
           git add package.json pnpm-lock.yaml
-          if git diff --cached --quiet; then
-            echo "⚠️ No version bump changes detected. Skipping commit & PR."
-            exit 0
-          fi
-
-          git commit -m "chore(release): bump version to $NEW_VERSION"
-
-          # Rename branch with actual version number
-          git branch -m release/$NEW_VERSION
-          git push origin release/$NEW_VERSION
-
-      - name: Check if branch has differences
-        run: |
-          if git diff origin/main..origin/release/${{ env.new_version }} --quiet; then
-            echo "⚠️ No changes detected between main and release/${{ env.new_version }}. Skipping PR."
-            exit 0
-          fi
+          git commit -m "chore(release): bump version to ${{ env.new_version }}"
+          git push origin release/${{ env.new_version }}
 
       - name: Create Pull Request
         run: |
@@ -85,8 +63,9 @@ jobs:
             --title "Release: ${{ env.new_version }}" \
             --body "Auto-generated release PR for version ${{ env.new_version }}"
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Notify about Major Release (if major)
         if: inputs.release_type == 'major'
-        run: echo "🚨 Major version update detected! Please review carefully."
+        run: |
+          echo "🚨 Major version update detected! Please review and merge manually."
