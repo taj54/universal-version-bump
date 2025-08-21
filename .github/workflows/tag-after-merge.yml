@@ -1,0 +1,89 @@
+name: Tag and Release After Merge
+
+permissions:
+  contents: write
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  create-tag-and-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Get new version from package.json
+        run: |
+          VERSION=$(jq -r .version package.json)
+          echo "version=$VERSION" >> $GITHUB_ENV
+
+      - name: Get last tag (if exists)
+        run: |
+          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
+          LAST_TAG_STRIPPED=${LAST_TAG#v}
+          echo "last_tag=$LAST_TAG_STRIPPED" >> $GITHUB_ENV
+
+      - name: Check release type (skip patch)
+        run: |
+          NEW=${{ env.version }}
+          OLD=${{ env.last_tag }}
+
+          NEW_MAJOR=$(echo $NEW | cut -d. -f1)
+          NEW_MINOR=$(echo $NEW | cut -d. -f2)
+          NEW_PATCH=$(echo $NEW | cut -d. -f3)
+
+          OLD_MAJOR=$(echo $OLD | cut -d. -f1)
+          OLD_MINOR=$(echo $OLD | cut -d. -f2)
+          OLD_PATCH=$(echo $OLD | cut -d. -f3)
+
+          if [ "$NEW_MAJOR" -gt "$OLD_MAJOR" ]; then
+            echo "release_type=major" >> $GITHUB_ENV
+          elif [ "$NEW_MINOR" -gt "$OLD_MINOR" ]; then
+            echo "release_type=minor" >> $GITHUB_ENV
+          else
+            echo "release_type=patch" >> $GITHUB_ENV
+          fi
+
+      - name: Skip if patch
+        if: env.release_type == 'patch'
+        run: echo "Patch release detected → no tag or release will be created."
+
+      - name: Create and push git tag
+        if: env.release_type != 'patch'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag v${{ env.version }}
+          git push origin v${{ env.version }}
+
+      - name: Extract release notes from CHANGELOG
+        if: env.release_type != 'patch'
+        id: changelog
+        run: |
+          # Match lines starting with "## vX.Y.Z " until the next "## "
+          awk "/^## v${{ env.version }}[[:space:]]/{flag=1; next} /^## /{flag=0} flag" CHANGELOG.md > RELEASE_NOTES.md
+        
+          echo "notes<<EOF" >> $GITHUB_ENV
+          if [ "${{ env.release_type }}" = "major" ]; then
+            echo "## 🚀 Major Release" >> $GITHUB_ENV
+          elif [ "${{ env.release_type }}" = "minor" ]; then
+            echo "## ✨ Minor Release" >> $GITHUB_ENV
+          fi
+          echo "" >> $GITHUB_ENV
+          cat RELEASE_NOTES.md >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      - name: Create GitHub Release
+        if: env.release_type != 'patch'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ env.version }}
+          name: "Release v${{ env.version }}"
+          body: ${{ env.notes }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
