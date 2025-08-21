@@ -13,7 +13,7 @@ To use this action in your workflow, add the following step:
 
 ```yaml
 - name: Bump version
-  uses: Taj/universal-version-bump@v1
+  uses: taj54/universal-version-bump@v0.1.6
   with:
     release_type: "patch" # patch, minor, or major
 ```
@@ -50,7 +50,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Bump version
-        uses: Taj/universal-version-bump@v1
+        uses: taj54/universal-version-bump@v0.1.6
         with:
           release_type: "patch"
 ```
