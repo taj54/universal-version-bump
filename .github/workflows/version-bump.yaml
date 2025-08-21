@@ -55,6 +55,14 @@ jobs:
           git commit -m "chore(release): bump version to ${{ env.new_version }}"
           git push origin release/${{ env.new_version }}
 
+      # --- DEBUGGING STEPS START ---
+      - name: Debug Git Status after Push
+        run: git status
+
+      - name: Debug Git Log after Push
+        run: git log -n 5
+      # --- DEBUGGING STEPS END ---
+
       - name: Create Pull Request
         run: |
           gh pr create \
