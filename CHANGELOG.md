@@ -6,6 +6,7 @@ All notable changes for each version of the Ambient Music extension.
 
 ## 0.2.0
 
+- feat: add php support
 - refactor: add multi-platform support
 
 ## 0.1.8
