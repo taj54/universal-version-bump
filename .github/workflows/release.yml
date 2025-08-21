@@ -38,13 +38,29 @@ jobs:
       - name: Add build artifacts
         run: git add dist -f
 
+      - name: Extract release notes from CHANGELOG
+        if: env.release_type != 'patch'
+        id: changelog
+        run: |
+          # Match lines starting with "## vX.Y.Z " until the next "## "
+            awk "/^## v${{ env.version }}[[:space:]]/{flag=1; next} /^## /{flag=0} flag" CHANGELOG.md > RELEASE_NOTES.md
+          
+            echo "notes<<EOF" >> $GITHUB_ENV
+            if [ "${{ env.release_type }}" = "major" ]; then
+              echo "## 🚀 Major Release" >> $GITHUB_ENV
+            elif [ "${{ env.release_type }}" = "minor" ]; then
+              echo "## ✨ Minor Release" >> $GITHUB_ENV
+            fi
+            echo "" >> $GITHUB_ENV
+            cat RELEASE_NOTES.md >> $GITHUB_ENV
+            echo "EOF" >> $GITHUB_ENV
 
-      - name: Create Release
-        uses: actions/create-release@v1
+      - name: Create GitHub Release
+        if: env.release_type != 'patch'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ env.version }}
+          name: "Release v${{ env.version }}"
+          body: ${{ env.notes }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: v${{ steps.version_bump.outputs.new_version }}
-          release_name: v${{ steps.version_bump.outputs.new_version }}
-          body: 'Initial release'
-
