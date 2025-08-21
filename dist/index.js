@@ -1,5 +1,5 @@
 /**
- * universal-version-bump v0.1.9
+ * universal-version-bump v0.2.0
  * Universal Version Bump
  *
  * Description: A GitHub Action to automatically bump versions across any app (Node, Python, PHP, Docker, etc.)
@@ -28386,28 +28386,24 @@ var __importStar = (this && this.__importStar) || (function () {
         return result;
     };
 })();
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(9999));
 const exec = __importStar(__nccwpck_require__(8872));
-const fs = __importStar(__nccwpck_require__(9896));
-const semver_1 = __importDefault(__nccwpck_require__(2348));
+const utils_1 = __nccwpck_require__(9499);
 async function run() {
     try {
-        const releaseType = core.getInput("release_type") || "patch";
-        let version = "0.1.0";
-        if (fs.existsSync("package.json")) {
-            const pkg = JSON.parse(fs.readFileSync("package.json", "utf8"));
-            version = semver_1.default.inc(pkg.version, releaseType) || pkg.version;
-            pkg.version = version;
-            fs.writeFileSync("package.json", JSON.stringify(pkg, null, 2));
-        }
+        const releaseType = (core.getInput("release_type") || "patch");
+        const platform = (0, utils_1.detectPlatform)();
+        core.info(`Detected platform: ${platform}`);
+        const version = (0, utils_1.updateVersion)(platform, releaseType);
         core.setOutput("new_version", version);
+        // Git Commit & Tag
         await exec.exec("git", ["config", "user.name", "github-actions[bot]"]);
         await exec.exec("git", ["config", "user.email", "github-actions[bot]@users.noreply.github.com"]);
-        await exec.exec("git", ["commit", "-am", `chore: bump version to ${version}`]);
+        await exec.exec("git", ["add", "-A"]);
+        await exec.exec("git", ["diff-index", "--quiet", "HEAD"]).catch(async () => {
+            await exec.exec("git", ["commit", "-m", `chore: bump version to ${version}`]);
+        });
         await exec.exec("git", ["tag", `v${version}`]);
         await exec.exec("git", ["push", "origin", "HEAD", "--tags"]);
     }
@@ -28416,6 +28412,307 @@ async function run() {
     }
 }
 run();
+
+
+/***/ }),
+
+/***/ 553:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.DockerUpdater = void 0;
+const fs_1 = __importDefault(__nccwpck_require__(9896));
+const semver_1 = __importDefault(__nccwpck_require__(2348));
+class DockerUpdater {
+    constructor() {
+        this.platform = "docker";
+    }
+    canHandle() {
+        return fs_1.default.existsSync("Dockerfile");
+    }
+    getCurrentVersion() {
+        const content = fs_1.default.readFileSync("Dockerfile", "utf8");
+        const match = content.match(/LABEL version="([^"]+)"/);
+        return match ? match[1] : null;
+    }
+    bumpVersion(releaseType) {
+        const current = this.getCurrentVersion();
+        if (!current)
+            throw new Error("Docker version not found");
+        const newVersion = semver_1.default.inc(current, releaseType) || current;
+        let content = fs_1.default.readFileSync("Dockerfile", "utf8");
+        content = content.replace(/LABEL version="[^"]+"/, `LABEL version="${newVersion}"`);
+        fs_1.default.writeFileSync("Dockerfile", content);
+        return newVersion;
+    }
+}
+exports.DockerUpdater = DockerUpdater;
+
+
+/***/ }),
+
+/***/ 319:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.GoUpdater = void 0;
+const fs_1 = __importDefault(__nccwpck_require__(9896));
+const semver_1 = __importDefault(__nccwpck_require__(2348));
+class GoUpdater {
+    constructor() {
+        this.platform = "go";
+    }
+    canHandle() {
+        return fs_1.default.existsSync("go.mod");
+    }
+    getCurrentVersion() {
+        if (!this.canHandle())
+            return null;
+        const content = fs_1.default.readFileSync("go.mod", "utf8");
+        const match = content.match(/module\s+.*\n.*v(\d+\.\d+\.\d+)/);
+        return match ? match[1] : null;
+    }
+    bumpVersion(releaseType) {
+        const current = this.getCurrentVersion();
+        if (!current)
+            throw new Error("Go version not found");
+        const newVersion = semver_1.default.inc(current, releaseType) || current;
+        let content = fs_1.default.readFileSync("go.mod", "utf8");
+        content = content.replace(/v\d+\.\d+\.\d+/, `v${newVersion}`);
+        fs_1.default.writeFileSync("go.mod", content);
+        return newVersion;
+    }
+}
+exports.GoUpdater = GoUpdater;
+
+
+/***/ }),
+
+/***/ 1384:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+__exportStar(__nccwpck_require__(1337), exports);
+__exportStar(__nccwpck_require__(5203), exports);
+__exportStar(__nccwpck_require__(2531), exports);
+__exportStar(__nccwpck_require__(319), exports);
+__exportStar(__nccwpck_require__(553), exports);
+
+
+/***/ }),
+
+/***/ 1337:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.NodeUpdater = void 0;
+const fs_1 = __importDefault(__nccwpck_require__(9896));
+const semver_1 = __importDefault(__nccwpck_require__(2348));
+class NodeUpdater {
+    constructor() {
+        this.platform = "node";
+    }
+    canHandle() {
+        return fs_1.default.existsSync("package.json");
+    }
+    getCurrentVersion() {
+        if (!this.canHandle())
+            return null;
+        const pkg = JSON.parse(fs_1.default.readFileSync("package.json", "utf8"));
+        return pkg.version;
+    }
+    bumpVersion(releaseType) {
+        const pkg = JSON.parse(fs_1.default.readFileSync("package.json", "utf8"));
+        const newVersion = semver_1.default.inc(pkg.version, releaseType) || pkg.version;
+        pkg.version = newVersion;
+        fs_1.default.writeFileSync("package.json", JSON.stringify(pkg, null, 2));
+        return newVersion;
+    }
+}
+exports.NodeUpdater = NodeUpdater;
+
+
+/***/ }),
+
+/***/ 5203:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.PythonUpdater = void 0;
+const fs_1 = __importDefault(__nccwpck_require__(9896));
+const semver_1 = __importDefault(__nccwpck_require__(2348));
+class PythonUpdater {
+    constructor() {
+        this.platform = "python";
+    }
+    canHandle() {
+        return fs_1.default.existsSync("pyproject.toml") || fs_1.default.existsSync("setup.py");
+    }
+    getCurrentVersion() {
+        if (fs_1.default.existsSync("pyproject.toml")) {
+            const content = fs_1.default.readFileSync("pyproject.toml", "utf8");
+            const match = content.match(/version\s*=\s*"([^"]+)"/);
+            return match ? match[1] : null;
+        }
+        if (fs_1.default.existsSync("setup.py")) {
+            const content = fs_1.default.readFileSync("setup.py", "utf8");
+            const match = content.match(/version\s*=\s*["']([^"']+)["']/);
+            return match ? match[1] : null;
+        }
+        return null;
+    }
+    bumpVersion(releaseType) {
+        const current = this.getCurrentVersion();
+        if (!current)
+            throw new Error("Python version not found");
+        const newVersion = semver_1.default.inc(current, releaseType) || current;
+        if (fs_1.default.existsSync("pyproject.toml")) {
+            let content = fs_1.default.readFileSync("pyproject.toml", "utf8");
+            content = content.replace(/version\s*=\s*"[^"]+"/, `version = "${newVersion}"`);
+            fs_1.default.writeFileSync("pyproject.toml", content);
+        }
+        else if (fs_1.default.existsSync("setup.py")) {
+            let content = fs_1.default.readFileSync("setup.py", "utf8");
+            content = content.replace(/version\s*=\s*["'][^"']+["']/, `version="${newVersion}"`);
+            fs_1.default.writeFileSync("setup.py", content);
+        }
+        return newVersion;
+    }
+}
+exports.PythonUpdater = PythonUpdater;
+
+
+/***/ }),
+
+/***/ 2531:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.RustUpdater = void 0;
+const fs_1 = __importDefault(__nccwpck_require__(9896));
+const semver_1 = __importDefault(__nccwpck_require__(2348));
+class RustUpdater {
+    constructor() {
+        this.platform = "rust";
+    }
+    canHandle() {
+        return fs_1.default.existsSync("Cargo.toml");
+    }
+    getCurrentVersion() {
+        if (!this.canHandle())
+            return null;
+        const content = fs_1.default.readFileSync("Cargo.toml", "utf8");
+        const match = content.match(/version\s*=\s*"([^"]+)"/);
+        return match ? match[1] : null;
+    }
+    bumpVersion(releaseType) {
+        const current = this.getCurrentVersion();
+        if (!current)
+            throw new Error("Rust version not found");
+        const newVersion = semver_1.default.inc(current, releaseType) || current;
+        let content = fs_1.default.readFileSync("Cargo.toml", "utf8");
+        content = content.replace(/version\s*=\s*"[^"]+"/, `version = "${newVersion}"`);
+        fs_1.default.writeFileSync("Cargo.toml", content);
+        return newVersion;
+    }
+}
+exports.RustUpdater = RustUpdater;
+
+
+/***/ }),
+
+/***/ 9499:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+__exportStar(__nccwpck_require__(8290), exports);
+
+
+/***/ }),
+
+/***/ 8290:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.detectPlatform = detectPlatform;
+exports.updateVersion = updateVersion;
+const updaters_1 = __nccwpck_require__(1384);
+const updaters = [
+    new updaters_1.NodeUpdater(),
+    new updaters_1.PythonUpdater(),
+    new updaters_1.RustUpdater(),
+    new updaters_1.GoUpdater(),
+    new updaters_1.DockerUpdater(),
+];
+function detectPlatform() {
+    const updater = updaters.find(u => u.canHandle());
+    return updater ? updater.platform : "unknown";
+}
+function updateVersion(platform, releaseType) {
+    const updater = updaters.find(u => u.platform === platform);
+    if (!updater)
+        throw new Error(`No updater found for platform: ${platform}`);
+    return updater.bumpVersion(releaseType);
+}
 
 
 /***/ }),
