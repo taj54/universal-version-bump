@@ -9,7 +9,7 @@
     "test": "echo \"No tests yet\"",
     "lint": "eslint . --ext .ts",
     "format": "prettier --write .",
-    "prepare": "pnpm build"
+    "prepare": "pnpm lint --fix && pnpm format && pnpm build "
   },
   "keywords": [
     "actions",

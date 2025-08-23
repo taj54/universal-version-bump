@@ -29,7 +29,11 @@ async function run() {
     await exec.exec('git', ['tag', `v${version}`]);
     await exec.exec('git', ['push', 'origin', 'HEAD', '--tags']);
   } catch (error: unknown) {
-    core.setFailed(error.message);
+    if (error instanceof Error) {
+      core.setFailed(error.message);
+    } else {
+      core.setFailed(String(error));
+    }
   }
 }
 
