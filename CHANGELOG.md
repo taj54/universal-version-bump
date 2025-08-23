@@ -4,6 +4,12 @@ All notable changes for each version of the Ambient Music extension.
 
 ---
 
+## v0.7.0 2025 08 24
+
+- fix: Update version badges in README for consistency.
+- feat: Integrate Vitest for comprehensive unit testing.
+- chore: Bump version to 0.7.0.
+
 ## v0.6.2 2025 08 24
 
 - fix: Update version badges in README for consistency.
