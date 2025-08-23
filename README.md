@@ -1,5 +1,6 @@
 # Universal Version Bump
 
+[![Version](https://img.shields.io/badge/version-0.6.2-blue.svg)](package.json)
 [![Test](https://github.com/taj54/universal-version-bump/actions/workflows/test.yml/badge.svg)](https://github.com/taj54/universal-version-bump/actions/workflows/test.yml)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
