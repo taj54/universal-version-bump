@@ -4,6 +4,11 @@ All notable changes for each version of the Ambient Music extension.
 
 ---
 
+## v0.5.1 2025 08 23
+
+- feat: Improve error handling in `src/index.ts` to gracefully manage unknown error types.
+- chore: Update `package.json` to include linting and formatting in the `prepare` script, ensuring code quality before building.
+
 ## v0.5.0 2025 08 23
 
 -minor release
