@@ -4,6 +4,13 @@ All notable changes for each version of the Ambient Music extension.
 
 ---
 
+## v0.6.2 2025 08 24
+
+- feat: Integrate Vitest for comprehensive unit testing.
+- chore: Bump version to 0.6.2.
+
+## v0.6.0 2025 08 23
+
 ## v0.5.1 2025 08 23
 
 - feat: Improve error handling in `src/index.ts` to gracefully manage unknown error types.
