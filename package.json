@@ -1,7 +1,7 @@
 {
   "name": "universal-version-bump",
   "displayName": "Universal Version Bump",
-  "version": "0.6.2",
+  "version": "0.7.0",
   "description": "A GitHub Action to automatically bump versions across any app (Node, Python, PHP, Docker, etc.)",
   "main": "dist/index.js",
   "scripts": {
