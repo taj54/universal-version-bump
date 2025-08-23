@@ -1,5 +1,5 @@
 /**
- * universal-version-bump v0.5.0
+ * universal-version-bump v0.6.0
  * Universal Version Bump
  *
  * Description: A GitHub Action to automatically bump versions across any app (Node, Python, PHP, Docker, etc.)
