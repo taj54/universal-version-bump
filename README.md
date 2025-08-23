@@ -15,22 +15,22 @@ To use this action in your workflow, add the following step:
 - name: Bump version
   uses: taj54/universal-version-bump@v0.1.6
   with:
-    release_type: "patch" # patch, minor, or major
+    release_type: 'patch' # patch, minor, or major
 ```
 
 ## Inputs
 
-| Name           | Description                                   | Default |
-| -------------- | --------------------------------------------- | ------- |
+| Name           | Description                                        | Default |
+| -------------- | -------------------------------------------------- | ------- |
 | `release_type` | Select the version bump type (patch, minor, major) | `patch` |
-| `git_tag`      | Whether to create a Git tag after bump        | `true`  |
+| `git_tag`      | Whether to create a Git tag after bump             | `true`  |
 
 ## Outputs
 
-| Name          | Description                            |
-| ------------- | -------------------------------------- |
-| `new_version` | The new bumped version                 |
-| `tag`         | The created Git tag (if enabled)       |
+| Name          | Description                      |
+| ------------- | -------------------------------- |
+| `new_version` | The new bumped version           |
+| `tag`         | The created Git tag (if enabled) |
 
 ## Example Workflow
 
@@ -52,7 +52,7 @@ jobs:
       - name: Bump version
         uses: taj54/universal-version-bump@v0.1.6
         with:
-          release_type: "patch"
+          release_type: 'patch'
 ```
 
 ## Contributing
@@ -62,4 +62,3 @@ Contributions are welcome! Please see the [contributing guidelines](CONTRIBUTING
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-

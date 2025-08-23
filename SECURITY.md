@@ -10,10 +10,10 @@ Instead, please email your findings to [tajulislamj200@gmail.com](mailto:tajulis
 
 When reporting, please include:
 
-*   A clear and concise description of the vulnerability.
-*   Steps to reproduce the vulnerability.
-*   The potential impact of the vulnerability.
-*   Any suggested mitigations (if you have them).
+- A clear and concise description of the vulnerability.
+- Steps to reproduce the vulnerability.
+- The potential impact of the vulnerability.
+- Any suggested mitigations (if you have them).
 
 We will acknowledge your email within `5` business days and aim to provide a more detailed response within `10` business days.
 
