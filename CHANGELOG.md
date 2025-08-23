@@ -3,103 +3,71 @@
 All notable changes for each version of the Ambient Music extension.
 
 ---
-## v0.2.1
+
+## v0.3.0 2025 08 23
+
+- ci: version bump updated
+- refactor: pnpm version updated
+- ci: pipeline improvement
+- fix: the version struct updated
+
+
+
+## v0.2.1 2025 08 22
 
 - ci: add tag and release workflow
 - ci: automate release creation with release notes
 - feat: add php support
 - refactor: add multi-platform support
 - 
-## v0.2.0
+## v0.2.0 2025 08 22
 
 - ci: add tag and release workflow
 - ci: automate release creation with release notes
 - feat: add php support
 - refactor: add multi-platform support
 
-## v0.1.8
+## v0.1.8 2025 08 22
 
 - chore: bump version to 0.1.8
 - refactor: place changed
 
-## v0.1.7
+## v0.1.7 2025 08 22
 
 - chore: bump version to 0.1.7
 - security: security file added
 
-## v0.1.6
+## v0.1.6 2025 08 22
 
 - docs: Update README
 - chore: bump version to 0.1.6
 
-## v0.1.5
+## v0.1.5 2025 08 22
 
 - Docs: README updated
 - chore: bump version to 0.1.5
 
-## v0.1.4
+## v0.1.4 2025 08 22
 
 - Fix: Update release workflow
 - chore: bump version to 0.1.4
 
-## v0.1.2
+## v0.1.2 2025 08 22
 
 - feat: version bumped 0.1.2
 - chore: bump version to 0.1.2
 
-## v0.1.1
+## v0.1.1 2025 08 22
 
 - ci: fallback added
 - chore: bump version to 0.1.1
-
-## v0.1.0
-
 - feat: ci removed
 - feat: pnpm setup in the release yml
 - ci path updated
 - feat: version bump minor release 0.1.0
 
-## v0.5.0
 
-- chore: bump version to 0.5.0
-- feat: test run
-
-## v0.4.0
-
-- chore: bump version to 0.4.0
-- fix: bot identity fixed in index
-
-## v0.3.0
-
-- chore: bump version to 0.3.0
-- feat: git identity updated
-
-## v0.2.0
-
-- chore: bump version to 0.2.0
-- test: test updated in git bot
-
-## v0.1.4
-
-- chore: bump version to 0.1.4
-- test: add test
-
-## v0.1.3
-
-- chore: bump version to 0.1.3
-- docs: updated
-
-## v0.1.2
-
-- chore: bump version to 0.1.2
-- ci: Set up Git identity
-
-## v0.1.1
-
-- chore: bump version to 0.1.1
-- feat: minor version 0.1.0
-
-## v0.1.0
+## v0.1.0 2025 08 22
 
 - ci: Keep the versions up-to-date
 - feat:updated
