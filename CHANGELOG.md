@@ -4,6 +4,12 @@ All notable changes for each version of the Ambient Music extension.
 
 ---
 
+## v0.4.0 2025 08 23
+
+-minor release
+
+
+
 ## v0.3.1 2025 08 23
 
 - refactor(release): move release creation to separate workflow
