@@ -85,5 +85,6 @@ jobs:
           tag_name: v${{ env.version }}
           name: "Release v${{ env.version }}"
           body: ${{ env.notes }}
+          make_latest: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
