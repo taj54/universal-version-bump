@@ -4,17 +4,17 @@ All notable changes for each version of the Ambient Music extension.
 
 ---
 
+## v0.5.0 2025 08 23
+
+-minor release
+
 ## v0.4.0 2025 08 23
 
 -minor release
 
-
-
 ## v0.3.1 2025 08 23
 
 - refactor(release): move release creation to separate workflow
-
-
 
 ## v0.3.0 2025 08 23
 
@@ -23,15 +23,13 @@ All notable changes for each version of the Ambient Music extension.
 - ci: pipeline improvement
 - fix: the version struct updated
 
-
-
 ## v0.2.1 2025 08 22
 
 - ci: add tag and release workflow
 - ci: automate release creation with release notes
 - feat: add php support
 - refactor: add multi-platform support
-- 
+
 ## v0.2.0 2025 08 22
 
 - ci: add tag and release workflow
