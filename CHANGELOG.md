@@ -76,7 +76,6 @@ All notable changes for each version of the Ambient Music extension.
 - ci path updated
 - feat: version bump minor release 0.1.0
 
-
 ## v0.1.0 2025 08 22
 
 - ci: Keep the versions up-to-date

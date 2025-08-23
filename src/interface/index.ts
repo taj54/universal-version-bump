@@ -1,1 +1,1 @@
-export * from "./updaterInterface";
+export * from './updaterInterface';

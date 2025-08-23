@@ -67,7 +67,7 @@ jobs:
         run: |
           # Match lines starting with "## vX.Y.Z " until the next "## "
           awk "/^## v${{ env.version }}[[:space:]]/{flag=1; next} /^## /{flag=0} flag" CHANGELOG.md > RELEASE_NOTES.md
-        
+
           echo "notes<<EOF" >> $GITHUB_ENV
           if [ "${{ env.release_type }}" = "major" ]; then
             echo "## 🚀 Major Release" >> $GITHUB_ENV
@@ -83,7 +83,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ env.version }}
-          name: "Release v${{ env.version }}"
+          name: 'Release v${{ env.version }}'
           body: ${{ env.notes }}
           make_latest: true
         env:
