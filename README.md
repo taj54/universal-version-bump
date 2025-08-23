@@ -1,8 +1,9 @@
 # Universal Version Bump
 
-[![Version](https://img.shields.io/badge/version-0.6.2-blue.svg)](package.json)
+[![GitHub Marketplace](https://img.shields.io/badge/marketplace-universal--version--bump-blue?logo=github)](https://github.com/marketplace/actions/universal-version-bump)
+[![Release](https://img.shields.io/github/v/release/taj54/universal-version-bump?label=version)](https://github.com/taj54/universal-version-bump/releases)
 [![Test](https://github.com/taj54/universal-version-bump/actions/workflows/test.yml/badge.svg)](https://github.com/taj54/universal-version-bump/actions/workflows/test.yml)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![License](https://img.shields.io/github/license/taj54/universal-version-bump)](LICENSE)
 
 A GitHub Action to automatically bump versions for any project that has a version file.
 
