@@ -4,6 +4,10 @@ All notable changes for each version of the Ambient Music extension.
 
 ---
 
+## v0.7.2 2025 08 24
+
+- refactor: Moved `UpdaterRegistry` to `src/registry` for better organization and updated all relevant imports.
+
 ## v0.7.1 2025 08 24
 
 - refactor: Encapsulate Git operations in a GitService
@@ -19,6 +23,7 @@ All notable changes for each version of the Ambient Music extension.
   - Modify `UpdaterService` to use the `target_platform` if provided, otherwise fall back to existing detection logic.
   - Update `index.ts` to read and pass `target_platform` to `UpdaterService`.
   - Implement conditional Git tag creation based on the `git_tag` input from `action.yml`.
+- build: Updated `dist/index.js` after centralizing action configuration.
 
 ## v0.7.0 2025 08 24
 

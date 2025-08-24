@@ -1,8 +1,8 @@
 import { ReleaseType } from 'semver';
-import { Updater } from '../interface';
+import { UpdaterInterface } from '../interface';
 import { calculateNextVersion, ManifestParser } from '../utils';
 
-export class PythonUpdater implements Updater {
+export class PythonUpdater implements UpdaterInterface {
   platform = 'python';
   private manifestPath: string | null = null;
 

@@ -1,8 +1,8 @@
 import { ReleaseType } from 'semver';
-import { Updater } from '../interface';
+import { UpdaterInterface } from '../interface';
 import { calculateNextVersion, ManifestParser } from '../utils';
 
-export class GoUpdater implements Updater {
+export class GoUpdater implements UpdaterInterface {
   platform = 'go';
   private manifestPath: string | null = null;
 

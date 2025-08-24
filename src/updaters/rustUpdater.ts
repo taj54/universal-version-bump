@@ -1,8 +1,8 @@
 import { ReleaseType } from 'semver';
-import { Updater } from '../interface';
+import { UpdaterInterface } from '../interface';
 import { calculateNextVersion, ManifestParser } from '../utils';
 
-export class RustUpdater implements Updater {
+export class RustUpdater implements UpdaterInterface {
   platform = 'rust';
   private manifestPath: string | null = null;
 

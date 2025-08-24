@@ -1,6 +1,6 @@
 import type { ReleaseType } from 'semver';
 
-export interface Updater {
+export interface UpdaterInterface {
   /** Name of the platform/language */
   platform: string;
 

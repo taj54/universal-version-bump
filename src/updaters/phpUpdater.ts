@@ -1,8 +1,8 @@
 import { ReleaseType } from 'semver';
-import { Updater } from '../interface';
+import { UpdaterInterface } from '../interface';
 import { calculateNextVersion, ManifestParser } from '../utils';
 
-export class PHPUpdater implements Updater {
+export class PHPUpdater implements UpdaterInterface {
   platform = 'php';
   private manifestPath: string | null = null;
 

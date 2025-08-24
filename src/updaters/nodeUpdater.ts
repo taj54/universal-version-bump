@@ -1,8 +1,8 @@
 import { ReleaseType } from 'semver';
-import { Updater } from '../interface';
+import { UpdaterInterface } from '../interface';
 import { calculateNextVersion, ManifestParser } from '../utils';
 
-export class NodeUpdater implements Updater {
+export class NodeUpdater implements UpdaterInterface {
   platform = 'node';
   private manifestPath: string | null = null;
 

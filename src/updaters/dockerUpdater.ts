@@ -1,8 +1,8 @@
 import { ReleaseType } from 'semver';
-import { Updater } from '../interface';
+import { UpdaterInterface } from '../interface';
 import { calculateNextVersion, ManifestParser } from '../utils';
 
-export class DockerUpdater implements Updater {
+export class DockerUpdater implements UpdaterInterface {
   platform = 'docker';
   private manifestPath: string | null = null;
 

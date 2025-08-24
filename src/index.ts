@@ -7,6 +7,7 @@ import {
   PythonUpdater,
   RustUpdater,
 } from './updaters';
+import { UpdaterRegistry } from './registry';
 import { PlatformDetectionError, VersionBumpError } from './errors';
 import { RELEASE_TYPE, TARGET_PLATFORM, GIT_TAG } from './config';
 import * as core from '@actions/core';
@@ -16,15 +17,15 @@ async function run() {
     const releaseType = RELEASE_TYPE;
     const targetPlatform = TARGET_PLATFORM;
 
-    const updaters = [
-      new NodeUpdater(),
-      new PythonUpdater(),
-      new RustUpdater(),
-      new GoUpdater(),
-      new DockerUpdater(),
-      new PHPUpdater(),
-    ];
-    const updaterService = new UpdaterService(updaters);
+    const updaterRegistry = new UpdaterRegistry();
+    updaterRegistry.registerUpdater(new NodeUpdater());
+    updaterRegistry.registerUpdater(new PythonUpdater());
+    updaterRegistry.registerUpdater(new RustUpdater());
+    updaterRegistry.registerUpdater(new GoUpdater());
+    updaterRegistry.registerUpdater(new DockerUpdater());
+    updaterRegistry.registerUpdater(new PHPUpdater());
+
+    const updaterService = new UpdaterService(updaterRegistry);
     const gitService = new GitService();
 
     const platform = updaterService.getPlatform(targetPlatform);
