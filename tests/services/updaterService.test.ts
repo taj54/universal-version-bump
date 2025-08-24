@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { UpdaterService } from '../../src/services';
 import { Updater } from '../../src/interface';
 import { PlatformDetectionError, VersionBumpError } from '../../src/errors';
+import { UpdaterRegistry } from '../../src/registry/updaterRegistry';
 
 const mockNodeUpdater: Updater = {
   platform: 'node',
@@ -17,13 +18,15 @@ const mockPythonUpdater: Updater = {
   bumpVersion: vi.fn(),
 };
 
-const mockUpdaters: Updater[] = [mockNodeUpdater, mockPythonUpdater];
-
 describe('UpdaterService', () => {
   let updaterService: UpdaterService;
+  let updaterRegistry: UpdaterRegistry;
 
   beforeEach(() => {
-    updaterService = new UpdaterService(mockUpdaters);
+    updaterRegistry = new UpdaterRegistry();
+    updaterRegistry.registerUpdater(mockNodeUpdater);
+    updaterRegistry.registerUpdater(mockPythonUpdater);
+    updaterService = new UpdaterService(updaterRegistry);
     vi.clearAllMocks();
     mockNodeUpdater.canHandle.mockReset();
     mockNodeUpdater.bumpVersion.mockReset();

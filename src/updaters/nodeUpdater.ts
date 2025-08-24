@@ -1,19 +1,25 @@
 import { ReleaseType } from 'semver';
 import { UpdaterInterface } from '../interface';
-import { calculateNextVersion, ManifestParser } from '../utils';
+import { calculateNextVersion, ManifestParser, FileHandler } from '../utils';
 
 export class NodeUpdater implements UpdaterInterface {
   platform = 'node';
   private manifestPath: string | null = null;
+  private manifestParser: ManifestParser;
+
+  constructor() {
+    const fileHandler = new FileHandler();
+    this.manifestParser = new ManifestParser(fileHandler);
+  }
 
   canHandle(): boolean {
-    this.manifestPath = ManifestParser.detectManifest(['package.json']);
+    this.manifestPath = this.manifestParser.detectManifest(['package.json']);
     return this.manifestPath !== null;
   }
 
   getCurrentVersion(): string | null {
     if (!this.manifestPath) return null;
-    return ManifestParser.getVersion(this.manifestPath, 'json', {
+    return this.manifestParser.getVersion(this.manifestPath, 'json', {
       jsonPath: ['version'],
     });
   }
@@ -24,7 +30,7 @@ export class NodeUpdater implements UpdaterInterface {
     if (!current) throw new Error('Node version not found');
 
     const newVersion = calculateNextVersion(current, releaseType);
-    ManifestParser.updateVersion(this.manifestPath, newVersion, 'json', {
+    this.manifestParser.updateVersion(this.manifestPath, newVersion, 'json', {
       jsonPath: ['version'],
     });
 

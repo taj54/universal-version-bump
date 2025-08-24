@@ -7,6 +7,7 @@ All notable changes for each version of the Ambient Music extension.
 ## v0.7.2 2025 08 24
 
 - refactor: Moved `UpdaterRegistry` to `src/registry` for better organization and updated all relevant imports.
+- refactor: Applied Dependency Inversion Principle (DIP) by passing `FileHandler` as a dependency to `ManifestParser`, and `ManifestParser` as a dependency to updaters. This improves testability and flexibility.
 
 ## v0.7.1 2025 08 24
 

@@ -1,13 +1,19 @@
 import { ReleaseType } from 'semver';
 import { UpdaterInterface } from '../interface';
-import { calculateNextVersion, ManifestParser } from '../utils';
+import { calculateNextVersion, ManifestParser, FileHandler } from '../utils';
 
 export class PythonUpdater implements UpdaterInterface {
   platform = 'python';
   private manifestPath: string | null = null;
+  private manifestParser: ManifestParser;
+
+  constructor() {
+    const fileHandler = new FileHandler();
+    this.manifestParser = new ManifestParser(fileHandler);
+  }
 
   canHandle(): boolean {
-    this.manifestPath = ManifestParser.detectManifest(['pyproject.toml', 'setup.py']);
+    this.manifestPath = this.manifestParser.detectManifest(['pyproject.toml', 'setup.py']);
     return this.manifestPath !== null;
   }
 
@@ -16,11 +22,11 @@ export class PythonUpdater implements UpdaterInterface {
 
     switch (this.manifestPath) {
       case 'pyproject.toml':
-        return ManifestParser.getVersion(this.manifestPath, 'regex', {
+        return this.manifestParser.getVersion(this.manifestPath, 'regex', {
           regex: /version\s*=\s*"([^"]+)"/,
         });
       case 'setup.py':
-        return ManifestParser.getVersion(this.manifestPath, 'regex', {
+        return this.manifestParser.getVersion(this.manifestPath, 'regex', {
           regex: /version\s*=\s*["']([^"']+)["']/, // Matches single or double quotes
         });
       default:
@@ -37,12 +43,12 @@ export class PythonUpdater implements UpdaterInterface {
 
     switch (this.manifestPath) {
       case 'pyproject.toml':
-        ManifestParser.updateVersion(this.manifestPath, newVersion, 'regex', {
+        this.manifestParser.updateVersion(this.manifestPath, newVersion, 'regex', {
           regexReplace: /version\s*=\s*"[^"]+"/,
         });
         break;
       case 'setup.py':
-        ManifestParser.updateVersion(this.manifestPath, newVersion, 'regex', {
+        this.manifestParser.updateVersion(this.manifestPath, newVersion, 'regex', {
           regexReplace: /version\s*=\s*["'][^"']+["']/, // Matches single or double quotes
         });
         break;

@@ -1,19 +1,25 @@
 import { ReleaseType } from 'semver';
 import { UpdaterInterface } from '../interface';
-import { calculateNextVersion, ManifestParser } from '../utils';
+import { calculateNextVersion, ManifestParser, FileHandler } from '../utils';
 
 export class RustUpdater implements UpdaterInterface {
   platform = 'rust';
   private manifestPath: string | null = null;
+  private manifestParser: ManifestParser;
+
+  constructor() {
+    const fileHandler = new FileHandler();
+    this.manifestParser = new ManifestParser(fileHandler);
+  }
 
   canHandle(): boolean {
-    this.manifestPath = ManifestParser.detectManifest(['Cargo.toml']);
+    this.manifestPath = this.manifestParser.detectManifest(['Cargo.toml']);
     return this.manifestPath !== null;
   }
 
   getCurrentVersion(): string | null {
     if (!this.manifestPath) return null;
-    return ManifestParser.getVersion(this.manifestPath, 'regex', {
+    return this.manifestParser.getVersion(this.manifestPath, 'regex', {
       regex: /version\s*=\s*"([^"]+)"/,
     });
   }
@@ -24,7 +30,7 @@ export class RustUpdater implements UpdaterInterface {
     if (!current) throw new Error('Rust version not found');
 
     const newVersion = calculateNextVersion(current, releaseType);
-    ManifestParser.updateVersion(this.manifestPath, newVersion, 'regex', {
+    this.manifestParser.updateVersion(this.manifestPath, newVersion, 'regex', {
       regexReplace: /version\s*=\s*"[^"]+"/,
     });
 

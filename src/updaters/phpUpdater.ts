@@ -1,13 +1,19 @@
 import { ReleaseType } from 'semver';
 import { UpdaterInterface } from '../interface';
-import { calculateNextVersion, ManifestParser } from '../utils';
+import { calculateNextVersion, ManifestParser, FileHandler } from '../utils';
 
 export class PHPUpdater implements UpdaterInterface {
   platform = 'php';
   private manifestPath: string | null = null;
+  private manifestParser: ManifestParser;
+
+  constructor() {
+    const fileHandler = new FileHandler();
+    this.manifestParser = new ManifestParser(fileHandler);
+  }
 
   canHandle(): boolean {
-    this.manifestPath = ManifestParser.detectManifest([
+    this.manifestPath = this.manifestParser.detectManifest([
       'composer.json',
       'VERSION',
       'version.php',
@@ -21,19 +27,19 @@ export class PHPUpdater implements UpdaterInterface {
 
     switch (this.manifestPath) {
       case 'composer.json':
-        return ManifestParser.getVersion(this.manifestPath, 'json', {
+        return this.manifestParser.getVersion(this.manifestPath, 'json', {
           jsonPath: ['version'],
         });
       case 'VERSION':
-        return ManifestParser.getVersion(this.manifestPath, 'regex', {
+        return this.manifestParser.getVersion(this.manifestPath, 'regex', {
           regex: /^([\d.]+)$/m, // Matches the entire content as version
         });
       case 'version.php':
-        return ManifestParser.getVersion(this.manifestPath, 'regex', {
+        return this.manifestParser.getVersion(this.manifestPath, 'regex', {
           regex: /['"]([\d.]+)['']/, // Matches version in quotes
         });
       case 'config.php':
-        return ManifestParser.getVersion(this.manifestPath, 'regex', {
+        return this.manifestParser.getVersion(this.manifestPath, 'regex', {
           regex: /'version'\s*=>\s*'([\d.]+)'/, // Matches version in config array
         });
       default:
@@ -50,22 +56,22 @@ export class PHPUpdater implements UpdaterInterface {
 
     switch (this.manifestPath) {
       case 'composer.json':
-        ManifestParser.updateVersion(this.manifestPath, newVersion, 'json', {
+        this.manifestParser.updateVersion(this.manifestPath, newVersion, 'json', {
           jsonPath: ['version'],
         });
         break;
       case 'VERSION':
-        ManifestParser.updateVersion(this.manifestPath, newVersion, 'regex', {
+        this.manifestParser.updateVersion(this.manifestPath, newVersion, 'regex', {
           regexReplace: /^([\d.]+)$/m,
         });
         break;
       case 'version.php':
-        ManifestParser.updateVersion(this.manifestPath, newVersion, 'regex', {
+        this.manifestParser.updateVersion(this.manifestPath, newVersion, 'regex', {
           regexReplace: /(['"])[\d.]+(['"])/,
         });
         break;
       case 'config.php':
-        ManifestParser.updateVersion(this.manifestPath, newVersion, 'regex', {
+        this.manifestParser.updateVersion(this.manifestPath, newVersion, 'regex', {
           regexReplace: /'version'\s*=>\s*'[\d.]+'/, // Matches version in config array
         });
         break;

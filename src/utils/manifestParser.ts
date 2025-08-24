@@ -1,21 +1,27 @@
 import { FileHandler } from './fileHandler';
 
 export class ManifestParser {
-  static detectManifest(manifestNames: string[]): string | null {
+  private fileHandler: FileHandler;
+
+  constructor(fileHandler: FileHandler) {
+    this.fileHandler = fileHandler;
+  }
+
+  detectManifest(manifestNames: string[]): string | null {
     for (const name of manifestNames) {
-      if (FileHandler.fileExists(name)) {
+      if (this.fileHandler.fileExists(name)) {
         return name;
       }
     }
     return null;
   }
 
-  static getVersion(
+  getVersion(
     manifestPath: string,
     type: 'json' | 'regex',
     options: { regex?: RegExp; jsonPath?: string[] },
   ): string | null {
-    const content = FileHandler.readFile(manifestPath);
+    const content = this.fileHandler.readFile(manifestPath);
 
     if (type === 'json') {
       const data = JSON.parse(content);
@@ -37,13 +43,13 @@ export class ManifestParser {
     return null;
   }
 
-  static updateVersion(
+  updateVersion(
     manifestPath: string,
     newVersion: string,
     type: 'json' | 'regex',
     options: { regexReplace?: RegExp; jsonPath?: string[] },
   ): void {
-    let content = FileHandler.readFile(manifestPath);
+    let content = this.fileHandler.readFile(manifestPath);
 
     if (type === 'json') {
       const data = JSON.parse(content);
@@ -68,10 +74,10 @@ export class ManifestParser {
         // if the JSON itself was just a version string, it would be `data = newVersion`
         // For typical JSON, jsonPath will always be present.
       }
-      FileHandler.writeFile(manifestPath, JSON.stringify(data, null, 2));
+      this.fileHandler.writeFile(manifestPath, JSON.stringify(data, null, 2));
     } else if (type === 'regex' && options.regexReplace) {
       content = content.replace(options.regexReplace, newVersion);
-      FileHandler.writeFile(manifestPath, content);
+      this.fileHandler.writeFile(manifestPath, content);
     }
   }
 }

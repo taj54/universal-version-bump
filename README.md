@@ -22,10 +22,10 @@ To use this action in your workflow, add the following step:
 
 ## Inputs
 
-| Name           | Description                                        | Default |
-| -------------- | -------------------------------------------------- | ------- |
-| `release_type` | Select the version bump type (patch, minor, major) | `patch` |
-| `git_tag`      | Whether to create a Git tag after bump             | `true`  |
+| Name              | Description                                                                                                                       | Default |
+| ----------------- | --------------------------------------------------------------------------------------------------------------------------------- | ------- |
+| `release_type`    | Select the version bump type (patch, minor, major)                                                                                | `patch` |
+| `git_tag`         | Whether to create a Git tag after bump                                                                                            | `true`  |
 | `target_platform` | Explicitly specify the platform to update (e.g., `node`, `python`). If not provided, the platform will be detected automatically. | `''`    |
 
 ### Explicit Platform Targeting (`target_platform`)

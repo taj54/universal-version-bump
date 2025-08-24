@@ -28462,6 +28462,7 @@ var __importStar = (this && this.__importStar) || (function () {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const services_1 = __nccwpck_require__(5234);
 const updaters_1 = __nccwpck_require__(1384);
+const registry_1 = __nccwpck_require__(5997);
 const errors_1 = __nccwpck_require__(4830);
 const config_1 = __nccwpck_require__(5496);
 const core = __importStar(__nccwpck_require__(9999));
@@ -28469,15 +28470,14 @@ async function run() {
     try {
         const releaseType = config_1.RELEASE_TYPE;
         const targetPlatform = config_1.TARGET_PLATFORM;
-        const updaters = [
-            new updaters_1.NodeUpdater(),
-            new updaters_1.PythonUpdater(),
-            new updaters_1.RustUpdater(),
-            new updaters_1.GoUpdater(),
-            new updaters_1.DockerUpdater(),
-            new updaters_1.PHPUpdater(),
-        ];
-        const updaterService = new services_1.UpdaterService(updaters);
+        const updaterRegistry = new registry_1.UpdaterRegistry();
+        updaterRegistry.registerUpdater(new updaters_1.NodeUpdater());
+        updaterRegistry.registerUpdater(new updaters_1.PythonUpdater());
+        updaterRegistry.registerUpdater(new updaters_1.RustUpdater());
+        updaterRegistry.registerUpdater(new updaters_1.GoUpdater());
+        updaterRegistry.registerUpdater(new updaters_1.DockerUpdater());
+        updaterRegistry.registerUpdater(new updaters_1.PHPUpdater());
+        const updaterService = new services_1.UpdaterService(updaterRegistry);
         const gitService = new services_1.GitService();
         const platform = updaterService.getPlatform(targetPlatform);
         core.info(`Detected platform: ${platform}`);
@@ -28507,6 +28507,57 @@ async function run() {
     }
 }
 run();
+
+
+/***/ }),
+
+/***/ 5997:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+__exportStar(__nccwpck_require__(6019), exports);
+
+
+/***/ }),
+
+/***/ 6019:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.UpdaterRegistry = void 0;
+class UpdaterRegistry {
+    constructor() {
+        this.updaters = new Map();
+    }
+    registerUpdater(updater) {
+        this.updaters.set(updater.platform, updater);
+    }
+    getUpdater(platform) {
+        return this.updaters.get(platform);
+    }
+    getAllUpdaters() {
+        return Array.from(this.updaters.values());
+    }
+}
+exports.UpdaterRegistry = UpdaterRegistry;
 
 
 /***/ }),
@@ -28616,25 +28667,25 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.UpdaterService = void 0;
 const errors_1 = __nccwpck_require__(4830);
 class UpdaterService {
-    constructor(updaters) {
-        this.updaters = updaters;
+    constructor(updaterRegistry) {
+        this.updaterRegistry = updaterRegistry;
     }
     getPlatform(targetPlatform) {
         if (targetPlatform) {
-            const updater = this.updaters.find((u) => u.platform === targetPlatform);
+            const updater = this.updaterRegistry.getUpdater(targetPlatform);
             if (!updater) {
                 throw new errors_1.PlatformDetectionError(`Specified platform "${targetPlatform}" is not supported.`);
             }
             return updater.platform;
         }
-        const detectedUpdater = this.updaters.find((u) => u.canHandle());
+        const detectedUpdater = this.updaterRegistry.getAllUpdaters().find((u) => u.canHandle());
         if (!detectedUpdater) {
             throw new errors_1.PlatformDetectionError('Could not detect platform. Please specify target_platform input if auto-detection fails.');
         }
         return detectedUpdater.platform;
     }
     updateVersion(platform, releaseType) {
-        const updater = this.updaters.find((u) => u.platform === platform);
+        const updater = this.updaterRegistry.getUpdater(platform);
         if (!updater) {
             throw new errors_1.VersionBumpError(`No updater found for platform: ${platform}`);
         }
@@ -28658,15 +28709,17 @@ class DockerUpdater {
     constructor() {
         this.platform = 'docker';
         this.manifestPath = null;
+        const fileHandler = new utils_1.FileHandler();
+        this.manifestParser = new utils_1.ManifestParser(fileHandler);
     }
     canHandle() {
-        this.manifestPath = utils_1.ManifestParser.detectManifest(['Dockerfile']);
+        this.manifestPath = this.manifestParser.detectManifest(['Dockerfile']);
         return this.manifestPath !== null;
     }
     getCurrentVersion() {
         if (!this.manifestPath)
             return null;
-        return utils_1.ManifestParser.getVersion(this.manifestPath, 'regex', {
+        return this.manifestParser.getVersion(this.manifestPath, 'regex', {
             regex: /LABEL version="([^"]+)"/,
         });
     }
@@ -28677,7 +28730,7 @@ class DockerUpdater {
         if (!current)
             throw new Error('Docker version not found');
         const newVersion = (0, utils_1.calculateNextVersion)(current, releaseType);
-        utils_1.ManifestParser.updateVersion(this.manifestPath, newVersion, 'regex', {
+        this.manifestParser.updateVersion(this.manifestPath, newVersion, 'regex', {
             regexReplace: /LABEL version="[^"]+"/,
         });
         return newVersion;
@@ -28700,15 +28753,17 @@ class GoUpdater {
     constructor() {
         this.platform = 'go';
         this.manifestPath = null;
+        const fileHandler = new utils_1.FileHandler();
+        this.manifestParser = new utils_1.ManifestParser(fileHandler);
     }
     canHandle() {
-        this.manifestPath = utils_1.ManifestParser.detectManifest(['go.mod']);
+        this.manifestPath = this.manifestParser.detectManifest(['go.mod']);
         return this.manifestPath !== null;
     }
     getCurrentVersion() {
         if (!this.manifestPath)
             return null;
-        return utils_1.ManifestParser.getVersion(this.manifestPath, 'regex', {
+        return this.manifestParser.getVersion(this.manifestPath, 'regex', {
             regex: /module\s+.*\n.*v(\d+\.\d+\.\d+)/,
         });
     }
@@ -28719,7 +28774,7 @@ class GoUpdater {
         if (!current)
             throw new Error('Go version not found');
         const newVersion = (0, utils_1.calculateNextVersion)(current, releaseType);
-        utils_1.ManifestParser.updateVersion(this.manifestPath, `v${newVersion}`, 'regex', {
+        this.manifestParser.updateVersion(this.manifestPath, `v${newVersion}`, 'regex', {
             regexReplace: /v\d+\.\d+\.\d+/,
         });
         return newVersion;
@@ -28772,15 +28827,17 @@ class NodeUpdater {
     constructor() {
         this.platform = 'node';
         this.manifestPath = null;
+        const fileHandler = new utils_1.FileHandler();
+        this.manifestParser = new utils_1.ManifestParser(fileHandler);
     }
     canHandle() {
-        this.manifestPath = utils_1.ManifestParser.detectManifest(['package.json']);
+        this.manifestPath = this.manifestParser.detectManifest(['package.json']);
         return this.manifestPath !== null;
     }
     getCurrentVersion() {
         if (!this.manifestPath)
             return null;
-        return utils_1.ManifestParser.getVersion(this.manifestPath, 'json', {
+        return this.manifestParser.getVersion(this.manifestPath, 'json', {
             jsonPath: ['version'],
         });
     }
@@ -28791,7 +28848,7 @@ class NodeUpdater {
         if (!current)
             throw new Error('Node version not found');
         const newVersion = (0, utils_1.calculateNextVersion)(current, releaseType);
-        utils_1.ManifestParser.updateVersion(this.manifestPath, newVersion, 'json', {
+        this.manifestParser.updateVersion(this.manifestPath, newVersion, 'json', {
             jsonPath: ['version'],
         });
         return newVersion;
@@ -28814,9 +28871,11 @@ class PHPUpdater {
     constructor() {
         this.platform = 'php';
         this.manifestPath = null;
+        const fileHandler = new utils_1.FileHandler();
+        this.manifestParser = new utils_1.ManifestParser(fileHandler);
     }
     canHandle() {
-        this.manifestPath = utils_1.ManifestParser.detectManifest([
+        this.manifestPath = this.manifestParser.detectManifest([
             'composer.json',
             'VERSION',
             'version.php',
@@ -28829,19 +28888,19 @@ class PHPUpdater {
             return null;
         switch (this.manifestPath) {
             case 'composer.json':
-                return utils_1.ManifestParser.getVersion(this.manifestPath, 'json', {
+                return this.manifestParser.getVersion(this.manifestPath, 'json', {
                     jsonPath: ['version'],
                 });
             case 'VERSION':
-                return utils_1.ManifestParser.getVersion(this.manifestPath, 'regex', {
+                return this.manifestParser.getVersion(this.manifestPath, 'regex', {
                     regex: /^([\d.]+)$/m, // Matches the entire content as version
                 });
             case 'version.php':
-                return utils_1.ManifestParser.getVersion(this.manifestPath, 'regex', {
+                return this.manifestParser.getVersion(this.manifestPath, 'regex', {
                     regex: /['"]([\d.]+)['']/, // Matches version in quotes
                 });
             case 'config.php':
-                return utils_1.ManifestParser.getVersion(this.manifestPath, 'regex', {
+                return this.manifestParser.getVersion(this.manifestPath, 'regex', {
                     regex: /'version'\s*=>\s*'([\d.]+)'/, // Matches version in config array
                 });
             default:
@@ -28857,22 +28916,22 @@ class PHPUpdater {
         const newVersion = (0, utils_1.calculateNextVersion)(current, releaseType);
         switch (this.manifestPath) {
             case 'composer.json':
-                utils_1.ManifestParser.updateVersion(this.manifestPath, newVersion, 'json', {
+                this.manifestParser.updateVersion(this.manifestPath, newVersion, 'json', {
                     jsonPath: ['version'],
                 });
                 break;
             case 'VERSION':
-                utils_1.ManifestParser.updateVersion(this.manifestPath, newVersion, 'regex', {
+                this.manifestParser.updateVersion(this.manifestPath, newVersion, 'regex', {
                     regexReplace: /^([\d.]+)$/m,
                 });
                 break;
             case 'version.php':
-                utils_1.ManifestParser.updateVersion(this.manifestPath, newVersion, 'regex', {
+                this.manifestParser.updateVersion(this.manifestPath, newVersion, 'regex', {
                     regexReplace: /(['"])[\d.]+(['"])/,
                 });
                 break;
             case 'config.php':
-                utils_1.ManifestParser.updateVersion(this.manifestPath, newVersion, 'regex', {
+                this.manifestParser.updateVersion(this.manifestPath, newVersion, 'regex', {
                     regexReplace: /'version'\s*=>\s*'[\d.]+'/, // Matches version in config array
                 });
                 break;
@@ -28899,9 +28958,11 @@ class PythonUpdater {
     constructor() {
         this.platform = 'python';
         this.manifestPath = null;
+        const fileHandler = new utils_1.FileHandler();
+        this.manifestParser = new utils_1.ManifestParser(fileHandler);
     }
     canHandle() {
-        this.manifestPath = utils_1.ManifestParser.detectManifest(['pyproject.toml', 'setup.py']);
+        this.manifestPath = this.manifestParser.detectManifest(['pyproject.toml', 'setup.py']);
         return this.manifestPath !== null;
     }
     getCurrentVersion() {
@@ -28909,11 +28970,11 @@ class PythonUpdater {
             return null;
         switch (this.manifestPath) {
             case 'pyproject.toml':
-                return utils_1.ManifestParser.getVersion(this.manifestPath, 'regex', {
+                return this.manifestParser.getVersion(this.manifestPath, 'regex', {
                     regex: /version\s*=\s*"([^"]+)"/,
                 });
             case 'setup.py':
-                return utils_1.ManifestParser.getVersion(this.manifestPath, 'regex', {
+                return this.manifestParser.getVersion(this.manifestPath, 'regex', {
                     regex: /version\s*=\s*["']([^"']+)["']/, // Matches single or double quotes
                 });
             default:
@@ -28929,12 +28990,12 @@ class PythonUpdater {
         const newVersion = (0, utils_1.calculateNextVersion)(current, releaseType);
         switch (this.manifestPath) {
             case 'pyproject.toml':
-                utils_1.ManifestParser.updateVersion(this.manifestPath, newVersion, 'regex', {
+                this.manifestParser.updateVersion(this.manifestPath, newVersion, 'regex', {
                     regexReplace: /version\s*=\s*"[^"]+"/,
                 });
                 break;
             case 'setup.py':
-                utils_1.ManifestParser.updateVersion(this.manifestPath, newVersion, 'regex', {
+                this.manifestParser.updateVersion(this.manifestPath, newVersion, 'regex', {
                     regexReplace: /version\s*=\s*["'][^"']+["']/, // Matches single or double quotes
                 });
                 break;
@@ -28961,15 +29022,17 @@ class RustUpdater {
     constructor() {
         this.platform = 'rust';
         this.manifestPath = null;
+        const fileHandler = new utils_1.FileHandler();
+        this.manifestParser = new utils_1.ManifestParser(fileHandler);
     }
     canHandle() {
-        this.manifestPath = utils_1.ManifestParser.detectManifest(['Cargo.toml']);
+        this.manifestPath = this.manifestParser.detectManifest(['Cargo.toml']);
         return this.manifestPath !== null;
     }
     getCurrentVersion() {
         if (!this.manifestPath)
             return null;
-        return utils_1.ManifestParser.getVersion(this.manifestPath, 'regex', {
+        return this.manifestParser.getVersion(this.manifestPath, 'regex', {
             regex: /version\s*=\s*"([^"]+)"/,
         });
     }
@@ -28980,7 +29043,7 @@ class RustUpdater {
         if (!current)
             throw new Error('Rust version not found');
         const newVersion = (0, utils_1.calculateNextVersion)(current, releaseType);
-        utils_1.ManifestParser.updateVersion(this.manifestPath, newVersion, 'regex', {
+        this.manifestParser.updateVersion(this.manifestPath, newVersion, 'regex', {
             regexReplace: /version\s*=\s*"[^"]+"/,
         });
         return newVersion;
@@ -29003,13 +29066,14 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.FileHandler = void 0;
 const fs_1 = __importDefault(__nccwpck_require__(9896));
 class FileHandler {
-    static fileExists(filePath) {
+    constructor() { }
+    fileExists(filePath) {
         return fs_1.default.existsSync(filePath);
     }
-    static readFile(filePath) {
+    readFile(filePath) {
         return fs_1.default.readFileSync(filePath, 'utf8');
     }
-    static writeFile(filePath, content) {
+    writeFile(filePath, content) {
         fs_1.default.writeFileSync(filePath, content);
     }
 }
@@ -29046,24 +29110,26 @@ __exportStar(__nccwpck_require__(2521), exports);
 /***/ }),
 
 /***/ 2521:
-/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+/***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.ManifestParser = void 0;
-const fileHandler_1 = __nccwpck_require__(1013);
 class ManifestParser {
-    static detectManifest(manifestNames) {
+    constructor(fileHandler) {
+        this.fileHandler = fileHandler;
+    }
+    detectManifest(manifestNames) {
         for (const name of manifestNames) {
-            if (fileHandler_1.FileHandler.fileExists(name)) {
+            if (this.fileHandler.fileExists(name)) {
                 return name;
             }
         }
         return null;
     }
-    static getVersion(manifestPath, type, options) {
-        const content = fileHandler_1.FileHandler.readFile(manifestPath);
+    getVersion(manifestPath, type, options) {
+        const content = this.fileHandler.readFile(manifestPath);
         if (type === 'json') {
             const data = JSON.parse(content);
             let version = data;
@@ -29085,8 +29151,8 @@ class ManifestParser {
         }
         return null;
     }
-    static updateVersion(manifestPath, newVersion, type, options) {
-        let content = fileHandler_1.FileHandler.readFile(manifestPath);
+    updateVersion(manifestPath, newVersion, type, options) {
+        let content = this.fileHandler.readFile(manifestPath);
         if (type === 'json') {
             const data = JSON.parse(content);
             let target = data;
@@ -29112,11 +29178,11 @@ class ManifestParser {
                 // if the JSON itself was just a version string, it would be `data = newVersion`
                 // For typical JSON, jsonPath will always be present.
             }
-            fileHandler_1.FileHandler.writeFile(manifestPath, JSON.stringify(data, null, 2));
+            this.fileHandler.writeFile(manifestPath, JSON.stringify(data, null, 2));
         }
         else if (type === 'regex' && options.regexReplace) {
             content = content.replace(options.regexReplace, newVersion);
-            fileHandler_1.FileHandler.writeFile(manifestPath, content);
+            this.fileHandler.writeFile(manifestPath, content);
         }
     }
 }
