@@ -24,11 +24,50 @@ This will compile the TypeScript code and output the JavaScript files in the `di
 
 ## Testing
 
-Currently, there are no tests for this project. However, you can run the following command to make sure that the project is working as expected:
+This project uses [Vitest](https://vitest.dev/) for testing. You can run all tests using the following command:
 
 ```bash
 pnpm run test
 ```
+
+## Linting and Formatting
+
+This project uses ESLint for linting and Prettier for code formatting.
+
+To lint your code:
+
+```bash
+pnpm run lint
+```
+
+To automatically format your code:
+
+```bash
+pnpm run format
+```
+
+It's recommended to run `pnpm run prepare` before committing, which will lint, format, and build the project.
+
+## Project Structure
+
+-   `src/`: Contains the main source code for the action.
+    -   `updaters/`: Contains logic for bumping versions for different platforms (e.g., `nodeUpdater.ts`, `pythonUpdater.ts`).
+    -   `services/`: Contains core services like Git operations and the main updater logic.
+    -   `utils/`: Utility functions.
+-   `tests/`: Contains unit tests for the source code.
+-   `dist/`: Compiled JavaScript output.
+-   `scripts/`: Build scripts.
+
+## GitHub Action Inputs
+
+This action accepts the following inputs:
+
+| Name              | Description                                                                                                                       | Required | Default |
+| ----------------- | --------------------------------------------------------------------------------------------------------------------------------- | -------- | ------- |
+| `release_type`    | Select the version bump type (patch, minor, major)                                                                                | `true`   | `patch` |
+| `git_tag`         | Whether to create a Git tag after bump                                                                                            | `false`  | `true`  |
+| `target_platform` | Explicitly specify the platform to update (e.g., `node`, `python`). If not provided, the platform will be detected automatically. | `false`  | `''`    |
+| `target_path`     | The target path where the version bump should be applied. If not provided, the action will run in the root directory.         | `false`  | `.`     |
 
 ## Submitting Changes
 

@@ -10,6 +10,10 @@ All notable changes for each version of the Ambient Music extension.
 
 - Implemented automatic release branch creation and pull request generation for version bumps.
 
+### Changed
+
+- Updated `README.md` and `DEVELOPER.md` to include comprehensive details about GitHub Action inputs from `action.yml`.
+
 ## v0.8.1 2025 08 24
 
 ### Added
