@@ -6,8 +6,9 @@
  * Author: Taj <tajulislamj200@gmail.com>
  * Homepage: https://github.com/taj54/universal-version-bump#readme
  * License: MIT
+ * Generated on Sun, 24 Aug 2025 15:33:00 GMT
  */
-/******/ (() => { // webpackBootstrap
+require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
 /***/ 3191:
@@ -33071,7 +33072,7 @@ class DockerUpdater {
             throw new Error('Docker version not found');
         const newVersion = (0, utils_1.calculateNextVersion)(current, releaseType);
         this.manifestParser.updateVersion(this.manifestPath, newVersion, 'regex', {
-            regexReplace: /LABEL version="[^"]+"/,
+            regexReplace: /"[^"]+"/,
         });
         return newVersion;
     }
@@ -35498,3 +35499,4 @@ module.exports = parseParams
 /******/ 	
 /******/ })()
 ;
+//# sourceMappingURL=index.js.map

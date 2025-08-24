@@ -13,11 +13,14 @@ const banner = `/**
  * Author: ${pkg.author.name || 'Unknown'} <${pkg.author.email || 'Unknown'}>
  * Homepage: ${pkg.homepage || 'Unknown'}
  * License: ${pkg.license || 'MIT'}
+ * Generated on ${new Date().toUTCString()}
  */\n`;
 
 console.log('Running ncc build...');
 
-execSync('pnpm exec ncc build ./src/index.ts -o dist', { stdio: 'inherit' });
+execSync('pnpm exec ncc build ./src/index.ts -o dist --source-map --license licenses.txt', {
+  stdio: 'inherit',
+});
 
 // Prepend banner
 const outFile = path.join('dist', 'index.js');

@@ -50,13 +50,13 @@ It's recommended to run `pnpm run prepare` before committing, which will lint, f
 
 ## Project Structure
 
--   `src/`: Contains the main source code for the action.
-    -   `updaters/`: Contains logic for bumping versions for different platforms (e.g., `nodeUpdater.ts`, `pythonUpdater.ts`).
-    -   `services/`: Contains core services like Git operations and the main updater logic.
-    -   `utils/`: Utility functions.
--   `tests/`: Contains unit tests for the source code.
--   `dist/`: Compiled JavaScript output.
--   `scripts/`: Build scripts.
+- `src/`: Contains the main source code for the action.
+  - `updaters/`: Contains logic for bumping versions for different platforms (e.g., `nodeUpdater.ts`, `pythonUpdater.ts`).
+  - `services/`: Contains core services like Git operations and the main updater logic.
+  - `utils/`: Utility functions.
+- `tests/`: Contains unit tests for the source code.
+- `dist/`: Compiled JavaScript output.
+- `scripts/`: Build scripts.
 
 ## GitHub Action Inputs
 
@@ -67,7 +67,7 @@ This action accepts the following inputs:
 | `release_type`    | Select the version bump type (patch, minor, major)                                                                                | `true`   | `patch` |
 | `git_tag`         | Whether to create a Git tag after bump                                                                                            | `false`  | `true`  |
 | `target_platform` | Explicitly specify the platform to update (e.g., `node`, `python`). If not provided, the platform will be detected automatically. | `false`  | `''`    |
-| `target_path`     | The target path where the version bump should be applied. If not provided, the action will run in the root directory.         | `false`  | `.`     |
+| `target_path`     | The target path where the version bump should be applied. If not provided, the action will run in the root directory.             | `false`  | `.`     |
 
 ## Submitting Changes
 
