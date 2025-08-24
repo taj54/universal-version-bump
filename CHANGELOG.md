@@ -11,6 +11,7 @@ All notable changes for each version of the Ambient Music extension.
 - refactor: Introduce UpdaterService for dependency injection
 - feat: Introduce custom error types for granular error handling
 - refactor: Extract Git operations into a separate utility
+- Refactor: Centralized file handling operations by introducing a new FileHandler utility. This improves consistency and maintainability across different updaters.
 
 ## v0.7.0 2025 08 24
 
