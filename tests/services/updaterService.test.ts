@@ -36,7 +36,7 @@ describe('UpdaterService', () => {
       mockNodeUpdater.canHandle.mockReturnValue(false);
       mockPythonUpdater.canHandle.mockReturnValue(true);
 
-      expect(updaterService.detectPlatform()).toBe('python');
+      expect(updaterService.getPlatform()).toBe('python');
       expect(mockNodeUpdater.canHandle).toHaveBeenCalled();
       expect(mockPythonUpdater.canHandle).toHaveBeenCalled();
     });
@@ -45,8 +45,8 @@ describe('UpdaterService', () => {
       mockNodeUpdater.canHandle.mockReturnValue(false);
       mockPythonUpdater.canHandle.mockReturnValue(false);
 
-      expect(() => updaterService.detectPlatform()).toThrow(PlatformDetectionError);
-      expect(() => updaterService.detectPlatform()).toThrow('Could not detect platform.');
+      expect(() => updaterService.getPlatform()).toThrow(PlatformDetectionError);
+      expect(() => updaterService.getPlatform()).toThrow('Could not detect platform.');
     });
   });
 

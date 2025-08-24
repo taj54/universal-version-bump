@@ -26,6 +26,23 @@ To use this action in your workflow, add the following step:
 | -------------- | -------------------------------------------------- | ------- |
 | `release_type` | Select the version bump type (patch, minor, major) | `patch` |
 | `git_tag`      | Whether to create a Git tag after bump             | `true`  |
+| `target_platform` | Explicitly specify the platform to update (e.g., `node`, `python`). If not provided, the platform will be detected automatically. | `''`    |
+
+### Explicit Platform Targeting (`target_platform`)
+
+By default, the action automatically detects the project's platform based on common manifest files (e.g., `package.json` for Node.js, `pyproject.toml` for Python). However, in certain scenarios, such as monorepos or projects with multiple potential manifest files, you might want to explicitly control which platform's version is bumped.
+
+The `target_platform` input allows you to specify the exact platform (e.g., `node`, `python`, `docker`, `go`, `php`, `rust`) you intend to update. When this input is provided, the action will bypass its automatic detection and directly attempt to update the version for the specified platform.
+
+**Example:**
+
+```yaml
+- name: Bump Node.js version
+  uses: taj54/universal-version-bump@v0.1.6
+  with:
+    release_type: 'patch'
+    target_platform: 'node' # Explicitly target Node.js
+```
 
 ## Outputs
 
