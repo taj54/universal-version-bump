@@ -13,6 +13,12 @@ All notable changes for each version of the Ambient Music extension.
 - refactor: Extract Git operations into a separate utility
 - Refactor: Centralized file handling operations by introducing a new FileHandler utility. This improves consistency and maintainability across different updaters.
 - fix: Corrected NodeUpdater tests by ensuring manifestPath is set.
+- refactor: Centralized manifest parsing and updating logic by introducing `ManifestParser` utility and updating all updaters to use it.
+- feat: Enhance version bump action with explicit platform and git tag control
+  - Add `target_platform` input to `action.yml` allowing users to explicitly specify the platform for version bumping, bypassing automatic detection.
+  - Modify `UpdaterService` to use the `target_platform` if provided, otherwise fall back to existing detection logic.
+  - Update `index.ts` to read and pass `target_platform` to `UpdaterService`.
+  - Implement conditional Git tag creation based on the `git_tag` input from `action.yml`.
 
 ## v0.7.0 2025 08 24
 
