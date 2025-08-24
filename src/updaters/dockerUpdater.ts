@@ -1,6 +1,7 @@
 import fs from 'fs';
-import semver, { ReleaseType } from 'semver';
+import { ReleaseType } from 'semver';
 import { Updater } from '../interface';
+import { calculateNextVersion } from '../utils';
 
 export class DockerUpdater implements Updater {
   platform = 'docker';
@@ -19,7 +20,7 @@ export class DockerUpdater implements Updater {
     const current = this.getCurrentVersion();
     if (!current) throw new Error('Docker version not found');
 
-    const newVersion = semver.inc(current, releaseType) || current;
+    const newVersion = calculateNextVersion(current, releaseType);
     let content = fs.readFileSync('Dockerfile', 'utf8');
     content = content.replace(/LABEL version="[^"]+"/, `LABEL version="${newVersion}"`);
     fs.writeFileSync('Dockerfile', content);

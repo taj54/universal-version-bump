@@ -1,6 +1,7 @@
 import fs from 'fs';
-import semver, { ReleaseType } from 'semver';
+import { ReleaseType } from 'semver';
 import { Updater } from '../interface';
+import { calculateNextVersion } from '../utils';
 
 export class PHPUpdater implements Updater {
   platform = 'php';
@@ -45,7 +46,7 @@ export class PHPUpdater implements Updater {
 
   bumpVersion(releaseType: ReleaseType): string {
     const version = this.getCurrentVersion() || '0.1.0';
-    const newVersion = semver.inc(version, releaseType) || version;
+    const newVersion = calculateNextVersion(version, releaseType);
 
     // composer.json
     if (fs.existsSync('composer.json')) {
@@ -64,7 +65,7 @@ export class PHPUpdater implements Updater {
     // version.php
     if (fs.existsSync('version.php')) {
       const content = fs.readFileSync('version.php', 'utf8');
-      const updated = content.replace(/(['"])[\d.]+(['"])/, `'${newVersion}'`);
+      const updated = content.replace(/(['"])[\d.]+(['"])/, `$1${newVersion}$2`);
       fs.writeFileSync('version.php', updated);
       return newVersion;
     }

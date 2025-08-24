@@ -1,6 +1,7 @@
 import fs from 'fs';
-import semver, { ReleaseType } from 'semver';
+import { ReleaseType } from 'semver';
 import { Updater } from '../interface';
+import { calculateNextVersion } from '../utils';
 
 export class GoUpdater implements Updater {
   platform = 'go';
@@ -20,7 +21,7 @@ export class GoUpdater implements Updater {
     const current = this.getCurrentVersion();
     if (!current) throw new Error('Go version not found');
 
-    const newVersion = semver.inc(current, releaseType) || current;
+    const newVersion = calculateNextVersion(current, releaseType);
     let content = fs.readFileSync('go.mod', 'utf8');
     content = content.replace(/v\d+\.\d+\.\d+/, `v${newVersion}`);
     fs.writeFileSync('go.mod', content);

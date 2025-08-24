@@ -1,6 +1,7 @@
 import fs from 'fs';
-import semver, { ReleaseType } from 'semver';
+import { ReleaseType } from 'semver';
 import { Updater } from '../interface';
+import { calculateNextVersion } from '../utils';
 
 export class RustUpdater implements Updater {
   platform = 'rust';
@@ -20,7 +21,7 @@ export class RustUpdater implements Updater {
     const current = this.getCurrentVersion();
     if (!current) throw new Error('Rust version not found');
 
-    const newVersion = semver.inc(current, releaseType) || current;
+    const newVersion = calculateNextVersion(current, releaseType);
     let content = fs.readFileSync('Cargo.toml', 'utf8');
     content = content.replace(/version\s*=\s*"[^"]+"/, `version = "${newVersion}"`);
     fs.writeFileSync('Cargo.toml', content);

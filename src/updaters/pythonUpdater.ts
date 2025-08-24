@@ -1,6 +1,7 @@
 import fs from 'fs';
-import semver, { ReleaseType } from 'semver';
+import { ReleaseType } from 'semver';
 import { Updater } from '../interface';
+import { calculateNextVersion } from '../utils';
 
 export class PythonUpdater implements Updater {
   platform = 'python';
@@ -27,7 +28,7 @@ export class PythonUpdater implements Updater {
     const current = this.getCurrentVersion();
     if (!current) throw new Error('Python version not found');
 
-    const newVersion = semver.inc(current, releaseType) || current;
+    const newVersion = calculateNextVersion(current, releaseType);
 
     if (fs.existsSync('pyproject.toml')) {
       let content = fs.readFileSync('pyproject.toml', 'utf8');
