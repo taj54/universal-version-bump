@@ -1,5 +1,5 @@
 /**
- * universal-version-bump v0.7.0
+ * universal-version-bump v0.7.1
  * Universal Version Bump
  *
  * Description: A GitHub Action to automatically bump versions across any app (Node, Python, PHP, Docker, etc.)
@@ -3350,12 +3350,12 @@ const { safeRe: re, t } = __nccwpck_require__(6211)
 const cmp = __nccwpck_require__(5618)
 const debug = __nccwpck_require__(7611)
 const SemVer = __nccwpck_require__(4839)
-const Range = __nccwpck_require__(6093)
+const Range = __nccwpck_require__(8474)
 
 
 /***/ }),
 
-/***/ 6093:
+/***/ 8474:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
@@ -4727,7 +4727,7 @@ module.exports = rsort
 "use strict";
 
 
-const Range = __nccwpck_require__(6093)
+const Range = __nccwpck_require__(8474)
 const satisfies = (version, range, options) => {
   try {
     range = new Range(range, options)
@@ -4805,7 +4805,7 @@ const lte = __nccwpck_require__(3353)
 const cmp = __nccwpck_require__(5618)
 const coerce = __nccwpck_require__(3597)
 const Comparator = __nccwpck_require__(863)
-const Range = __nccwpck_require__(6093)
+const Range = __nccwpck_require__(8474)
 const satisfies = __nccwpck_require__(9751)
 const toComparators = __nccwpck_require__(2258)
 const maxSatisfying = __nccwpck_require__(9269)
@@ -5292,7 +5292,7 @@ module.exports = gtr
 "use strict";
 
 
-const Range = __nccwpck_require__(6093)
+const Range = __nccwpck_require__(8474)
 const intersects = (r1, r2, options) => {
   r1 = new Range(r1, options)
   r2 = new Range(r2, options)
@@ -5324,7 +5324,7 @@ module.exports = ltr
 
 
 const SemVer = __nccwpck_require__(4839)
-const Range = __nccwpck_require__(6093)
+const Range = __nccwpck_require__(8474)
 
 const maxSatisfying = (versions, range, options) => {
   let max = null
@@ -5359,7 +5359,7 @@ module.exports = maxSatisfying
 
 
 const SemVer = __nccwpck_require__(4839)
-const Range = __nccwpck_require__(6093)
+const Range = __nccwpck_require__(8474)
 const minSatisfying = (versions, range, options) => {
   let min = null
   let minSV = null
@@ -5393,7 +5393,7 @@ module.exports = minSatisfying
 
 
 const SemVer = __nccwpck_require__(4839)
-const Range = __nccwpck_require__(6093)
+const Range = __nccwpck_require__(8474)
 const gt = __nccwpck_require__(5283)
 
 const minVersion = (range, loose) => {
@@ -5466,7 +5466,7 @@ module.exports = minVersion
 const SemVer = __nccwpck_require__(4839)
 const Comparator = __nccwpck_require__(863)
 const { ANY } = Comparator
-const Range = __nccwpck_require__(6093)
+const Range = __nccwpck_require__(8474)
 const satisfies = __nccwpck_require__(9751)
 const gt = __nccwpck_require__(5283)
 const lt = __nccwpck_require__(6108)
@@ -5610,7 +5610,7 @@ module.exports = (versions, range, options) => {
 "use strict";
 
 
-const Range = __nccwpck_require__(6093)
+const Range = __nccwpck_require__(8474)
 const Comparator = __nccwpck_require__(863)
 const { ANY } = Comparator
 const satisfies = __nccwpck_require__(9751)
@@ -5867,7 +5867,7 @@ module.exports = subset
 "use strict";
 
 
-const Range = __nccwpck_require__(6093)
+const Range = __nccwpck_require__(8474)
 
 // Mostly just for testing and legacy API reasons
 const toComparators = (range, options) =>
@@ -5885,7 +5885,7 @@ module.exports = toComparators
 "use strict";
 
 
-const Range = __nccwpck_require__(6093)
+const Range = __nccwpck_require__(8474)
 const validRange = (range, options) => {
   try {
     // Return '*' instead of '' so that truthiness works.
@@ -28348,6 +28348,79 @@ module.exports = {
 
 /***/ }),
 
+/***/ 5496:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.GIT_TAG = exports.TARGET_PLATFORM = exports.RELEASE_TYPE = void 0;
+const core = __importStar(__nccwpck_require__(9999));
+exports.RELEASE_TYPE = (core.getInput('release_type') || 'patch');
+exports.TARGET_PLATFORM = core.getInput('target_platform');
+exports.GIT_TAG = core.getInput('git_tag') === 'true';
+
+
+/***/ }),
+
+/***/ 4830:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.VersionBumpError = exports.PlatformDetectionError = void 0;
+class PlatformDetectionError extends Error {
+    constructor(message) {
+        super(message);
+        this.name = 'PlatformDetectionError';
+    }
+}
+exports.PlatformDetectionError = PlatformDetectionError;
+class VersionBumpError extends Error {
+    constructor(message) {
+        super(message);
+        this.name = 'VersionBumpError';
+    }
+}
+exports.VersionBumpError = VersionBumpError;
+
+
+/***/ }),
+
 /***/ 6677:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -28387,32 +28460,45 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+const services_1 = __nccwpck_require__(5234);
+const updaters_1 = __nccwpck_require__(1384);
+const errors_1 = __nccwpck_require__(4830);
+const config_1 = __nccwpck_require__(5496);
 const core = __importStar(__nccwpck_require__(9999));
-const exec = __importStar(__nccwpck_require__(8872));
-const utils_1 = __nccwpck_require__(9499);
 async function run() {
     try {
-        const releaseType = (core.getInput('release_type') || 'patch');
-        const platform = (0, utils_1.detectPlatform)();
+        const releaseType = config_1.RELEASE_TYPE;
+        const targetPlatform = config_1.TARGET_PLATFORM;
+        const updaters = [
+            new updaters_1.NodeUpdater(),
+            new updaters_1.PythonUpdater(),
+            new updaters_1.RustUpdater(),
+            new updaters_1.GoUpdater(),
+            new updaters_1.DockerUpdater(),
+            new updaters_1.PHPUpdater(),
+        ];
+        const updaterService = new services_1.UpdaterService(updaters);
+        const gitService = new services_1.GitService();
+        const platform = updaterService.getPlatform(targetPlatform);
         core.info(`Detected platform: ${platform}`);
-        const version = (0, utils_1.updateVersion)(platform, releaseType);
+        const version = updaterService.updateVersion(platform, releaseType);
         core.setOutput('new_version', version);
         // Git Commit & Tag
-        await exec.exec('git', ['config', 'user.name', 'github-actions[bot]']);
-        await exec.exec('git', [
-            'config',
-            'user.email',
-            'github-actions[bot]@users.noreply.github.com',
-        ]);
-        await exec.exec('git', ['add', '-A']);
-        await exec.exec('git', ['diff-index', '--quiet', 'HEAD']).catch(async () => {
-            await exec.exec('git', ['commit', '-m', `chore: bump version to ${version}`]);
-        });
-        await exec.exec('git', ['tag', `v${version}`]);
-        await exec.exec('git', ['push', 'origin', 'HEAD', '--tags']);
+        const gitTag = config_1.GIT_TAG;
+        await gitService.configureGitUser();
+        await gitService.commitChanges(`chore: bump version to ${version}`);
+        if (gitTag) {
+            await gitService.createAndPushTag(version);
+        }
     }
     catch (error) {
-        if (error instanceof Error) {
+        if (error instanceof errors_1.PlatformDetectionError) {
+            core.setFailed(`Platform detection failed: ${error.message}`);
+        }
+        else if (error instanceof errors_1.VersionBumpError) {
+            core.setFailed(`Version bump failed: ${error.message}`);
+        }
+        else if (error instanceof Error) {
             core.setFailed(error.message);
         }
         else {
@@ -28425,38 +28511,175 @@ run();
 
 /***/ }),
 
-/***/ 553:
+/***/ 8743:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
 
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.GitService = void 0;
+const exec = __importStar(__nccwpck_require__(8872));
+class GitService {
+    async configureGitUser() {
+        await exec.exec('git', ['config', 'user.name', 'github-actions[bot]']);
+        await exec.exec('git', [
+            'config',
+            'user.email',
+            'github-actions[bot]@users.noreply.github.com',
+        ]);
+    }
+    async commitChanges(message) {
+        await exec.exec('git', ['add', '-A']);
+        try {
+            await exec.exec('git', ['diff-index', '--quiet', 'HEAD']);
+        }
+        catch (error) {
+            // Only commit if there are changes
+            await exec.exec('git', ['commit', '-m', message]);
+        }
+    }
+    async createAndPushTag(version) {
+        await exec.exec('git', ['tag', `v${version}`]);
+        await exec.exec('git', ['push', 'origin', 'HEAD', '--tags']);
+    }
+}
+exports.GitService = GitService;
+
+
+/***/ }),
+
+/***/ 5234:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+__exportStar(__nccwpck_require__(9104), exports);
+__exportStar(__nccwpck_require__(8743), exports);
+
+
+/***/ }),
+
+/***/ 9104:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.UpdaterService = void 0;
+const errors_1 = __nccwpck_require__(4830);
+class UpdaterService {
+    constructor(updaters) {
+        this.updaters = updaters;
+    }
+    getPlatform(targetPlatform) {
+        if (targetPlatform) {
+            const updater = this.updaters.find((u) => u.platform === targetPlatform);
+            if (!updater) {
+                throw new errors_1.PlatformDetectionError(`Specified platform "${targetPlatform}" is not supported.`);
+            }
+            return updater.platform;
+        }
+        const detectedUpdater = this.updaters.find((u) => u.canHandle());
+        if (!detectedUpdater) {
+            throw new errors_1.PlatformDetectionError('Could not detect platform. Please specify target_platform input if auto-detection fails.');
+        }
+        return detectedUpdater.platform;
+    }
+    updateVersion(platform, releaseType) {
+        const updater = this.updaters.find((u) => u.platform === platform);
+        if (!updater) {
+            throw new errors_1.VersionBumpError(`No updater found for platform: ${platform}`);
+        }
+        return updater.bumpVersion(releaseType);
+    }
+}
+exports.UpdaterService = UpdaterService;
+
+
+/***/ }),
+
+/***/ 553:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.DockerUpdater = void 0;
-const fs_1 = __importDefault(__nccwpck_require__(9896));
-const semver_1 = __importDefault(__nccwpck_require__(2348));
+const utils_1 = __nccwpck_require__(9499);
 class DockerUpdater {
     constructor() {
         this.platform = 'docker';
+        this.manifestPath = null;
     }
     canHandle() {
-        return fs_1.default.existsSync('Dockerfile');
+        this.manifestPath = utils_1.ManifestParser.detectManifest(['Dockerfile']);
+        return this.manifestPath !== null;
     }
     getCurrentVersion() {
-        const content = fs_1.default.readFileSync('Dockerfile', 'utf8');
-        const match = content.match(/LABEL version="([^"]+)"/);
-        return match ? match[1] : null;
+        if (!this.manifestPath)
+            return null;
+        return utils_1.ManifestParser.getVersion(this.manifestPath, 'regex', {
+            regex: /LABEL version="([^"]+)"/,
+        });
     }
     bumpVersion(releaseType) {
+        if (!this.manifestPath)
+            throw new Error('Dockerfile not found');
         const current = this.getCurrentVersion();
         if (!current)
             throw new Error('Docker version not found');
-        const newVersion = semver_1.default.inc(current, releaseType) || current;
-        let content = fs_1.default.readFileSync('Dockerfile', 'utf8');
-        content = content.replace(/LABEL version="[^"]+"/, `LABEL version="${newVersion}"`);
-        fs_1.default.writeFileSync('Dockerfile', content);
+        const newVersion = (0, utils_1.calculateNextVersion)(current, releaseType);
+        utils_1.ManifestParser.updateVersion(this.manifestPath, newVersion, 'regex', {
+            regexReplace: /LABEL version="[^"]+"/,
+        });
         return newVersion;
     }
 }
@@ -28466,39 +28689,39 @@ exports.DockerUpdater = DockerUpdater;
 /***/ }),
 
 /***/ 319:
-/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
 
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.GoUpdater = void 0;
-const fs_1 = __importDefault(__nccwpck_require__(9896));
-const semver_1 = __importDefault(__nccwpck_require__(2348));
+const utils_1 = __nccwpck_require__(9499);
 class GoUpdater {
     constructor() {
         this.platform = 'go';
+        this.manifestPath = null;
     }
     canHandle() {
-        return fs_1.default.existsSync('go.mod');
+        this.manifestPath = utils_1.ManifestParser.detectManifest(['go.mod']);
+        return this.manifestPath !== null;
     }
     getCurrentVersion() {
-        if (!this.canHandle())
+        if (!this.manifestPath)
             return null;
-        const content = fs_1.default.readFileSync('go.mod', 'utf8');
-        const match = content.match(/module\s+.*\n.*v(\d+\.\d+\.\d+)/);
-        return match ? match[1] : null;
+        return utils_1.ManifestParser.getVersion(this.manifestPath, 'regex', {
+            regex: /module\s+.*\n.*v(\d+\.\d+\.\d+)/,
+        });
     }
     bumpVersion(releaseType) {
+        if (!this.manifestPath)
+            throw new Error('go.mod not found');
         const current = this.getCurrentVersion();
         if (!current)
             throw new Error('Go version not found');
-        const newVersion = semver_1.default.inc(current, releaseType) || current;
-        let content = fs_1.default.readFileSync('go.mod', 'utf8');
-        content = content.replace(/v\d+\.\d+\.\d+/, `v${newVersion}`);
-        fs_1.default.writeFileSync('go.mod', content);
+        const newVersion = (0, utils_1.calculateNextVersion)(current, releaseType);
+        utils_1.ManifestParser.updateVersion(this.manifestPath, `v${newVersion}`, 'regex', {
+            regexReplace: /v\d+\.\d+\.\d+/,
+        });
         return newVersion;
     }
 }
@@ -28538,35 +28761,39 @@ __exportStar(__nccwpck_require__(4639), exports);
 /***/ }),
 
 /***/ 1337:
-/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
 
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.NodeUpdater = void 0;
-const fs_1 = __importDefault(__nccwpck_require__(9896));
-const semver_1 = __importDefault(__nccwpck_require__(2348));
+const utils_1 = __nccwpck_require__(9499);
 class NodeUpdater {
     constructor() {
         this.platform = 'node';
+        this.manifestPath = null;
     }
     canHandle() {
-        return fs_1.default.existsSync('package.json');
+        this.manifestPath = utils_1.ManifestParser.detectManifest(['package.json']);
+        return this.manifestPath !== null;
     }
     getCurrentVersion() {
-        if (!this.canHandle())
+        if (!this.manifestPath)
             return null;
-        const pkg = JSON.parse(fs_1.default.readFileSync('package.json', 'utf8'));
-        return pkg.version;
+        return utils_1.ManifestParser.getVersion(this.manifestPath, 'json', {
+            jsonPath: ['version'],
+        });
     }
     bumpVersion(releaseType) {
-        const pkg = JSON.parse(fs_1.default.readFileSync('package.json', 'utf8'));
-        const newVersion = semver_1.default.inc(pkg.version, releaseType) || pkg.version;
-        pkg.version = newVersion;
-        fs_1.default.writeFileSync('package.json', JSON.stringify(pkg, null, 2));
+        if (!this.manifestPath)
+            throw new Error('package.json not found');
+        const current = this.getCurrentVersion();
+        if (!current)
+            throw new Error('Node version not found');
+        const newVersion = (0, utils_1.calculateNextVersion)(current, releaseType);
+        utils_1.ManifestParser.updateVersion(this.manifestPath, newVersion, 'json', {
+            jsonPath: ['version'],
+        });
         return newVersion;
     }
 }
@@ -28576,79 +28803,81 @@ exports.NodeUpdater = NodeUpdater;
 /***/ }),
 
 /***/ 4639:
-/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
 
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.PHPUpdater = void 0;
-const fs_1 = __importDefault(__nccwpck_require__(9896));
-const semver_1 = __importDefault(__nccwpck_require__(2348));
+const utils_1 = __nccwpck_require__(9499);
 class PHPUpdater {
     constructor() {
         this.platform = 'php';
+        this.manifestPath = null;
     }
     canHandle() {
-        return (fs_1.default.existsSync('composer.json') ||
-            fs_1.default.existsSync('VERSION') ||
-            fs_1.default.existsSync('version.php') ||
-            fs_1.default.existsSync('config.php'));
+        this.manifestPath = utils_1.ManifestParser.detectManifest([
+            'composer.json',
+            'VERSION',
+            'version.php',
+            'config.php',
+        ]);
+        return this.manifestPath !== null;
     }
     getCurrentVersion() {
-        // composer.json
-        if (fs_1.default.existsSync('composer.json')) {
-            const composer = JSON.parse(fs_1.default.readFileSync('composer.json', 'utf8'));
-            return composer.version || null;
+        if (!this.manifestPath)
+            return null;
+        switch (this.manifestPath) {
+            case 'composer.json':
+                return utils_1.ManifestParser.getVersion(this.manifestPath, 'json', {
+                    jsonPath: ['version'],
+                });
+            case 'VERSION':
+                return utils_1.ManifestParser.getVersion(this.manifestPath, 'regex', {
+                    regex: /^([\d.]+)$/m, // Matches the entire content as version
+                });
+            case 'version.php':
+                return utils_1.ManifestParser.getVersion(this.manifestPath, 'regex', {
+                    regex: /['"]([\d.]+)['']/, // Matches version in quotes
+                });
+            case 'config.php':
+                return utils_1.ManifestParser.getVersion(this.manifestPath, 'regex', {
+                    regex: /'version'\s*=>\s*'([\d.]+)'/, // Matches version in config array
+                });
+            default:
+                return null;
         }
-        // VERSION file
-        if (fs_1.default.existsSync('VERSION')) {
-            return fs_1.default.readFileSync('VERSION', 'utf8').trim();
-        }
-        // version.php
-        if (fs_1.default.existsSync('version.php')) {
-            const content = fs_1.default.readFileSync('version.php', 'utf8');
-            const match = content.match(/['"]([\d.]+)['"]/);
-            return match ? match[1] : null;
-        }
-        // config.php
-        if (fs_1.default.existsSync('config.php')) {
-            const content = fs_1.default.readFileSync('config.php', 'utf8');
-            const match = content.match(/'version'\s*=>\s*'([\d.]+)'/);
-            return match ? match[1] : null;
-        }
-        return null;
     }
     bumpVersion(releaseType) {
-        const version = this.getCurrentVersion() || '0.1.0';
-        const newVersion = semver_1.default.inc(version, releaseType) || version;
-        // composer.json
-        if (fs_1.default.existsSync('composer.json')) {
-            const composer = JSON.parse(fs_1.default.readFileSync('composer.json', 'utf8'));
-            composer.version = newVersion;
-            fs_1.default.writeFileSync('composer.json', JSON.stringify(composer, null, 2));
-            return newVersion;
-        }
-        // VERSION file
-        if (fs_1.default.existsSync('VERSION')) {
-            fs_1.default.writeFileSync('VERSION', newVersion);
-            return newVersion;
-        }
-        // version.php
-        if (fs_1.default.existsSync('version.php')) {
-            const content = fs_1.default.readFileSync('version.php', 'utf8');
-            const updated = content.replace(/(['"])[\d.]+(['"])/, `'${newVersion}'`);
-            fs_1.default.writeFileSync('version.php', updated);
-            return newVersion;
-        }
-        // config.php
-        if (fs_1.default.existsSync('config.php')) {
-            const content = fs_1.default.readFileSync('config.php', 'utf8');
-            const updated = content.replace(/'version'\s*=>\s*'[\d.]+'/, `'version' => '${newVersion}'`);
-            fs_1.default.writeFileSync('config.php', updated);
-            return newVersion;
+        if (!this.manifestPath)
+            throw new Error('PHP manifest file not found');
+        const current = this.getCurrentVersion();
+        if (!current)
+            throw new Error('PHP version not found');
+        const newVersion = (0, utils_1.calculateNextVersion)(current, releaseType);
+        switch (this.manifestPath) {
+            case 'composer.json':
+                utils_1.ManifestParser.updateVersion(this.manifestPath, newVersion, 'json', {
+                    jsonPath: ['version'],
+                });
+                break;
+            case 'VERSION':
+                utils_1.ManifestParser.updateVersion(this.manifestPath, newVersion, 'regex', {
+                    regexReplace: /^([\d.]+)$/m,
+                });
+                break;
+            case 'version.php':
+                utils_1.ManifestParser.updateVersion(this.manifestPath, newVersion, 'regex', {
+                    regexReplace: /(['"])[\d.]+(['"])/,
+                });
+                break;
+            case 'config.php':
+                utils_1.ManifestParser.updateVersion(this.manifestPath, newVersion, 'regex', {
+                    regexReplace: /'version'\s*=>\s*'[\d.]+'/, // Matches version in config array
+                });
+                break;
+            default:
+                throw new Error(`Unsupported PHP manifest file: ${this.manifestPath}`);
         }
         return newVersion;
     }
@@ -28659,51 +28888,58 @@ exports.PHPUpdater = PHPUpdater;
 /***/ }),
 
 /***/ 5203:
-/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
 
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.PythonUpdater = void 0;
-const fs_1 = __importDefault(__nccwpck_require__(9896));
-const semver_1 = __importDefault(__nccwpck_require__(2348));
+const utils_1 = __nccwpck_require__(9499);
 class PythonUpdater {
     constructor() {
         this.platform = 'python';
+        this.manifestPath = null;
     }
     canHandle() {
-        return fs_1.default.existsSync('pyproject.toml') || fs_1.default.existsSync('setup.py');
+        this.manifestPath = utils_1.ManifestParser.detectManifest(['pyproject.toml', 'setup.py']);
+        return this.manifestPath !== null;
     }
     getCurrentVersion() {
-        if (fs_1.default.existsSync('pyproject.toml')) {
-            const content = fs_1.default.readFileSync('pyproject.toml', 'utf8');
-            const match = content.match(/version\s*=\s*"([^"]+)"/);
-            return match ? match[1] : null;
+        if (!this.manifestPath)
+            return null;
+        switch (this.manifestPath) {
+            case 'pyproject.toml':
+                return utils_1.ManifestParser.getVersion(this.manifestPath, 'regex', {
+                    regex: /version\s*=\s*"([^"]+)"/,
+                });
+            case 'setup.py':
+                return utils_1.ManifestParser.getVersion(this.manifestPath, 'regex', {
+                    regex: /version\s*=\s*["']([^"']+)["']/, // Matches single or double quotes
+                });
+            default:
+                return null;
         }
-        if (fs_1.default.existsSync('setup.py')) {
-            const content = fs_1.default.readFileSync('setup.py', 'utf8');
-            const match = content.match(/version\s*=\s*["']([^"']+)["']/);
-            return match ? match[1] : null;
-        }
-        return null;
     }
     bumpVersion(releaseType) {
+        if (!this.manifestPath)
+            throw new Error('Python manifest file not found');
         const current = this.getCurrentVersion();
         if (!current)
             throw new Error('Python version not found');
-        const newVersion = semver_1.default.inc(current, releaseType) || current;
-        if (fs_1.default.existsSync('pyproject.toml')) {
-            let content = fs_1.default.readFileSync('pyproject.toml', 'utf8');
-            content = content.replace(/version\s*=\s*"[^"]+"/, `version = "${newVersion}"`);
-            fs_1.default.writeFileSync('pyproject.toml', content);
-        }
-        else if (fs_1.default.existsSync('setup.py')) {
-            let content = fs_1.default.readFileSync('setup.py', 'utf8');
-            content = content.replace(/version\s*=\s*["'][^"']+["']/, `version="${newVersion}"`);
-            fs_1.default.writeFileSync('setup.py', content);
+        const newVersion = (0, utils_1.calculateNextVersion)(current, releaseType);
+        switch (this.manifestPath) {
+            case 'pyproject.toml':
+                utils_1.ManifestParser.updateVersion(this.manifestPath, newVersion, 'regex', {
+                    regexReplace: /version\s*=\s*"[^"]+"/,
+                });
+                break;
+            case 'setup.py':
+                utils_1.ManifestParser.updateVersion(this.manifestPath, newVersion, 'regex', {
+                    regexReplace: /version\s*=\s*["'][^"']+["']/, // Matches single or double quotes
+                });
+                break;
+            default:
+                throw new Error(`Unsupported Python manifest file: ${this.manifestPath}`);
         }
         return newVersion;
     }
@@ -28714,6 +28950,48 @@ exports.PythonUpdater = PythonUpdater;
 /***/ }),
 
 /***/ 2531:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.RustUpdater = void 0;
+const utils_1 = __nccwpck_require__(9499);
+class RustUpdater {
+    constructor() {
+        this.platform = 'rust';
+        this.manifestPath = null;
+    }
+    canHandle() {
+        this.manifestPath = utils_1.ManifestParser.detectManifest(['Cargo.toml']);
+        return this.manifestPath !== null;
+    }
+    getCurrentVersion() {
+        if (!this.manifestPath)
+            return null;
+        return utils_1.ManifestParser.getVersion(this.manifestPath, 'regex', {
+            regex: /version\s*=\s*"([^"]+)"/,
+        });
+    }
+    bumpVersion(releaseType) {
+        if (!this.manifestPath)
+            throw new Error('Cargo.toml not found');
+        const current = this.getCurrentVersion();
+        if (!current)
+            throw new Error('Rust version not found');
+        const newVersion = (0, utils_1.calculateNextVersion)(current, releaseType);
+        utils_1.ManifestParser.updateVersion(this.manifestPath, newVersion, 'regex', {
+            regexReplace: /version\s*=\s*"[^"]+"/,
+        });
+        return newVersion;
+    }
+}
+exports.RustUpdater = RustUpdater;
+
+
+/***/ }),
+
+/***/ 1013:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -28722,35 +29000,20 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.RustUpdater = void 0;
+exports.FileHandler = void 0;
 const fs_1 = __importDefault(__nccwpck_require__(9896));
-const semver_1 = __importDefault(__nccwpck_require__(2348));
-class RustUpdater {
-    constructor() {
-        this.platform = 'rust';
+class FileHandler {
+    static fileExists(filePath) {
+        return fs_1.default.existsSync(filePath);
     }
-    canHandle() {
-        return fs_1.default.existsSync('Cargo.toml');
+    static readFile(filePath) {
+        return fs_1.default.readFileSync(filePath, 'utf8');
     }
-    getCurrentVersion() {
-        if (!this.canHandle())
-            return null;
-        const content = fs_1.default.readFileSync('Cargo.toml', 'utf8');
-        const match = content.match(/version\s*=\s*"([^"]+)"/);
-        return match ? match[1] : null;
-    }
-    bumpVersion(releaseType) {
-        const current = this.getCurrentVersion();
-        if (!current)
-            throw new Error('Rust version not found');
-        const newVersion = semver_1.default.inc(current, releaseType) || current;
-        let content = fs_1.default.readFileSync('Cargo.toml', 'utf8');
-        content = content.replace(/version\s*=\s*"[^"]+"/, `version = "${newVersion}"`);
-        fs_1.default.writeFileSync('Cargo.toml', content);
-        return newVersion;
+    static writeFile(filePath, content) {
+        fs_1.default.writeFileSync(filePath, content);
     }
 }
-exports.RustUpdater = RustUpdater;
+exports.FileHandler = FileHandler;
 
 
 /***/ }),
@@ -28775,37 +29038,110 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-__exportStar(__nccwpck_require__(8290), exports);
+__exportStar(__nccwpck_require__(2431), exports);
+__exportStar(__nccwpck_require__(1013), exports);
+__exportStar(__nccwpck_require__(2521), exports);
 
 
 /***/ }),
 
-/***/ 8290:
+/***/ 2521:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.detectPlatform = detectPlatform;
-exports.updateVersion = updateVersion;
-const updaters_1 = __nccwpck_require__(1384);
-const updaters = [
-    new updaters_1.NodeUpdater(),
-    new updaters_1.PythonUpdater(),
-    new updaters_1.RustUpdater(),
-    new updaters_1.GoUpdater(),
-    new updaters_1.DockerUpdater(),
-    new updaters_1.PHPUpdater(),
-];
-function detectPlatform() {
-    const updater = updaters.find((u) => u.canHandle());
-    return updater ? updater.platform : 'unknown';
+exports.ManifestParser = void 0;
+const fileHandler_1 = __nccwpck_require__(1013);
+class ManifestParser {
+    static detectManifest(manifestNames) {
+        for (const name of manifestNames) {
+            if (fileHandler_1.FileHandler.fileExists(name)) {
+                return name;
+            }
+        }
+        return null;
+    }
+    static getVersion(manifestPath, type, options) {
+        const content = fileHandler_1.FileHandler.readFile(manifestPath);
+        if (type === 'json') {
+            const data = JSON.parse(content);
+            let version = data;
+            if (options.jsonPath) {
+                for (const key of options.jsonPath) {
+                    if (version && typeof version === 'object' && key in version) {
+                        version = version[key];
+                    }
+                    else {
+                        return null; // Path not found
+                    }
+                }
+            }
+            return typeof version === 'string' ? version : null;
+        }
+        else if (type === 'regex' && options.regex) {
+            const match = content.match(options.regex);
+            return match ? match[1] : null;
+        }
+        return null;
+    }
+    static updateVersion(manifestPath, newVersion, type, options) {
+        let content = fileHandler_1.FileHandler.readFile(manifestPath);
+        if (type === 'json') {
+            const data = JSON.parse(content);
+            let target = data;
+            if (options.jsonPath && options.jsonPath.length > 0) {
+                for (let i = 0; i < options.jsonPath.length - 1; i++) {
+                    const key = options.jsonPath[i];
+                    if (target && typeof target === 'object' && key in target) {
+                        target = target[key];
+                    }
+                    else {
+                        // Path not found, or not an object, cannot update
+                        return;
+                    }
+                }
+                const lastKey = options.jsonPath[options.jsonPath.length - 1];
+                if (target && typeof target === 'object' && lastKey in target) {
+                    target[lastKey] = newVersion;
+                }
+            }
+            else {
+                // If no jsonPath, assume the root is the version (e.g., a simple string file)
+                // This case might not be directly handled by JSON.parse, but for completeness
+                // if the JSON itself was just a version string, it would be `data = newVersion`
+                // For typical JSON, jsonPath will always be present.
+            }
+            fileHandler_1.FileHandler.writeFile(manifestPath, JSON.stringify(data, null, 2));
+        }
+        else if (type === 'regex' && options.regexReplace) {
+            content = content.replace(options.regexReplace, newVersion);
+            fileHandler_1.FileHandler.writeFile(manifestPath, content);
+        }
+    }
 }
-function updateVersion(platform, releaseType) {
-    const updater = updaters.find((u) => u.platform === platform);
-    if (!updater)
-        throw new Error(`No updater found for platform: ${platform}`);
-    return updater.bumpVersion(releaseType);
+exports.ManifestParser = ManifestParser;
+
+
+/***/ }),
+
+/***/ 2431:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.calculateNextVersion = calculateNextVersion;
+const semver_1 = __importDefault(__nccwpck_require__(2348));
+function calculateNextVersion(currentVersion, releaseType) {
+    const newVersion = semver_1.default.inc(currentVersion, releaseType);
+    if (!newVersion) {
+        return currentVersion;
+    }
+    return newVersion;
 }
 
 
@@ -28923,7 +29259,7 @@ module.exports = require("node:crypto");
 
 /***/ }),
 
-/***/ 8474:
+/***/ 6093:
 /***/ ((module) => {
 
 "use strict";
@@ -29286,7 +29622,7 @@ module.exports = Dicer
 "use strict";
 
 
-const EventEmitter = (__nccwpck_require__(8474).EventEmitter)
+const EventEmitter = (__nccwpck_require__(6093).EventEmitter)
 const inherits = (__nccwpck_require__(7975).inherits)
 const getLimit = __nccwpck_require__(1954)
 
@@ -29441,7 +29777,7 @@ module.exports = PartStream
  * Based heavily on the Streaming Boyer-Moore-Horspool C++ implementation
  * by Hongli Lai at: https://github.com/FooBarWidget/boyer-moore-horspool
  */
-const EventEmitter = (__nccwpck_require__(8474).EventEmitter)
+const EventEmitter = (__nccwpck_require__(6093).EventEmitter)
 const inherits = (__nccwpck_require__(7975).inherits)
 
 function SBMH (needle) {
