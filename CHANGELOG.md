@@ -4,6 +4,12 @@ All notable changes for each version of the Ambient Music extension.
 
 ---
 
+## v0.8.2 2025 08 24
+
+### Added
+
+- Implemented automatic release branch creation and pull request generation for version bumps.
+
 ## v0.8.1 2025 08 24
 
 ### Added

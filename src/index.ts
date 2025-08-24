@@ -43,7 +43,12 @@ async function run() {
     // Git Commit & Tag
     const gitTag = GIT_TAG;
     await gitService.configureGitUser();
-    await gitService.commitChanges(`chore: bump version to ${version}`);
+    const branch = await gitService.createReleaseBranch(version);
+    if (branch) {
+      core.info(`✅ Created branch: ${branch}`);
+      const prUrl = await gitService.createPullRequest(branch, version);
+      core.info(`✅ PR created: ${prUrl}`);
+    }
     if (gitTag) {
       await gitService.createAndPushTag(version);
     }
