@@ -44,12 +44,12 @@ export class PythonUpdater implements UpdaterInterface {
     switch (this.manifestPath) {
       case 'pyproject.toml':
         this.manifestParser.updateVersion(this.manifestPath, newVersion, 'regex', {
-          regexReplace: /version\s*=\s*"[^"]+"/,
+          regexReplace: /"[^"]+"/,
         });
         break;
       case 'setup.py':
         this.manifestParser.updateVersion(this.manifestPath, newVersion, 'regex', {
-          regexReplace: /version\s*=\s*["'][^"']+["']/, // Matches single or double quotes
+          regexReplace: /["'][^"']+''/,
         });
         break;
       default:

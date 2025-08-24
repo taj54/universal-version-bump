@@ -6,6 +6,12 @@ All notable changes for each version of the Ambient Music extension.
 
 ## v0.8.2 2025 08 24
 
+### Fixed
+
+- Corrected version handling to preserve 'v' prefix in `versionUtil.ts`.
+- Updated `regexReplace` patterns in `dockerUpdater.ts` to correctly replace only the version string.
+- Updated `regexReplace` patterns in `pythonUpdater.ts` to correctly replace only the version string.
+
 ### Added
 
 - Implemented automatic release branch creation and pull request generation for version bumps.
