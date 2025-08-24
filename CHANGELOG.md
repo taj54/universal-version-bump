@@ -4,7 +4,11 @@ All notable changes for each version of the Ambient Music extension.
 
 ---
 
-## Unreleased
+## v0.8.1 2025 08 24
+
+### Added
+
+- Added `target_path` input to specify the working directory for version bumping.
 
 ## v0.8.0 2025 08 24
 
