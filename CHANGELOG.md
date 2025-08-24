@@ -6,6 +6,8 @@ All notable changes for each version of the Ambient Music extension.
 
 ## v0.7.1 2025 08 24
 
+- refactor: Introduce UpdaterService for dependency injection
+- feat: Introduce custom error types for granular error handling
 - refactor: Extract Git operations into a separate utility
 
 ## v0.7.0 2025 08 24
