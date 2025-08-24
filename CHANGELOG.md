@@ -8,6 +8,8 @@ All notable changes for each version of the Ambient Music extension.
 
 - refactor: Moved `UpdaterRegistry` to `src/registry` for better organization and updated all relevant imports.
 - refactor: Applied Dependency Inversion Principle (DIP) by passing `FileHandler` as a dependency to `ManifestParser`, and `ManifestParser` as a dependency to updaters. This improves testability and flexibility.
+- refactor: Defined more granular error classes (`FileNotFoundError`, `InvalidManifestError`) within `errors.ts` to enable more precise error handling and user feedback.
+- refactor: Updated `FileHandler` and `ManifestParser` to throw these specific errors, and `index.ts` to catch and handle them.
 
 ## v0.7.1 2025 08 24
 

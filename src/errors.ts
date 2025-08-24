@@ -11,3 +11,17 @@ export class VersionBumpError extends Error {
     this.name = 'VersionBumpError';
   }
 }
+
+export class FileNotFoundError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'FileNotFoundError';
+  }
+}
+
+export class InvalidManifestError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'InvalidManifestError';
+  }
+}

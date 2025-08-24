@@ -1,4 +1,5 @@
 import { FileHandler } from './fileHandler';
+import { InvalidManifestError } from '../errors';
 
 export class ManifestParser {
   private fileHandler: FileHandler;
@@ -24,21 +25,36 @@ export class ManifestParser {
     const content = this.fileHandler.readFile(manifestPath);
 
     if (type === 'json') {
-      const data = JSON.parse(content);
-      let version = data;
+      let data: unknown;
+      try {
+        data = JSON.parse(content);
+      } catch (e: unknown) {
+        throw new InvalidManifestError(
+          `Invalid JSON in ${manifestPath}: ${e instanceof Error ? e.message : String(e)}`,
+        );
+      }
+
+      let version: unknown = data;
       if (options.jsonPath) {
         for (const key of options.jsonPath) {
-          if (version && typeof version === 'object' && key in version) {
-            version = version[key];
+          if (typeof version === 'object' && version !== null && key in version) {
+            version = (version as Record<string, unknown>)[key];
           } else {
-            return null; // Path not found
+            throw new InvalidManifestError(
+              `JSON path '${options.jsonPath.join('.')}' not found in ${manifestPath}`,
+            );
           }
         }
       }
       return typeof version === 'string' ? version : null;
     } else if (type === 'regex' && options.regex) {
       const match = content.match(options.regex);
-      return match ? match[1] : null;
+      if (!match) {
+        throw new InvalidManifestError(
+          `Regex '${options.regex.source}' did not find a match in ${manifestPath}`,
+        );
+      }
+      return match[1];
     }
     return null;
   }
@@ -52,21 +68,34 @@ export class ManifestParser {
     let content = this.fileHandler.readFile(manifestPath);
 
     if (type === 'json') {
-      const data = JSON.parse(content);
-      let target = data;
+      let data: unknown;
+      try {
+        data = JSON.parse(content);
+      } catch (e: unknown) {
+        throw new InvalidManifestError(
+          `Invalid JSON in ${manifestPath}: ${e instanceof Error ? e.message : String(e)}`,
+        );
+      }
+
+      let target: unknown = data;
       if (options.jsonPath && options.jsonPath.length > 0) {
         for (let i = 0; i < options.jsonPath.length - 1; i++) {
           const key = options.jsonPath[i];
-          if (target && typeof target === 'object' && key in target) {
-            target = target[key];
+          if (typeof target === 'object' && target !== null && key in target) {
+            target = (target as Record<string, unknown>)[key];
           } else {
-            // Path not found, or not an object, cannot update
-            return;
+            throw new InvalidManifestError(
+              `JSON path '${options.jsonPath.slice(0, i + 1).join('.')}' not found for update in ${manifestPath}`,
+            );
           }
         }
         const lastKey = options.jsonPath[options.jsonPath.length - 1];
-        if (target && typeof target === 'object' && lastKey in target) {
-          target[lastKey] = newVersion;
+        if (typeof target === 'object' && target !== null && lastKey in target) {
+          (target as Record<string, unknown>)[lastKey] = newVersion;
+        } else {
+          throw new InvalidManifestError(
+            `JSON path '${options.jsonPath.join('.')}' not found for update in ${manifestPath}`,
+          );
         }
       } else {
         // If no jsonPath, assume the root is the version (e.g., a simple string file)

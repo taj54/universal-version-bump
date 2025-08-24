@@ -28402,7 +28402,7 @@ exports.GIT_TAG = core.getInput('git_tag') === 'true';
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.VersionBumpError = exports.PlatformDetectionError = void 0;
+exports.InvalidManifestError = exports.FileNotFoundError = exports.VersionBumpError = exports.PlatformDetectionError = void 0;
 class PlatformDetectionError extends Error {
     constructor(message) {
         super(message);
@@ -28417,6 +28417,20 @@ class VersionBumpError extends Error {
     }
 }
 exports.VersionBumpError = VersionBumpError;
+class FileNotFoundError extends Error {
+    constructor(message) {
+        super(message);
+        this.name = 'FileNotFoundError';
+    }
+}
+exports.FileNotFoundError = FileNotFoundError;
+class InvalidManifestError extends Error {
+    constructor(message) {
+        super(message);
+        this.name = 'InvalidManifestError';
+    }
+}
+exports.InvalidManifestError = InvalidManifestError;
 
 
 /***/ }),
@@ -28497,6 +28511,12 @@ async function run() {
         }
         else if (error instanceof errors_1.VersionBumpError) {
             core.setFailed(`Version bump failed: ${error.message}`);
+        }
+        else if (error instanceof errors_1.FileNotFoundError) {
+            core.setFailed(`File not found: ${error.message}`);
+        }
+        else if (error instanceof errors_1.InvalidManifestError) {
+            core.setFailed(`Invalid manifest: ${error.message}`);
         }
         else if (error instanceof Error) {
             core.setFailed(error.message);
@@ -29065,15 +29085,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.FileHandler = void 0;
 const fs_1 = __importDefault(__nccwpck_require__(9896));
+const errors_1 = __nccwpck_require__(4830);
 class FileHandler {
     constructor() { }
     fileExists(filePath) {
         return fs_1.default.existsSync(filePath);
     }
     readFile(filePath) {
+        if (!this.fileExists(filePath)) {
+            throw new errors_1.FileNotFoundError(`File not found: ${filePath}`);
+        }
         return fs_1.default.readFileSync(filePath, 'utf8');
     }
     writeFile(filePath, content) {
+        // For writeFile, we don't necessarily need to check fileExists first
+        // as fs.writeFileSync will create the file if it doesn't exist.
+        // However, if we want to ensure the directory exists, that's a different concern.
         fs_1.default.writeFileSync(filePath, content);
     }
 }
@@ -29110,12 +29137,13 @@ __exportStar(__nccwpck_require__(2521), exports);
 /***/ }),
 
 /***/ 2521:
-/***/ ((__unused_webpack_module, exports) => {
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.ManifestParser = void 0;
+const errors_1 = __nccwpck_require__(4830);
 class ManifestParser {
     constructor(fileHandler) {
         this.fileHandler = fileHandler;
@@ -29131,15 +29159,21 @@ class ManifestParser {
     getVersion(manifestPath, type, options) {
         const content = this.fileHandler.readFile(manifestPath);
         if (type === 'json') {
-            const data = JSON.parse(content);
+            let data;
+            try {
+                data = JSON.parse(content);
+            }
+            catch (e) {
+                throw new errors_1.InvalidManifestError(`Invalid JSON in ${manifestPath}: ${e instanceof Error ? e.message : String(e)}`);
+            }
             let version = data;
             if (options.jsonPath) {
                 for (const key of options.jsonPath) {
-                    if (version && typeof version === 'object' && key in version) {
+                    if (typeof version === 'object' && version !== null && key in version) {
                         version = version[key];
                     }
                     else {
-                        return null; // Path not found
+                        throw new errors_1.InvalidManifestError(`JSON path '${options.jsonPath.join('.')}' not found in ${manifestPath}`);
                     }
                 }
             }
@@ -29147,29 +29181,40 @@ class ManifestParser {
         }
         else if (type === 'regex' && options.regex) {
             const match = content.match(options.regex);
-            return match ? match[1] : null;
+            if (!match) {
+                throw new errors_1.InvalidManifestError(`Regex '${options.regex.source}' did not find a match in ${manifestPath}`);
+            }
+            return match[1];
         }
         return null;
     }
     updateVersion(manifestPath, newVersion, type, options) {
         let content = this.fileHandler.readFile(manifestPath);
         if (type === 'json') {
-            const data = JSON.parse(content);
+            let data;
+            try {
+                data = JSON.parse(content);
+            }
+            catch (e) {
+                throw new errors_1.InvalidManifestError(`Invalid JSON in ${manifestPath}: ${e instanceof Error ? e.message : String(e)}`);
+            }
             let target = data;
             if (options.jsonPath && options.jsonPath.length > 0) {
                 for (let i = 0; i < options.jsonPath.length - 1; i++) {
                     const key = options.jsonPath[i];
-                    if (target && typeof target === 'object' && key in target) {
+                    if (typeof target === 'object' && target !== null && key in target) {
                         target = target[key];
                     }
                     else {
-                        // Path not found, or not an object, cannot update
-                        return;
+                        throw new errors_1.InvalidManifestError(`JSON path '${options.jsonPath.slice(0, i + 1).join('.')}' not found for update in ${manifestPath}`);
                     }
                 }
                 const lastKey = options.jsonPath[options.jsonPath.length - 1];
-                if (target && typeof target === 'object' && lastKey in target) {
+                if (typeof target === 'object' && target !== null && lastKey in target) {
                     target[lastKey] = newVersion;
+                }
+                else {
+                    throw new errors_1.InvalidManifestError(`JSON path '${options.jsonPath.join('.')}' not found for update in ${manifestPath}`);
                 }
             }
             else {

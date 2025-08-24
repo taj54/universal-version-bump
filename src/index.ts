@@ -8,7 +8,12 @@ import {
   RustUpdater,
 } from './updaters';
 import { UpdaterRegistry } from './registry';
-import { PlatformDetectionError, VersionBumpError } from './errors';
+import {
+  PlatformDetectionError,
+  VersionBumpError,
+  FileNotFoundError,
+  InvalidManifestError,
+} from './errors';
 import { RELEASE_TYPE, TARGET_PLATFORM, GIT_TAG } from './config';
 import * as core from '@actions/core';
 
@@ -46,6 +51,10 @@ async function run() {
       core.setFailed(`Platform detection failed: ${error.message}`);
     } else if (error instanceof VersionBumpError) {
       core.setFailed(`Version bump failed: ${error.message}`);
+    } else if (error instanceof FileNotFoundError) {
+      core.setFailed(`File not found: ${error.message}`);
+    } else if (error instanceof InvalidManifestError) {
+      core.setFailed(`Invalid manifest: ${error.message}`);
     } else if (error instanceof Error) {
       core.setFailed(error.message);
     } else {
