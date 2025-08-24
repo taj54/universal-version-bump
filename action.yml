@@ -14,6 +14,10 @@ inputs:
     description: 'Whether to create a Git tag after bump'
     required: false
     default: 'true'
+  target_platform:
+    description: 'Explicitly specify the platform to update (e.g., node, python). If not provided, the platform will be detected automatically.'
+    required: false
+    default: ''
 
 outputs:
   new_version:

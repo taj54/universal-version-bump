@@ -14,6 +14,7 @@ import { PlatformDetectionError, VersionBumpError } from './errors';
 async function run() {
   try {
     const releaseType = (core.getInput('release_type') || 'patch') as semver.ReleaseType;
+    const targetPlatform = core.getInput('target_platform');
 
     const updaters = [
       new NodeUpdater(),
@@ -26,16 +27,19 @@ async function run() {
     const updaterService = new UpdaterService(updaters);
     const gitService = new GitService();
 
-    const platform = updaterService.detectPlatform();
+    const platform = updaterService.getPlatform(targetPlatform);
     core.info(`Detected platform: ${platform}`);
 
     const version = updaterService.updateVersion(platform, releaseType);
     core.setOutput('new_version', version);
 
     // Git Commit & Tag
+    const gitTag = core.getInput('git_tag') === 'true';
     await gitService.configureGitUser();
     await gitService.commitChanges(`chore: bump version to ${version}`);
-    await gitService.createAndPushTag(version);
+    if (gitTag) {
+      await gitService.createAndPushTag(version);
+    }
   } catch (error: unknown) {
     if (error instanceof PlatformDetectionError) {
       core.setFailed(`Platform detection failed: ${error.message}`);
