@@ -1,21 +1,34 @@
 import * as core from '@actions/core';
-import {
-  detectPlatform,
-  updateVersion,
-  configureGitUser,
-  commitChanges,
-  createAndPushTag,
-} from './utils';
+import { configureGitUser, commitChanges, createAndPushTag } from './utils';
 import semver from 'semver';
+import { UpdaterService } from './services';
+import {
+  DockerUpdater,
+  GoUpdater,
+  NodeUpdater,
+  PHPUpdater,
+  PythonUpdater,
+  RustUpdater,
+} from './updaters';
 
 async function run() {
   try {
     const releaseType = (core.getInput('release_type') || 'patch') as semver.ReleaseType;
 
-    const platform = detectPlatform();
+    const updaters = [
+      new NodeUpdater(),
+      new PythonUpdater(),
+      new RustUpdater(),
+      new GoUpdater(),
+      new DockerUpdater(),
+      new PHPUpdater(),
+    ];
+    const updaterService = new UpdaterService(updaters);
+
+    const platform = updaterService.detectPlatform();
     core.info(`Detected platform: ${platform}`);
 
-    const version = updateVersion(platform, releaseType);
+    const version = updaterService.updateVersion(platform, releaseType);
     core.setOutput('new_version', version);
 
     // Git Commit & Tag
