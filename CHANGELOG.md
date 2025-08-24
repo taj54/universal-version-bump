@@ -35,7 +35,7 @@ All notable changes for each version of the Ambient Music extension.
 ### Fixed
 
 - Corrected NodeUpdater tests by ensuring manifestPath is set.
-  
+
 ## v0.7.3 2025 08 24
 
 ### Changed

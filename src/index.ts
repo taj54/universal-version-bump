@@ -14,11 +14,12 @@ import {
   FileNotFoundError,
   InvalidManifestError,
 } from './errors';
-import { RELEASE_TYPE, TARGET_PLATFORM, GIT_TAG } from './config';
+import { RELEASE_TYPE, TARGET_PLATFORM, GIT_TAG, TARGET_PATH } from './config';
 import * as core from '@actions/core';
 
 async function run() {
   try {
+    process.chdir(TARGET_PATH);
     const releaseType = RELEASE_TYPE;
     const targetPlatform = TARGET_PLATFORM;
 

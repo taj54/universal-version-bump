@@ -28387,11 +28387,12 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.GIT_TAG = exports.TARGET_PLATFORM = exports.RELEASE_TYPE = void 0;
+exports.TARGET_PATH = exports.GIT_TAG = exports.TARGET_PLATFORM = exports.RELEASE_TYPE = void 0;
 const core = __importStar(__nccwpck_require__(9999));
 exports.RELEASE_TYPE = (core.getInput('release_type') || 'patch');
 exports.TARGET_PLATFORM = core.getInput('target_platform');
 exports.GIT_TAG = core.getInput('git_tag') === 'true';
+exports.TARGET_PATH = core.getInput('target_path') || '.';
 
 
 /***/ }),
@@ -28482,6 +28483,7 @@ const config_1 = __nccwpck_require__(5496);
 const core = __importStar(__nccwpck_require__(9999));
 async function run() {
     try {
+        process.chdir(config_1.TARGET_PATH);
         const releaseType = config_1.RELEASE_TYPE;
         const targetPlatform = config_1.TARGET_PLATFORM;
         const updaterRegistry = new registry_1.UpdaterRegistry();

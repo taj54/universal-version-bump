@@ -18,6 +18,10 @@ inputs:
     description: 'Explicitly specify the platform to update (e.g., node, python). If not provided, the platform will be detected automatically.'
     required: false
     default: ''
+  target_path:
+    description: 'The target path where the version bump should be applied. If not provided, the action will run in the root directory.'
+    required: false
+    default: '.'
 
 outputs:
   new_version:
