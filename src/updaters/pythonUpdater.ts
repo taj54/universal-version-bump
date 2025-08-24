@@ -1,23 +1,22 @@
-import fs from 'fs';
 import { ReleaseType } from 'semver';
 import { Updater } from '../interface';
-import { calculateNextVersion } from '../utils';
+import { calculateNextVersion, FileHandler } from '../utils';
 
 export class PythonUpdater implements Updater {
   platform = 'python';
 
   canHandle(): boolean {
-    return fs.existsSync('pyproject.toml') || fs.existsSync('setup.py');
+    return FileHandler.fileExists('pyproject.toml') || FileHandler.fileExists('setup.py');
   }
 
   getCurrentVersion(): string | null {
-    if (fs.existsSync('pyproject.toml')) {
-      const content = fs.readFileSync('pyproject.toml', 'utf8');
+    if (FileHandler.fileExists('pyproject.toml')) {
+      const content = FileHandler.readFile('pyproject.toml');
       const match = content.match(/version\s*=\s*"([^"]+)"/);
       return match ? match[1] : null;
     }
-    if (fs.existsSync('setup.py')) {
-      const content = fs.readFileSync('setup.py', 'utf8');
+    if (FileHandler.fileExists('setup.py')) {
+      const content = FileHandler.readFile('setup.py');
       const match = content.match(/version\s*=\s*["']([^"']+)["']/);
       return match ? match[1] : null;
     }
@@ -30,14 +29,14 @@ export class PythonUpdater implements Updater {
 
     const newVersion = calculateNextVersion(current, releaseType);
 
-    if (fs.existsSync('pyproject.toml')) {
-      let content = fs.readFileSync('pyproject.toml', 'utf8');
+    if (FileHandler.fileExists('pyproject.toml')) {
+      let content = FileHandler.readFile('pyproject.toml');
       content = content.replace(/version\s*=\s*"[^"]+"/, `version = "${newVersion}"`);
-      fs.writeFileSync('pyproject.toml', content);
-    } else if (fs.existsSync('setup.py')) {
-      let content = fs.readFileSync('setup.py', 'utf8');
+      FileHandler.writeFile('pyproject.toml', content);
+    } else if (FileHandler.fileExists('setup.py')) {
+      let content = FileHandler.readFile('setup.py');
       content = content.replace(/version\s*=\s*["'][^"']+["']/, `version="${newVersion}"`);
-      fs.writeFileSync('setup.py', content);
+      FileHandler.writeFile('setup.py', content);
     }
 
     return newVersion;

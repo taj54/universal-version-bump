@@ -1,26 +1,25 @@
-import fs from 'fs';
 import { ReleaseType } from 'semver';
 import { Updater } from '../interface';
-import { calculateNextVersion } from '../utils';
+import { calculateNextVersion, FileHandler } from '../utils';
 
 export class NodeUpdater implements Updater {
   platform = 'node';
 
   canHandle(): boolean {
-    return fs.existsSync('package.json');
+    return FileHandler.fileExists('package.json');
   }
 
   getCurrentVersion(): string | null {
     if (!this.canHandle()) return null;
-    const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+    const pkg = JSON.parse(FileHandler.readFile('package.json'));
     return pkg.version;
   }
 
   bumpVersion(releaseType: ReleaseType): string {
-    const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+    const pkg = JSON.parse(FileHandler.readFile('package.json'));
     const newVersion = calculateNextVersion(pkg.version, releaseType);
     pkg.version = newVersion;
-    fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2));
+    FileHandler.writeFile('package.json', JSON.stringify(pkg, null, 2));
     return newVersion;
   }
 }

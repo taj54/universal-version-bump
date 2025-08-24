@@ -1,18 +1,17 @@
-import fs from 'fs';
 import { ReleaseType } from 'semver';
 import { Updater } from '../interface';
-import { calculateNextVersion } from '../utils';
+import { calculateNextVersion, FileHandler } from '../utils';
 
 export class GoUpdater implements Updater {
   platform = 'go';
 
   canHandle(): boolean {
-    return fs.existsSync('go.mod');
+    return FileHandler.fileExists('go.mod');
   }
 
   getCurrentVersion(): string | null {
     if (!this.canHandle()) return null;
-    const content = fs.readFileSync('go.mod', 'utf8');
+    const content = FileHandler.readFile('go.mod');
     const match = content.match(/module\s+.*\n.*v(\d+\.\d+\.\d+)/);
     return match ? match[1] : null;
   }
@@ -22,9 +21,9 @@ export class GoUpdater implements Updater {
     if (!current) throw new Error('Go version not found');
 
     const newVersion = calculateNextVersion(current, releaseType);
-    let content = fs.readFileSync('go.mod', 'utf8');
+    let content = FileHandler.readFile('go.mod');
     content = content.replace(/v\d+\.\d+\.\d+/, `v${newVersion}`);
-    fs.writeFileSync('go.mod', content);
+    FileHandler.writeFile('go.mod', content);
 
     return newVersion;
   }

@@ -1,42 +1,41 @@
-import fs from 'fs';
 import { ReleaseType } from 'semver';
 import { Updater } from '../interface';
-import { calculateNextVersion } from '../utils';
+import { calculateNextVersion, FileHandler } from '../utils';
 
 export class PHPUpdater implements Updater {
   platform = 'php';
 
   canHandle(): boolean {
     return (
-      fs.existsSync('composer.json') ||
-      fs.existsSync('VERSION') ||
-      fs.existsSync('version.php') ||
-      fs.existsSync('config.php')
+      FileHandler.fileExists('composer.json') ||
+      FileHandler.fileExists('VERSION') ||
+      FileHandler.fileExists('version.php') ||
+      FileHandler.fileExists('config.php')
     );
   }
 
   getCurrentVersion(): string | null {
     // composer.json
-    if (fs.existsSync('composer.json')) {
-      const composer = JSON.parse(fs.readFileSync('composer.json', 'utf8'));
+    if (FileHandler.fileExists('composer.json')) {
+      const composer = JSON.parse(FileHandler.readFile('composer.json'));
       return composer.version || null;
     }
 
     // VERSION file
-    if (fs.existsSync('VERSION')) {
-      return fs.readFileSync('VERSION', 'utf8').trim();
+    if (FileHandler.fileExists('VERSION')) {
+      return FileHandler.readFile('VERSION').trim();
     }
 
     // version.php
-    if (fs.existsSync('version.php')) {
-      const content = fs.readFileSync('version.php', 'utf8');
+    if (FileHandler.fileExists('version.php')) {
+      const content = FileHandler.readFile('version.php');
       const match = content.match(/['"]([\d.]+)['"]/);
       return match ? match[1] : null;
     }
 
     // config.php
-    if (fs.existsSync('config.php')) {
-      const content = fs.readFileSync('config.php', 'utf8');
+    if (FileHandler.fileExists('config.php')) {
+      const content = FileHandler.readFile('config.php');
       const match = content.match(/'version'\s*=>\s*'([\d.]+)'/);
       return match ? match[1] : null;
     }
@@ -49,32 +48,32 @@ export class PHPUpdater implements Updater {
     const newVersion = calculateNextVersion(version, releaseType);
 
     // composer.json
-    if (fs.existsSync('composer.json')) {
-      const composer = JSON.parse(fs.readFileSync('composer.json', 'utf8'));
+    if (FileHandler.fileExists('composer.json')) {
+      const composer = JSON.parse(FileHandler.readFile('composer.json'));
       composer.version = newVersion;
-      fs.writeFileSync('composer.json', JSON.stringify(composer, null, 2));
+      FileHandler.writeFile('composer.json', JSON.stringify(composer, null, 2));
       return newVersion;
     }
 
     // VERSION file
-    if (fs.existsSync('VERSION')) {
-      fs.writeFileSync('VERSION', newVersion);
+    if (FileHandler.fileExists('VERSION')) {
+      FileHandler.writeFile('VERSION', newVersion);
       return newVersion;
     }
 
     // version.php
-    if (fs.existsSync('version.php')) {
-      const content = fs.readFileSync('version.php', 'utf8');
+    if (FileHandler.fileExists('version.php')) {
+      const content = FileHandler.readFile('version.php');
       const updated = content.replace(/(['"])[\d.]+(['"])/, `$1${newVersion}$2`);
-      fs.writeFileSync('version.php', updated);
+      FileHandler.writeFile('version.php', updated);
       return newVersion;
     }
 
     // config.php
-    if (fs.existsSync('config.php')) {
-      const content = fs.readFileSync('config.php', 'utf8');
+    if (FileHandler.fileExists('config.php')) {
+      const content = FileHandler.readFile('config.php');
       const updated = content.replace(/'version'\s*=>\s*'[\d.]+'/, `'version' => '${newVersion}'`);
-      fs.writeFileSync('config.php', updated);
+      FileHandler.writeFile('config.php', updated);
       return newVersion;
     }
 

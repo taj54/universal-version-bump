@@ -1,17 +1,16 @@
-import fs from 'fs';
 import { ReleaseType } from 'semver';
 import { Updater } from '../interface';
-import { calculateNextVersion } from '../utils';
+import { calculateNextVersion, FileHandler } from '../utils';
 
 export class DockerUpdater implements Updater {
   platform = 'docker';
 
   canHandle(): boolean {
-    return fs.existsSync('Dockerfile');
+    return FileHandler.fileExists('Dockerfile');
   }
 
   getCurrentVersion(): string | null {
-    const content = fs.readFileSync('Dockerfile', 'utf8');
+    const content = FileHandler.readFile('Dockerfile');
     const match = content.match(/LABEL version="([^"]+)"/);
     return match ? match[1] : null;
   }
@@ -21,9 +20,9 @@ export class DockerUpdater implements Updater {
     if (!current) throw new Error('Docker version not found');
 
     const newVersion = calculateNextVersion(current, releaseType);
-    let content = fs.readFileSync('Dockerfile', 'utf8');
+    let content = FileHandler.readFile('Dockerfile');
     content = content.replace(/LABEL version="[^"]+"/, `LABEL version="${newVersion}"`);
-    fs.writeFileSync('Dockerfile', content);
+    FileHandler.writeFile('Dockerfile', content);
 
     return newVersion;
   }
