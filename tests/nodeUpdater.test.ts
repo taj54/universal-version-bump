@@ -57,6 +57,7 @@ describe('NodeUpdater', () => {
   describe('getCurrentVersion', () => {
     it('should return the version from package.json if it exists', () => {
       (existsSync as vi.Mock).mockReturnValue(true);
+      nodeUpdater.canHandle(); // Ensure manifestPath is set
       (readFileSync as vi.Mock).mockReturnValueOnce(JSON.stringify({ version: '1.0.0' }));
       expect(nodeUpdater.getCurrentVersion()).toBe('1.0.0');
       expect(readFileSync).toHaveBeenCalledWith('package.json', 'utf8');
@@ -79,6 +80,8 @@ describe('NodeUpdater', () => {
     });
 
     it('should increment the version and write to package.json', () => {
+      (existsSync as vi.Mock).mockReturnValue(true);
+      nodeUpdater.canHandle();
       const result = nodeUpdater.bumpVersion('patch');
 
       expect(inc).toHaveBeenCalledWith(mockPackageJson.version, 'patch');
@@ -90,6 +93,8 @@ describe('NodeUpdater', () => {
     });
 
     it('should handle major release type', () => {
+      (existsSync as vi.Mock).mockReturnValue(true);
+      nodeUpdater.canHandle();
       const majorVersion = '2.0.0';
       (inc as vi.Mock).mockReturnValue(majorVersion);
       const result = nodeUpdater.bumpVersion('major');
@@ -98,6 +103,8 @@ describe('NodeUpdater', () => {
     });
 
     it('should handle minor release type', () => {
+      (existsSync as vi.Mock).mockReturnValue(true);
+      nodeUpdater.canHandle();
       const minorVersion = '1.1.0';
       (inc as vi.Mock).mockReturnValue(minorVersion);
       const result = nodeUpdater.bumpVersion('minor');
