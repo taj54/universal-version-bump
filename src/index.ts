@@ -1,7 +1,6 @@
 import * as core from '@actions/core';
-import { configureGitUser, commitChanges, createAndPushTag } from './utils';
 import semver from 'semver';
-import { UpdaterService } from './services';
+import { UpdaterService, GitService } from './services';
 import {
   DockerUpdater,
   GoUpdater,
@@ -25,6 +24,7 @@ async function run() {
       new PHPUpdater(),
     ];
     const updaterService = new UpdaterService(updaters);
+    const gitService = new GitService();
 
     const platform = updaterService.detectPlatform();
     core.info(`Detected platform: ${platform}`);
@@ -33,9 +33,9 @@ async function run() {
     core.setOutput('new_version', version);
 
     // Git Commit & Tag
-    await configureGitUser();
-    await commitChanges(`chore: bump version to ${version}`);
-    await createAndPushTag(version);
+    await gitService.configureGitUser();
+    await gitService.commitChanges(`chore: bump version to ${version}`);
+    await gitService.createAndPushTag(version);
   } catch (error: unknown) {
     if (error instanceof PlatformDetectionError) {
       core.setFailed(`Platform detection failed: ${error.message}`);
