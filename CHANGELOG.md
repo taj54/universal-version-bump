@@ -4,6 +4,10 @@ All notable changes for each version of the Ambient Music extension.
 
 ---
 
+## v0.7.1 2025 08 24
+
+- refactor: Extract Git operations into a separate utility
+
 ## v0.7.0 2025 08 24
 
 - fix: Update version badges in README for consistency.
