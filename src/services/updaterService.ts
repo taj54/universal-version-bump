@@ -13,14 +13,18 @@ export class UpdaterService {
     if (targetPlatform) {
       const updater = this.updaters.find((u) => u.platform === targetPlatform);
       if (!updater) {
-        throw new PlatformDetectionError(`Specified platform "${targetPlatform}" is not supported.`);
+        throw new PlatformDetectionError(
+          `Specified platform "${targetPlatform}" is not supported.`,
+        );
       }
       return updater.platform;
     }
 
     const detectedUpdater = this.updaters.find((u) => u.canHandle());
     if (!detectedUpdater) {
-      throw new PlatformDetectionError('Could not detect platform. Please specify target_platform input if auto-detection fails.');
+      throw new PlatformDetectionError(
+        'Could not detect platform. Please specify target_platform input if auto-detection fails.',
+      );
     }
     return detectedUpdater.platform;
   }
