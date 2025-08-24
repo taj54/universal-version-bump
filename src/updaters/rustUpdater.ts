@@ -1,29 +1,32 @@
 import { ReleaseType } from 'semver';
 import { Updater } from '../interface';
-import { calculateNextVersion, FileHandler } from '../utils';
+import { calculateNextVersion, ManifestParser } from '../utils';
 
 export class RustUpdater implements Updater {
   platform = 'rust';
+  private manifestPath: string | null = null;
 
   canHandle(): boolean {
-    return FileHandler.fileExists('Cargo.toml');
+    this.manifestPath = ManifestParser.detectManifest(['Cargo.toml']);
+    return this.manifestPath !== null;
   }
 
   getCurrentVersion(): string | null {
-    if (!this.canHandle()) return null;
-    const content = FileHandler.readFile('Cargo.toml');
-    const match = content.match(/version\s*=\s*"([^"]+)"/);
-    return match ? match[1] : null;
+    if (!this.manifestPath) return null;
+    return ManifestParser.getVersion(this.manifestPath, 'regex', {
+      regex: /version\s*=\s*"([^"]+)"/,
+    });
   }
 
   bumpVersion(releaseType: ReleaseType): string {
+    if (!this.manifestPath) throw new Error('Cargo.toml not found');
     const current = this.getCurrentVersion();
     if (!current) throw new Error('Rust version not found');
 
     const newVersion = calculateNextVersion(current, releaseType);
-    let content = FileHandler.readFile('Cargo.toml');
-    content = content.replace(/version\s*=\s*"[^"]+"/, `version = "${newVersion}"`);
-    FileHandler.writeFile('Cargo.toml', content);
+    ManifestParser.updateVersion(this.manifestPath, newVersion, 'regex', {
+      regexReplace: /version\s*=\s*"[^"]+"/,
+    });
 
     return newVersion;
   }

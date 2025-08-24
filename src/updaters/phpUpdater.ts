@@ -1,80 +1,76 @@
 import { ReleaseType } from 'semver';
 import { Updater } from '../interface';
-import { calculateNextVersion, FileHandler } from '../utils';
+import { calculateNextVersion, ManifestParser } from '../utils';
 
 export class PHPUpdater implements Updater {
   platform = 'php';
+  private manifestPath: string | null = null;
 
   canHandle(): boolean {
-    return (
-      FileHandler.fileExists('composer.json') ||
-      FileHandler.fileExists('VERSION') ||
-      FileHandler.fileExists('version.php') ||
-      FileHandler.fileExists('config.php')
-    );
+    this.manifestPath = ManifestParser.detectManifest([
+      'composer.json',
+      'VERSION',
+      'version.php',
+      'config.php',
+    ]);
+    return this.manifestPath !== null;
   }
 
   getCurrentVersion(): string | null {
-    // composer.json
-    if (FileHandler.fileExists('composer.json')) {
-      const composer = JSON.parse(FileHandler.readFile('composer.json'));
-      return composer.version || null;
-    }
+    if (!this.manifestPath) return null;
 
-    // VERSION file
-    if (FileHandler.fileExists('VERSION')) {
-      return FileHandler.readFile('VERSION').trim();
+    switch (this.manifestPath) {
+      case 'composer.json':
+        return ManifestParser.getVersion(this.manifestPath, 'json', {
+          jsonPath: ['version'],
+        });
+      case 'VERSION':
+        return ManifestParser.getVersion(this.manifestPath, 'regex', {
+          regex: /^([\d.]+)$/m, // Matches the entire content as version
+        });
+      case 'version.php':
+        return ManifestParser.getVersion(this.manifestPath, 'regex', {
+          regex: /['"]([\d.]+)['']/, // Matches version in quotes
+        });
+      case 'config.php':
+        return ManifestParser.getVersion(this.manifestPath, 'regex', {
+          regex: /'version'\s*=>\s*'([\d.]+)'/, // Matches version in config array
+        });
+      default:
+        return null;
     }
-
-    // version.php
-    if (FileHandler.fileExists('version.php')) {
-      const content = FileHandler.readFile('version.php');
-      const match = content.match(/['"]([\d.]+)['"]/);
-      return match ? match[1] : null;
-    }
-
-    // config.php
-    if (FileHandler.fileExists('config.php')) {
-      const content = FileHandler.readFile('config.php');
-      const match = content.match(/'version'\s*=>\s*'([\d.]+)'/);
-      return match ? match[1] : null;
-    }
-
-    return null;
   }
 
   bumpVersion(releaseType: ReleaseType): string {
-    const version = this.getCurrentVersion() || '0.1.0';
-    const newVersion = calculateNextVersion(version, releaseType);
+    if (!this.manifestPath) throw new Error('PHP manifest file not found');
+    const current = this.getCurrentVersion();
+    if (!current) throw new Error('PHP version not found');
 
-    // composer.json
-    if (FileHandler.fileExists('composer.json')) {
-      const composer = JSON.parse(FileHandler.readFile('composer.json'));
-      composer.version = newVersion;
-      FileHandler.writeFile('composer.json', JSON.stringify(composer, null, 2));
-      return newVersion;
-    }
+    const newVersion = calculateNextVersion(current, releaseType);
 
-    // VERSION file
-    if (FileHandler.fileExists('VERSION')) {
-      FileHandler.writeFile('VERSION', newVersion);
-      return newVersion;
-    }
-
-    // version.php
-    if (FileHandler.fileExists('version.php')) {
-      const content = FileHandler.readFile('version.php');
-      const updated = content.replace(/(['"])[\d.]+(['"])/, `$1${newVersion}$2`);
-      FileHandler.writeFile('version.php', updated);
-      return newVersion;
-    }
-
-    // config.php
-    if (FileHandler.fileExists('config.php')) {
-      const content = FileHandler.readFile('config.php');
-      const updated = content.replace(/'version'\s*=>\s*'[\d.]+'/, `'version' => '${newVersion}'`);
-      FileHandler.writeFile('config.php', updated);
-      return newVersion;
+    switch (this.manifestPath) {
+      case 'composer.json':
+        ManifestParser.updateVersion(this.manifestPath, newVersion, 'json', {
+          jsonPath: ['version'],
+        });
+        break;
+      case 'VERSION':
+        ManifestParser.updateVersion(this.manifestPath, newVersion, 'regex', {
+          regexReplace: /^([\d.]+)$/m,
+        });
+        break;
+      case 'version.php':
+        ManifestParser.updateVersion(this.manifestPath, newVersion, 'regex', {
+          regexReplace: /(['"])[\d.]+(['"])/,
+        });
+        break;
+      case 'config.php':
+        ManifestParser.updateVersion(this.manifestPath, newVersion, 'regex', {
+          regexReplace: /'version'\s*=>\s*'[\d.]+'/, // Matches version in config array
+        });
+        break;
+      default:
+        throw new Error(`Unsupported PHP manifest file: ${this.manifestPath}`);
     }
 
     return newVersion;

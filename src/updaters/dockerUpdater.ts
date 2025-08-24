@@ -1,28 +1,32 @@
 import { ReleaseType } from 'semver';
 import { Updater } from '../interface';
-import { calculateNextVersion, FileHandler } from '../utils';
+import { calculateNextVersion, ManifestParser } from '../utils';
 
 export class DockerUpdater implements Updater {
   platform = 'docker';
+  private manifestPath: string | null = null;
 
   canHandle(): boolean {
-    return FileHandler.fileExists('Dockerfile');
+    this.manifestPath = ManifestParser.detectManifest(['Dockerfile']);
+    return this.manifestPath !== null;
   }
 
   getCurrentVersion(): string | null {
-    const content = FileHandler.readFile('Dockerfile');
-    const match = content.match(/LABEL version="([^"]+)"/);
-    return match ? match[1] : null;
+    if (!this.manifestPath) return null;
+    return ManifestParser.getVersion(this.manifestPath, 'regex', {
+      regex: /LABEL version="([^"]+)"/,
+    });
   }
 
   bumpVersion(releaseType: ReleaseType): string {
+    if (!this.manifestPath) throw new Error('Dockerfile not found');
     const current = this.getCurrentVersion();
     if (!current) throw new Error('Docker version not found');
 
     const newVersion = calculateNextVersion(current, releaseType);
-    let content = FileHandler.readFile('Dockerfile');
-    content = content.replace(/LABEL version="[^"]+"/, `LABEL version="${newVersion}"`);
-    FileHandler.writeFile('Dockerfile', content);
+    ManifestParser.updateVersion(this.manifestPath, newVersion, 'regex', {
+      regexReplace: /LABEL version="[^"]+"/,
+    });
 
     return newVersion;
   }

@@ -1,42 +1,53 @@
 import { ReleaseType } from 'semver';
 import { Updater } from '../interface';
-import { calculateNextVersion, FileHandler } from '../utils';
+import { calculateNextVersion, ManifestParser } from '../utils';
 
 export class PythonUpdater implements Updater {
   platform = 'python';
+  private manifestPath: string | null = null;
 
   canHandle(): boolean {
-    return FileHandler.fileExists('pyproject.toml') || FileHandler.fileExists('setup.py');
+    this.manifestPath = ManifestParser.detectManifest(['pyproject.toml', 'setup.py']);
+    return this.manifestPath !== null;
   }
 
   getCurrentVersion(): string | null {
-    if (FileHandler.fileExists('pyproject.toml')) {
-      const content = FileHandler.readFile('pyproject.toml');
-      const match = content.match(/version\s*=\s*"([^"]+)"/);
-      return match ? match[1] : null;
+    if (!this.manifestPath) return null;
+
+    switch (this.manifestPath) {
+      case 'pyproject.toml':
+        return ManifestParser.getVersion(this.manifestPath, 'regex', {
+          regex: /version\s*=\s*"([^"]+)"/,
+        });
+      case 'setup.py':
+        return ManifestParser.getVersion(this.manifestPath, 'regex', {
+          regex: /version\s*=\s*["']([^"']+)["']/, // Matches single or double quotes
+        });
+      default:
+        return null;
     }
-    if (FileHandler.fileExists('setup.py')) {
-      const content = FileHandler.readFile('setup.py');
-      const match = content.match(/version\s*=\s*["']([^"']+)["']/);
-      return match ? match[1] : null;
-    }
-    return null;
   }
 
   bumpVersion(releaseType: ReleaseType): string {
+    if (!this.manifestPath) throw new Error('Python manifest file not found');
     const current = this.getCurrentVersion();
     if (!current) throw new Error('Python version not found');
 
     const newVersion = calculateNextVersion(current, releaseType);
 
-    if (FileHandler.fileExists('pyproject.toml')) {
-      let content = FileHandler.readFile('pyproject.toml');
-      content = content.replace(/version\s*=\s*"[^"]+"/, `version = "${newVersion}"`);
-      FileHandler.writeFile('pyproject.toml', content);
-    } else if (FileHandler.fileExists('setup.py')) {
-      let content = FileHandler.readFile('setup.py');
-      content = content.replace(/version\s*=\s*["'][^"']+["']/, `version="${newVersion}"`);
-      FileHandler.writeFile('setup.py', content);
+    switch (this.manifestPath) {
+      case 'pyproject.toml':
+        ManifestParser.updateVersion(this.manifestPath, newVersion, 'regex', {
+          regexReplace: /version\s*=\s*"[^"]+"/,
+        });
+        break;
+      case 'setup.py':
+        ManifestParser.updateVersion(this.manifestPath, newVersion, 'regex', {
+          regexReplace: /version\s*=\s*["'][^"']+["']/, // Matches single or double quotes
+        });
+        break;
+      default:
+        throw new Error(`Unsupported Python manifest file: ${this.manifestPath}`);
     }
 
     return newVersion;
