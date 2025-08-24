@@ -3,132 +3,190 @@
 All notable changes for each version of the Ambient Music extension.
 
 ---
+
+## Unreleased
+
 ## v0.7.3 2025 08 24
+
+### Changed
+- Bump version to 0.7.3.
 
 ## v0.7.2 2025 08 24
 
-- refactor: Moved `UpdaterRegistry` to `src/registry` for better organization and updated all relevant imports.
-- refactor: Applied Dependency Inversion Principle (DIP) by passing `FileHandler` as a dependency to `ManifestParser`, and `ManifestParser` as a dependency to updaters. This improves testability and flexibility.
-- refactor: Defined more granular error classes (`FileNotFoundError`, `InvalidManifestError`) within `errors.ts` to enable more precise error handling and user feedback.
-- refactor: Updated `FileHandler` and `ManifestParser` to throw these specific errors, and `index.ts` to catch and handle them.
+### Changed
+- Moved `UpdaterRegistry` to `src/registry` for better organization and updated all relevant imports.
+- Applied Dependency Inversion Principle (DIP) by passing `FileHandler` as a dependency to `ManifestParser`, and `ManifestParser` as a dependency to updaters. This improves testability and flexibility.
+- Defined more granular error classes (`FileNotFoundError`, `InvalidManifestError`) within `errors.ts` to enable more precise error handling and user feedback.
+- Updated `FileHandler` and `ManifestParser` to throw these specific errors, and `index.ts` to catch and handle them.
 
 ## v0.7.1 2025 08 24
 
-- refactor: Encapsulate Git operations in a GitService
-- refactor: Extract version calculation to a separate utility
-- refactor: Introduce UpdaterService for dependency injection
-- feat: Introduce custom error types for granular error handling
-- refactor: Extract Git operations into a separate utility
-- Refactor: Centralized file handling operations by introducing a new FileHandler utility. This improves consistency and maintainability across different updaters.
-- fix: Corrected NodeUpdater tests by ensuring manifestPath is set.
-- refactor: Centralized manifest parsing and updating logic by introducing `ManifestParser` utility and updating all updaters to use it.
-- feat: Enhance version bump action with explicit platform and git tag control
-  - Add `target_platform` input to `action.yml` allowing users to explicitly specify the platform for version bumping, bypassing automatic detection.
-  - Modify `UpdaterService` to use the `target_platform` if provided, otherwise fall back to existing detection logic.
-  - Update `index.ts` to read and pass `target_platform` to `UpdaterService`.
-  - Implement conditional Git tag creation based on the `git_tag` input from `action.yml`.
-- build: Updated `dist/index.js` after centralizing action configuration.
+### Added
+- Enhanced version bump action with explicit platform and git tag control:
+    - Added `target_platform` input to `action.yml` allowing users to explicitly specify the platform for version bumping, bypassing automatic detection.
+    - Modified `UpdaterService` to use the `target_platform` if provided, otherwise fall back to existing detection logic.
+    - Updated `index.ts` to read and pass `target_platform` to `UpdaterService`.
+    - Implemented conditional Git tag creation based on the `git_tag` input from `action.yml`.
+- Introduced custom error types for granular error handling.
+
+### Changed
+- Encapsulated Git operations in a `GitService`.
+- Extracted version calculation to a separate utility.
+- Introduced `UpdaterService` for dependency injection.
+- Extracted Git operations into a separate utility.
+- Centralized file handling operations by introducing a new `FileHandler` utility. This improves consistency and maintainability across different updaters.
+- Centralized manifest parsing and updating logic by introducing `ManifestParser` utility and updating all updaters to use it.
+- Updated `dist/index.js` after centralizing action configuration.
+
+### Fixed
+- Corrected NodeUpdater tests by ensuring manifestPath is set.
 
 ## v0.7.0 2025 08 24
 
-- fix: Update version badges in README for consistency.
-- feat: Integrate Vitest for comprehensive unit testing.
-- chore: Bump version to 0.7.0.
+### Added
+- Integrated Vitest for comprehensive unit testing.
+
+### Fixed
+- Updated version badges in README for consistency.
+
+### Changed
+- Bumped version to 0.7.0.
 
 ## v0.6.2 2025 08 24
 
-- fix: Update version badges in README for consistency.
-- feat: Integrate Vitest for comprehensive unit testing.
-- chore: Bump version to 0.6.2.
+### Added
+- Integrated Vitest for comprehensive unit testing.
+
+### Fixed
+- Updated version badges in README for consistency.
+
+### Changed
+- Bumped version to 0.6.2.
 
 ## v0.6.0 2025 08 23
 
+### Changed
+- Minor release.
+
 ## v0.5.1 2025 08 23
 
-- feat: Improve error handling in `src/index.ts` to gracefully manage unknown error types.
-- chore: Update `package.json` to include linting and formatting in the `prepare` script, ensuring code quality before building.
+### Added
+- Improved error handling in `src/index.ts` to gracefully manage unknown error types.
+
+### Changed
+- Updated `package.json` to include linting and formatting in the `prepare` script, ensuring code quality before building.
 
 ## v0.5.0 2025 08 23
 
--minor release
+### Changed
+- Minor release.
 
 ## v0.4.0 2025 08 23
 
--minor release
+### Changed
+- Minor release.
 
 ## v0.3.1 2025 08 23
 
-- refactor(release): move release creation to separate workflow
+### Changed
+- Moved release creation to separate workflow.
 
 ## v0.3.0 2025 08 23
 
-- ci: version bump updated
-- refactor: pnpm version updated
-- ci: pipeline improvement
-- fix: the version struct updated
+### Changed
+- CI: Version bump updated.
+- Refactored: pnpm version updated.
+- CI: Pipeline improvement.
+
+### Fixed
+- The version struct updated.
 
 ## v0.2.1 2025 08 22
 
-- ci: add tag and release workflow
-- ci: automate release creation with release notes
-- feat: add php support
-- refactor: add multi-platform support
+### Added
+- Added PHP support.
+- Added tag and release workflow.
+- Automated release creation with release notes.
+
+### Changed
+- Refactored: Added multi-platform support.
 
 ## v0.2.0 2025 08 22
 
-- ci: add tag and release workflow
-- ci: automate release creation with release notes
-- feat: add php support
-- refactor: add multi-platform support
+### Added
+- Added PHP support.
+- Added tag and release workflow.
+- Automated release creation with release notes.
+
+### Changed
+- Refactored: Added multi-platform support.
 
 ## v0.1.8 2025 08 22
 
-- chore: bump version to 0.1.8
-- refactor: place changed
+### Changed
+- Bumped version to 0.1.8.
+- Refactored: Place changed.
 
 ## v0.1.7 2025 08 22
 
-- chore: bump version to 0.1.7
-- security: security file added
+### Added
+- Security file added.
+
+### Changed
+- Bumped version to 0.1.7.
 
 ## v0.1.6 2025 08 22
 
-- docs: Update README
-- chore: bump version to 0.1.6
+### Changed
+- Bumped version to 0.1.6.
+- Updated README.
 
 ## v0.1.5 2025 08 22
 
-- Docs: README updated
-- chore: bump version to 0.1.5
+### Changed
+- Bumped version to 0.1.5.
+- Updated README.
 
 ## v0.1.4 2025 08 22
 
-- Fix: Update release workflow
-- chore: bump version to 0.1.4
+### Fixed
+- Updated release workflow.
+
+### Changed
+- Bumped version to 0.1.4.
 
 ## v0.1.2 2025 08 22
 
-- feat: version bumped 0.1.2
-- chore: bump version to 0.1.2
+### Added
+- Version bumped 0.1.2.
+
+### Changed
+- Bumped version to 0.1.2.
 
 ## v0.1.1 2025 08 22
 
-- ci: fallback added
-- chore: bump version to 0.1.1
-- feat: ci removed
-- feat: pnpm setup in the release yml
-- ci path updated
-- feat: version bump minor release 0.1.0
+### Added
+- Pnpm setup in the release yml.
+- Version bump minor release 0.1.0.
+
+### Changed
+- CI: Fallback added.
+- Bumped version to 0.1.1.
+- CI removed.
+- CI path updated.
 
 ## v0.1.0 2025 08 22
 
-- ci: Keep the versions up-to-date
-- feat:updated
-- feat: write permission added in the release.yml
-- ci: release added
-- build: update build script
-- docs: add contribution guidelines
-- docs: add COC
-- docs: add developer guide
-- docs: update readme
-- Initial action
+### Added
+- Contribution guidelines.
+- Code of Conduct (COC).
+- Developer guide.
+- Initial action.
+- Write permission added in the release.yml.
+- CI release added.
+
+### Changed
+- CI: Keep the versions up-to-date.
+- Updated.
+- Build: Update build script.
+- Updated readme.
