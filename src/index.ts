@@ -10,6 +10,7 @@ import {
   PythonUpdater,
   RustUpdater,
 } from './updaters';
+import { PlatformDetectionError, VersionBumpError } from './errors';
 
 async function run() {
   try {
@@ -36,7 +37,11 @@ async function run() {
     await commitChanges(`chore: bump version to ${version}`);
     await createAndPushTag(version);
   } catch (error: unknown) {
-    if (error instanceof Error) {
+    if (error instanceof PlatformDetectionError) {
+      core.setFailed(`Platform detection failed: ${error.message}`);
+    } else if (error instanceof VersionBumpError) {
+      core.setFailed(`Version bump failed: ${error.message}`);
+    } else if (error instanceof Error) {
       core.setFailed(error.message);
     } else {
       core.setFailed(String(error));

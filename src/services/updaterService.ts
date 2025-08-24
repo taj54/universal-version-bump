@@ -1,5 +1,6 @@
 import semver from 'semver';
 import { Updater } from '../interface';
+import { PlatformDetectionError, VersionBumpError } from '../errors';
 
 export class UpdaterService {
   private updaters: Updater[];
@@ -10,13 +11,16 @@ export class UpdaterService {
 
   detectPlatform(): string {
     const updater = this.updaters.find((u) => u.canHandle());
-    return updater ? updater.platform : 'unknown';
+    if (!updater) {
+      throw new PlatformDetectionError('Could not detect platform.');
+    }
+    return updater.platform;
   }
 
   updateVersion(platform: string, releaseType: semver.ReleaseType): string {
     const updater = this.updaters.find((u) => u.platform === platform);
     if (!updater) {
-      throw new Error(`No updater found for platform: ${platform}`);
+      throw new VersionBumpError(`No updater found for platform: ${platform}`);
     }
     return updater.bumpVersion(releaseType);
   }
