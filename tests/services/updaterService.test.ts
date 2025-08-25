@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { UpdaterService } from '../../src/services';
-import { Updater } from '../../src/interface';
+import { UpdaterInterface as Updater } from '../../src/interface';
 import { PlatformDetectionError, VersionBumpError } from '../../src/errors';
 import { UpdaterRegistry } from '../../src/registry/updaterRegistry';
 
