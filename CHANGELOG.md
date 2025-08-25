@@ -4,6 +4,23 @@ All notable changes for each version of the Ambient Music extension.
 
 ---
 
+## v0.8.10 2025 08 25
+
+### Changed
+
+- The `phpUpdater` regex has been updated to better handle version replacements.
+- The regex for content replacement in the manifest update has been improved.
+- The build process has been enhanced with source maps, license generation, and minor documentation formatting.
+- `README.md`, `DEVELOPER.md`, and `CHANGELOG.md` have been updated with action inputs.
+
+### Added
+
+- Sourcemap and `index.js` are now included in the `dist` folder.
+
+### Fixed
+
+- Improved version handling and regex replacements in updaters.
+
 ## v0.8.2 2025 08 24
 
 ### Fixed
