@@ -4,10 +4,28 @@
 [![Release](https://img.shields.io/github/v/release/taj54/universal-version-bump?label=version)](https://github.com/taj54/universal-version-bump/releases)
 [![Test](https://github.com/taj54/universal-version-bump/actions/workflows/test.yml/badge.svg)](https://github.com/taj54/universal-version-bump/actions/workflows/test.yml)
 [![License](https://img.shields.io/github/license/taj54/universal-version-bump)](LICENSE)
+[![Code of Conduct](https://img.shields.io/badge/code%20of%20conduct-enforced-blue)](CODE_OF_CONDUCT.md)
 
 A GitHub Action to automatically bump versions for any project that has a version file.
 
-This action will automatically detect the version file (e.g. `package.json`, `pyproject.toml`, etc.) and bump the version according to the `release_type` input. If multiple version files are found, the action will use the one that is most commonly used for the project type.
+This action will automatically detect the version file and bump the version according to the `release_type` input. If multiple version files are found, the action will use the one that is most commonly used for the project type.
+
+## How it works
+
+The action will first try to detect the platform of the project by looking for common version files in the root directory. The following files are supported:
+
+| Platform | Version File |
+| --- | --- |
+| Docker | `Dockerfile` |
+| Go | `go.mod` |
+| Node | `package.json` |
+| PHP | `composer.json` |
+| Python | `pyproject.toml`, `setup.py` |
+| Rust | `Cargo.toml` |
+
+If a version file is found, the action will bump the version in that file. If no version file is found, the action will fail.
+
+You can also explicitly specify the platform to update by using the `target_platform` input. This is useful for monorepos or projects with multiple potential manifest files.
 
 ## Usage
 
@@ -20,31 +38,21 @@ To use this action in your workflow, add the following step:
     release_type: 'patch' # patch, minor, or major
 ```
 
-## Inputs
+### Bumping a version in a specific directory
 
-| Name              | Description                                                                                                                       | Default |
-| ----------------- | --------------------------------------------------------------------------------------------------------------------------------- | ------- |
-| `release_type`    | Select the version bump type (patch, minor, major)                                                                                | `patch` |
-| `git_tag`         | Whether to create a Git tag after bump                                                                                            | `true`  |
-| `target_platform` | Explicitly specify the platform to update (e.g., `node`, `python`). If not provided, the platform will be detected automatically. | `''`    |
-| `target_path`     | The target path where the version bump should be applied. If not provided, the action will run in the root directory.             | `.`     |
+To bump a version in a specific directory, use the `target_path` input:
 
-### Explicit Platform Targeting (`target_platform`)
+```yaml
+- name: Bump version in my-app
+  uses: taj54/universal-version-bump@v0.8.2
+  with:
+    release_type: 'patch'
+    target_path: 'my-app'
+```
 
-By default, the action automatically detects the project's platform based on common manifest files (e.g., `package.json` for Node.js, `pyproject.toml` for Python). However, in certain scenarios, such as monorepos or projects with multiple potential manifest files, you might want to explicitly control which platform's version is bumped.
+### Explicitly targeting a platform
 
-The `target_platform` input allows you to specify the exact platform you intend to update. When this input is provided, the action will bypass its automatic detection and directly attempt to update the version for the specified platform.
-
-Supported platforms include:
-
-- `node` (for Node.js projects using `package.json`)
-- `python` (for Python projects using `pyproject.toml` or `setup.py`)
-- `docker` (for Docker projects using `Dockerfile`)
-- `go` (for Go projects using `go.mod`)
-- `php` (for PHP projects using `composer.json`)
-- `rust` (for Rust projects using `Cargo.toml`)
-
-**Example:**
+To explicitly target a platform, use the `target_platform` input:
 
 ```yaml
 - name: Bump Node.js version
@@ -54,39 +62,76 @@ Supported platforms include:
     target_platform: 'node' # Explicitly target Node.js
 ```
 
+## Inputs
+
+| Name | Description | Default |
+| --- | --- | --- |
+| `release_type` | Select the version bump type (patch, minor, major) | `patch` |
+| `git_tag` | Whether to create a Git tag after bump | `true` |
+| `target_platform` | Explicitly specify the platform to update (e.g., `node`, `python`). If not provided, the platform will be detected automatically. | `''` |
+| `target_path` | The target path where the version bump should be applied. If not provided, the action will run in the root directory. | `.` |
+
 ## Outputs
 
-| Name          | Description                      |
-| ------------- | -------------------------------- |
-| `new_version` | The new bumped version           |
-| `tag`         | The created Git tag (if enabled) |
+| Name | Description |
+| --- | --- |
+| `new_version` | The new bumped version |
+| `tag` | The created Git tag (if enabled) |
 
 ## Example Workflow
 
 ```yaml
-name: Bump Version
+name: Version Bump
+
+permissions:
+  contents: write
+  pull-requests: write
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
+    inputs:
+      release_type:
+        description: 'Select version bump type'
+        required: true
+        default: 'patch'
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+
+
 
 jobs:
   bump:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Bump version
-        uses: taj54/universal-version-bump@v0.8.2
+      - name: Checkout
+        uses: actions/checkout@v5
         with:
-          release_type: 'patch'
+          fetch-depth: 0
+
+      - name: Universal Version Bump
+        uses: taj54/universal-version-bump@v0.9.0
+        with:
+          release_type: ${{ inputs.release_type }}
+          git_tag: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 ```
+
+## Development
+
+For more information on how to develop this action, see the [developer guide](DEVELOPER.md).
 
 ## Contributing
 
 Contributions are welcome! Please see the [contributing guidelines](CONTRIBUTING.md) for more information.
+
+## Code of Conduct
+
+This project is governed by the [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## License
 
