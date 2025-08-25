@@ -1,12 +1,12 @@
 /**
- * universal-version-bump v0.8.10
+ * universal-version-bump v0.8.11
  * Universal Version Bump
  *
  * Description: A GitHub Action to automatically bump versions across any app (Node, Python, PHP, Docker, etc.)
  * Author: Taj <tajulislamj200@gmail.com>
  * Homepage: https://github.com/taj54/universal-version-bump#readme
  * License: MIT
- * Generated on Mon, 25 Aug 2025 10:27:34 GMT
+ * Generated on Mon, 25 Aug 2025 10:45:10 GMT
  */
 require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
@@ -33268,12 +33268,12 @@ class PHPUpdater {
                 break;
             case 'version.php':
                 this.manifestParser.updateVersion(this.manifestPath, newVersion, 'regex', {
-                    regexReplace: /(['"])[\d.]+(['"])/,
+                    regexReplace: /(['"])([\d.]+)(['"])/,
                 });
                 break;
             case 'config.php':
                 this.manifestParser.updateVersion(this.manifestPath, newVersion, 'regex', {
-                    regexReplace: /'version'\s*=>\s*'[\d.]+'/, // Matches version in config array
+                    regexReplace: /('version'\s*=>\s*')([\d.]+)(')/,
                 });
                 break;
             default:

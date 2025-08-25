@@ -67,12 +67,12 @@ export class PHPUpdater implements UpdaterInterface {
         break;
       case 'version.php':
         this.manifestParser.updateVersion(this.manifestPath, newVersion, 'regex', {
-          regexReplace: /(['"])[\d.]+(['"])/,
+          regexReplace: /(['"])([\d.]+)(['"])/,
         });
         break;
       case 'config.php':
         this.manifestParser.updateVersion(this.manifestPath, newVersion, 'regex', {
-          regexReplace: /'version'\s*=>\s*'[\d.]+'/, // Matches version in config array
+          regexReplace: /('version'\s*=>\s*')([\d.]+)(')/,
         });
         break;
       default:
