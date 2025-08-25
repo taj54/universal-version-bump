@@ -39,7 +39,9 @@ describe('GoUpdater', () => {
   describe('getCurrentVersion', () => {
     it('should return the version from go.mod', () => {
       (existsSync as vi.Mock).mockReturnValue(true);
-      (readFileSync as vi.Mock).mockReturnValue('module github.com/user/repo\ngo 1.16\nmodule github.com/user/repo v1.2.3');
+      (readFileSync as vi.Mock).mockReturnValue(
+        'module github.com/user/repo\ngo 1.16\nmodule github.com/user/repo v1.2.3',
+      );
       goUpdater.canHandle();
       expect(goUpdater.getCurrentVersion()).toBe('1.2.3');
     });
@@ -48,7 +50,9 @@ describe('GoUpdater', () => {
       (existsSync as vi.Mock).mockReturnValue(true);
       (readFileSync as vi.Mock).mockReturnValue('module github.com/user/repo');
       goUpdater.canHandle();
-      expect(() => goUpdater.getCurrentVersion()).toThrow("Regex '^module\\s+[^\\s]+\\s+v?(\\d+\\.\\d+\\.\\d+)' did not find a match in go.mod");
+      expect(() => goUpdater.getCurrentVersion()).toThrow(
+        "Regex '^module\\s+[^\\s]+\\s+v?(\\d+\\.\\d+\\.\\d+)' did not find a match in go.mod",
+      );
     });
   });
 
@@ -83,8 +87,8 @@ module github.com/user/repo v1.0.0`);
     );
 
     it('should throw an error if go.mod not found', () => {
-        const updater = new GoUpdater();
-        expect(() => updater.bumpVersion('patch')).toThrow('go.mod not found');
-      });
+      const updater = new GoUpdater();
+      expect(() => updater.bumpVersion('patch')).toThrow('go.mod not found');
+    });
   });
 });

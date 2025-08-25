@@ -1,4 +1,3 @@
-
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { existsSync, readFileSync, writeFileSync } from 'fs';
 import { PythonUpdater } from '../../src/updaters/pythonUpdater';
@@ -58,23 +57,27 @@ describe('PythonUpdater', () => {
     });
 
     it('should return null if no manifest file is found', () => {
-        (existsSync as vi.Mock).mockReturnValue(false);
-        pythonUpdater.canHandle();
-        expect(pythonUpdater.getCurrentVersion()).toBeNull();
-      });
+      (existsSync as vi.Mock).mockReturnValue(false);
+      pythonUpdater.canHandle();
+      expect(pythonUpdater.getCurrentVersion()).toBeNull();
+    });
 
     it('should throw an error if pyproject.toml exists but version is not found', () => {
       (existsSync as vi.Mock).mockImplementation((path) => path === 'pyproject.toml');
       (readFileSync as vi.Mock).mockReturnValue('name = "my-package"'); // Missing version
       pythonUpdater.canHandle();
-      expect(() => pythonUpdater.getCurrentVersion()).toThrow("Regex 'version\\s*=\\s*\"([^\"]+)\"' did not find a match in pyproject.toml");
+      expect(() => pythonUpdater.getCurrentVersion()).toThrow(
+        'Regex \'version\\s*=\\s*"([^"]+)"\' did not find a match in pyproject.toml',
+      );
     });
 
     it('should throw an error if setup.py exists but version is not found', () => {
       (existsSync as vi.Mock).mockImplementation((path) => path === 'setup.py');
       (readFileSync as vi.Mock).mockReturnValue('setup(name="my-package")'); // Missing version
       pythonUpdater.canHandle();
-      expect(() => pythonUpdater.getCurrentVersion()).toThrow("Regex 'version\\s*=\\s*[\"']([^\"']+)[\"']' did not find a match in setup.py");
+      expect(() => pythonUpdater.getCurrentVersion()).toThrow(
+        "Regex 'version\\s*=\\s*[\"']([^\"']+)[\"']' did not find a match in setup.py",
+      );
     });
   });
 

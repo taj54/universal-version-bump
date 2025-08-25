@@ -1,4 +1,3 @@
-
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { existsSync, readFileSync, writeFileSync } from 'fs';
 import { PHPUpdater } from '../../src/updaters/phpUpdater';
@@ -49,11 +48,11 @@ describe('PHPUpdater', () => {
     });
 
     it('should get version from VERSION file', () => {
-        (existsSync as vi.Mock).mockImplementation((path) => path === 'VERSION');
-        (readFileSync as vi.Mock).mockReturnValue('1.2.3');
-        phpUpdater.canHandle();
-        expect(phpUpdater.getCurrentVersion()).toBe('1.2.3');
-      });
+      (existsSync as vi.Mock).mockImplementation((path) => path === 'VERSION');
+      (readFileSync as vi.Mock).mockReturnValue('1.2.3');
+      phpUpdater.canHandle();
+      expect(phpUpdater.getCurrentVersion()).toBe('1.2.3');
+    });
   });
 
   describe('bumpVersion', () => {
@@ -73,8 +72,8 @@ describe('PHPUpdater', () => {
     );
 
     it('should throw an error if manifest not found', () => {
-        const updater = new PHPUpdater();
-        expect(() => updater.bumpVersion('patch')).toThrow('PHP manifest file not found');
-      });
+      const updater = new PHPUpdater();
+      expect(() => updater.bumpVersion('patch')).toThrow('PHP manifest file not found');
+    });
   });
 });

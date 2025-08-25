@@ -1,4 +1,3 @@
-
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { existsSync, readFileSync, writeFileSync } from 'fs';
 import { DockerUpdater } from '../../src/updaters/dockerUpdater';
@@ -49,7 +48,9 @@ describe('DockerUpdater', () => {
       (existsSync as vi.Mock).mockReturnValue(true);
       (readFileSync as vi.Mock).mockReturnValue('LABEL other="value"');
       dockerUpdater.canHandle();
-      expect(() => dockerUpdater.getCurrentVersion()).toThrow('Regex \'LABEL version="([^\"]+)\"\' did not find a match in Dockerfile');
+      expect(() => dockerUpdater.getCurrentVersion()).toThrow(
+        'Regex \'LABEL version="([^"]+)"\' did not find a match in Dockerfile',
+      );
     });
   });
 
@@ -65,16 +66,13 @@ describe('DockerUpdater', () => {
       (releaseType) => {
         const newVersion = dockerUpdater.bumpVersion(releaseType as ReleaseType);
         expect(newVersion).not.toBe('1.0.0');
-        expect(writeFileSync).toHaveBeenCalledWith(
-          'Dockerfile',
-          `LABEL version="${newVersion}"`,
-        );
+        expect(writeFileSync).toHaveBeenCalledWith('Dockerfile', `LABEL version="${newVersion}"`);
       },
     );
 
     it('should throw an error if Dockerfile not found', () => {
-        const updater = new DockerUpdater();
-        expect(() => updater.bumpVersion('patch')).toThrow('Dockerfile not found');
-      });
+      const updater = new DockerUpdater();
+      expect(() => updater.bumpVersion('patch')).toThrow('Dockerfile not found');
+    });
   });
 });

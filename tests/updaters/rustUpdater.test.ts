@@ -1,4 +1,3 @@
-
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { existsSync, readFileSync, writeFileSync } from 'fs';
 import { RustUpdater } from '../../src/updaters/rustUpdater';
@@ -49,7 +48,9 @@ describe('RustUpdater', () => {
       (existsSync as vi.Mock).mockReturnValue(true);
       (readFileSync as vi.Mock).mockReturnValue('name = "my-project"');
       rustUpdater.canHandle();
-      expect(() => rustUpdater.getCurrentVersion()).toThrow('Regex \'version\\s*=\\s*"([^\"]+)\"\' did not find a match in Cargo.toml');
+      expect(() => rustUpdater.getCurrentVersion()).toThrow(
+        'Regex \'version\\s*=\\s*"([^"]+)"\' did not find a match in Cargo.toml',
+      );
     });
   });
 
@@ -73,8 +74,8 @@ describe('RustUpdater', () => {
     );
 
     it('should throw an error if Cargo.toml not found', () => {
-        const updater = new RustUpdater();
-        expect(() => updater.bumpVersion('patch')).toThrow('Cargo.toml not found');
-      });
+      const updater = new RustUpdater();
+      expect(() => updater.bumpVersion('patch')).toThrow('Cargo.toml not found');
+    });
   });
 });
