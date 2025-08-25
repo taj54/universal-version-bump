@@ -20,7 +20,7 @@ export class GoUpdater implements UpdaterInterface {
   getCurrentVersion(): string | null {
     if (!this.manifestPath) return null;
     return this.manifestParser.getVersion(this.manifestPath, 'regex', {
-      regex: /module\s+.*\n.*v(\d+\.\d+\.\d+)/,
+      regex: /^module\s+[^\s]+\s+v?(\d+\.\d+\.\d+)/m,
     });
   }
 
