@@ -105,7 +105,9 @@ export class ManifestParser {
       }
       this.fileHandler.writeFile(manifestPath, JSON.stringify(data, null, 2));
     } else if (type === 'regex' && options.regexReplace) {
-      content = content.replace(options.regexReplace, newVersion);
+      content = content.replace(options.regexReplace, (_match, prefix, _oldVersion, suffix) => {
+        return `${prefix}${newVersion}${suffix}`;
+      });
       this.fileHandler.writeFile(manifestPath, content);
     }
   }
