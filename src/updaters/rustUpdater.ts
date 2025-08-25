@@ -31,7 +31,7 @@ export class RustUpdater implements UpdaterInterface {
 
     const newVersion = calculateNextVersion(current, releaseType);
     this.manifestParser.updateVersion(this.manifestPath, newVersion, 'regex', {
-      regexReplace: /version\s*=\s*"[^"]+"/,
+      regexReplace: /(version\s*=\s*")([^"]+)(")/,
     });
 
     return newVersion;

@@ -31,7 +31,7 @@ export class DockerUpdater implements UpdaterInterface {
 
     const newVersion = calculateNextVersion(current, releaseType);
     this.manifestParser.updateVersion(this.manifestPath, newVersion, 'regex', {
-      regexReplace: /"[^"]+"/,
+      regexReplace: /(LABEL\s+version=")([^"]+)(")/,
     });
 
     return newVersion;

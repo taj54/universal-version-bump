@@ -1,12 +1,12 @@
 /**
- * universal-version-bump v0.8.7
+ * universal-version-bump v0.8.8
  * Universal Version Bump
  *
  * Description: A GitHub Action to automatically bump versions across any app (Node, Python, PHP, Docker, etc.)
  * Author: Taj <tajulislamj200@gmail.com>
  * Homepage: https://github.com/taj54/universal-version-bump#readme
  * License: MIT
- * Generated on Mon, 25 Aug 2025 09:23:29 GMT
+ * Generated on Mon, 25 Aug 2025 09:57:11 GMT
  */
 require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
@@ -33072,7 +33072,7 @@ class DockerUpdater {
             throw new Error('Docker version not found');
         const newVersion = (0, utils_1.calculateNextVersion)(current, releaseType);
         this.manifestParser.updateVersion(this.manifestPath, newVersion, 'regex', {
-            regexReplace: /"[^"]+"/,
+            regexReplace: /(LABEL\s+version=")([^"]+)(")/,
         });
         return newVersion;
     }
@@ -33332,12 +33332,12 @@ class PythonUpdater {
         switch (this.manifestPath) {
             case 'pyproject.toml':
                 this.manifestParser.updateVersion(this.manifestPath, newVersion, 'regex', {
-                    regexReplace: /"[^"]+"/,
+                    regexReplace: /(version\s*=\s*")([^"]+)(")/,
                 });
                 break;
             case 'setup.py':
                 this.manifestParser.updateVersion(this.manifestPath, newVersion, 'regex', {
-                    regexReplace: /["'][^"']+''/,
+                    regexReplace: /(version\s*=\s*["'])([^"']+)(["'])/,
                 });
                 break;
             default:
@@ -33385,7 +33385,7 @@ class RustUpdater {
             throw new Error('Rust version not found');
         const newVersion = (0, utils_1.calculateNextVersion)(current, releaseType);
         this.manifestParser.updateVersion(this.manifestPath, newVersion, 'regex', {
-            regexReplace: /version\s*=\s*"[^"]+"/,
+            regexReplace: /(version\s*=\s*")([^"]+)(")/,
         });
         return newVersion;
     }
