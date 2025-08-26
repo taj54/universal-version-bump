@@ -10,6 +10,10 @@ All notable changes for each version of the Ambient Music extension.
 
 - Bumped version to v0.9.1.
 
+### Fixed
+
+- **changelog:** Strip prefixes like `feat:` and `fix:` from changelog entries.
+
 ## v0.9.0 2025 08 25
 
 ### Added
