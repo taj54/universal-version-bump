@@ -1,3 +1,10 @@
+
+# 📦 Changelog for Universal Version Bump
+
+All notable changes for each version of the Ambient Music extension.
+
+---
+
 ## v0.9.3 2025-08-26
 
 ### Added
@@ -24,12 +31,6 @@
 ### Fixed
 
 - improve error handling in updater tests
-
-# 📦 Changelog for Universal Version Bump
-
-All notable changes for each version of the Ambient Music extension.
-
----
 
 ## v0.9.1 2025 08 25
 
