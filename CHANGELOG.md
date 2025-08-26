@@ -1,3 +1,32 @@
+## v0.9.4 2025-08-26
+
+### Added
+
+- add changelog generation
+- version bumpupdated this  taj54/universal-version-bump@v0.9.0
+
+### Changed
+
+- Merge pull request #18 from taj54/version/v0.9.3
+- bump version to v0.9.3
+- fix path to reusable workflow
+- bump version to v0.9.2
+- Merge pull request #17 from taj54/version/v0.9.2
+- bump version to v0.9.2
+- Merge pull request #16 from taj54/develop-changelog-add-process
+- update changelog and readme
+- update CHANGELOG.md
+- add unit tests for updaters
+- update vitest and dependencies
+- improve README with enhanced structure and details
+- Merge pull request #15 from taj54/version/v0.9.1
+- Update CHANGELOG.md for v0.9.1
+- bump version to v0.9.1
+
+### Fixed
+
+- improve error handling in updater tests
+
 ## v0.9.3 2025-08-26
 
 ### Added
