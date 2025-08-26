@@ -6,7 +6,7 @@
  * Author: Taj <tajulislamj200@gmail.com>
  * Homepage: https://github.com/taj54/universal-version-bump#readme
  * License: MIT
- * Generated on Tue, 26 Aug 2025 13:13:01 GMT
+ * Generated on Tue, 26 Aug 2025 13:20:32 GMT
  */
 require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
@@ -33009,11 +33009,21 @@ class ChangelogService {
         const headerIndex = existingChangelog.indexOf(separator);
         if (headerIndex !== -1) {
             const header = existingChangelog.substring(0, headerIndex + separator.length);
-            const restOfChangelog = existingChangelog.substring(headerIndex + separator.length);
-            const newChangelog = header + changelogContent + restOfChangelog;
-            await this.fileHandler.writeFile(changelogPath, newChangelog);
+            const contentAfterHeader = existingChangelog.substring(headerIndex + separator.length);
+            const firstVersionIndex = contentAfterHeader.search(/## v\d+\.\d+\.\d+/);
+            if (firstVersionIndex !== -1) {
+                const oldChangelog = contentAfterHeader.substring(firstVersionIndex);
+                const newChangelog = header + changelogContent + oldChangelog;
+                await this.fileHandler.writeFile(changelogPath, newChangelog);
+            }
+            else {
+                // No version found after header, so just append the new changelog
+                const newChangelog = header + changelogContent;
+                await this.fileHandler.writeFile(changelogPath, newChangelog);
+            }
         }
         else {
+            // No separator found, so prepend the new changelog
             const newChangelog = changelogContent + existingChangelog;
             await this.fileHandler.writeFile(changelogPath, newChangelog);
         }

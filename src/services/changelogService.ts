@@ -95,10 +95,20 @@ export class ChangelogService {
 
     if (headerIndex !== -1) {
       const header = existingChangelog.substring(0, headerIndex + separator.length);
-      const restOfChangelog = existingChangelog.substring(headerIndex + separator.length);
-      const newChangelog = header + changelogContent + restOfChangelog;
-      await this.fileHandler.writeFile(changelogPath, newChangelog);
+      const contentAfterHeader = existingChangelog.substring(headerIndex + separator.length);
+      const firstVersionIndex = contentAfterHeader.search(/## v\d+\.\d+\.\d+/);
+
+      if (firstVersionIndex !== -1) {
+        const oldChangelog = contentAfterHeader.substring(firstVersionIndex);
+        const newChangelog = header + changelogContent + oldChangelog;
+        await this.fileHandler.writeFile(changelogPath, newChangelog);
+      } else {
+        // No version found after header, so just append the new changelog
+        const newChangelog = header + changelogContent;
+        await this.fileHandler.writeFile(changelogPath, newChangelog);
+      }
     } else {
+      // No separator found, so prepend the new changelog
       const newChangelog = changelogContent + existingChangelog;
       await this.fileHandler.writeFile(changelogPath, newChangelog);
     }

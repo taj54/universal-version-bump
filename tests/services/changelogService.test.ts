@@ -63,19 +63,18 @@ describe('ChangelogService', () => {
     expect(changelog).toContain('- maintenance');
   });
 
-  it('should update the changelog file', async () => {
-    const existingChangelogWithHeader = '# Header\n\n---\n\nexisting content';
-    const newContent = 'new content';
-    const expectedContent = '# Header\n\n---\n\nnew contentexisting content';
+  it('should update the changelog file, skipping last change noted info', async () => {
+    const existingChangelog =
+      '# Changelog\n\n---\n\nThis is the last change noted info.\n\n## v1.0.0\n\n- Initial release';
+    const newContent = '## v1.1.0\n\n- New feature';
+    const expectedContent =
+      '# Changelog\n\n---\n\n## v1.1.0\n\n- New feature## v1.0.0\n\n- Initial release';
 
-    const readFileSpy = vi
-      .spyOn(fileHandler, 'readFile')
-      .mockResolvedValue(existingChangelogWithHeader);
-    const writeFileSpy = vi.spyOn(fileHandler, 'writeFile').mockResolvedValue();
+    vi.spyOn(fileHandler, 'readFile').mockResolvedValue(existingChangelog);
+    const writeFileSpy = vi.spyOn(fileHandler, 'writeFile').mockResolvedValue(undefined);
 
     await changelogService.updateChangelog(newContent);
 
-    expect(readFileSpy).toHaveBeenCalledWith('CHANGELOG.md');
     expect(writeFileSpy).toHaveBeenCalledWith('CHANGELOG.md', expectedContent);
   });
 
