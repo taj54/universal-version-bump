@@ -1,39 +1,45 @@
 /**
+ * Base class for custom errors.
+ */
+class CustomError extends Error {
+  constructor(message: string, name: string) {
+    super(message);
+    this.name = name;
+  }
+}
+
+/**
  * Error thrown when platform detection fails.
  */
-export class PlatformDetectionError extends Error {
+export class PlatformDetectionError extends CustomError {
   constructor(message: string) {
-    super(message);
-    this.name = 'PlatformDetectionError';
+    super(message, 'PlatformDetectionError');
   }
 }
 
 /**
  * Error thrown when version bumping fails.
  */
-export class VersionBumpError extends Error {
+export class VersionBumpError extends CustomError {
   constructor(message: string) {
-    super(message);
-    this.name = 'VersionBumpError';
+    super(message, 'VersionBumpError');
   }
 }
 
 /**
  * Error thrown when a file is not found.
  */
-export class FileNotFoundError extends Error {
+export class FileNotFoundError extends CustomError {
   constructor(message: string) {
-    super(message);
-    this.name = 'FileNotFoundError';
+    super(message, 'FileNotFoundError');
   }
 }
 
 /**
  * Error thrown when a manifest file is invalid.
  */
-export class InvalidManifestError extends Error {
+export class InvalidManifestError extends CustomError {
   constructor(message: string) {
-    super(message);
-    this.name = 'InvalidManifestError';
+    super(message, 'InvalidManifestError');
   }
 }

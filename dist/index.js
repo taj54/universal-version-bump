@@ -6,7 +6,7 @@
  * Author: Taj <tajulislamj200@gmail.com>
  * Homepage: https://github.com/taj54/universal-version-bump#readme
  * License: MIT
- * Generated on Tue, 26 Aug 2025 13:43:36 GMT
+ * Generated on Tue, 26 Aug 2025 13:59:07 GMT
  */
 require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
@@ -32685,42 +32685,47 @@ exports.TARGET_PATH = core.getInput('target_path') || '.';
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.InvalidManifestError = exports.FileNotFoundError = exports.VersionBumpError = exports.PlatformDetectionError = void 0;
 /**
+ * Base class for custom errors.
+ */
+class CustomError extends Error {
+    constructor(message, name) {
+        super(message);
+        this.name = name;
+    }
+}
+/**
  * Error thrown when platform detection fails.
  */
-class PlatformDetectionError extends Error {
+class PlatformDetectionError extends CustomError {
     constructor(message) {
-        super(message);
-        this.name = 'PlatformDetectionError';
+        super(message, 'PlatformDetectionError');
     }
 }
 exports.PlatformDetectionError = PlatformDetectionError;
 /**
  * Error thrown when version bumping fails.
  */
-class VersionBumpError extends Error {
+class VersionBumpError extends CustomError {
     constructor(message) {
-        super(message);
-        this.name = 'VersionBumpError';
+        super(message, 'VersionBumpError');
     }
 }
 exports.VersionBumpError = VersionBumpError;
 /**
  * Error thrown when a file is not found.
  */
-class FileNotFoundError extends Error {
+class FileNotFoundError extends CustomError {
     constructor(message) {
-        super(message);
-        this.name = 'FileNotFoundError';
+        super(message, 'FileNotFoundError');
     }
 }
 exports.FileNotFoundError = FileNotFoundError;
 /**
  * Error thrown when a manifest file is invalid.
  */
-class InvalidManifestError extends Error {
+class InvalidManifestError extends CustomError {
     constructor(message) {
-        super(message);
-        this.name = 'InvalidManifestError';
+        super(message, 'InvalidManifestError');
     }
 }
 exports.InvalidManifestError = InvalidManifestError;
