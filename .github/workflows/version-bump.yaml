@@ -27,7 +27,7 @@ jobs:
           fetch-depth: 0
 
       - name: Universal Version Bump
-        uses: .
+        uses: ./
         with:
           release_type: ${{ inputs.release_type }}
           git_tag: false
