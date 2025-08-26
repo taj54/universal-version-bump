@@ -81,7 +81,26 @@ export class ChangelogService {
   async updateChangelog(changelogContent: string): Promise<void> {
     const changelogPath = 'CHANGELOG.md';
     const existingChangelog = await this.fileHandler.readFile(changelogPath);
-    const newChangelog = changelogContent + existingChangelog;
-    await this.fileHandler.writeFile(changelogPath, newChangelog);
+    const versionMatch = changelogContent.match(/## v(\d+\.\d+\.\d+)/);
+    if (versionMatch) {
+      const newVersion = versionMatch[0];
+      if (existingChangelog.includes(newVersion)) {
+        console.log(`Changelog for version ${newVersion} already exists. Skipping.`);
+        return;
+      }
+    }
+
+    const separator = '\n---\n\n';
+    const headerIndex = existingChangelog.indexOf(separator);
+
+    if (headerIndex !== -1) {
+      const header = existingChangelog.substring(0, headerIndex + separator.length);
+      const restOfChangelog = existingChangelog.substring(headerIndex + separator.length);
+      const newChangelog = header + changelogContent + restOfChangelog;
+      await this.fileHandler.writeFile(changelogPath, newChangelog);
+    } else {
+      const newChangelog = changelogContent + existingChangelog;
+      await this.fileHandler.writeFile(changelogPath, newChangelog);
+    }
   }
 }

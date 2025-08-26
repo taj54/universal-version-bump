@@ -1,4 +1,3 @@
-
 # 📦 Changelog for Universal Version Bump
 
 All notable changes for each version of the Ambient Music extension.
@@ -10,7 +9,7 @@ All notable changes for each version of the Ambient Music extension.
 ### Added
 
 - add changelog generation
-- version bumpupdated this  taj54/universal-version-bump@v0.9.0
+- version bumpupdated this taj54/universal-version-bump@v0.9.0
 
 ### Changed
 
@@ -41,6 +40,11 @@ All notable changes for each version of the Ambient Music extension.
 ### Fixed
 
 - **changelog:** Strip prefixes like `feat:` and `fix:` from changelog entries.
+
+### Added
+
+- **changelog:** Prevent duplicate changelog entries for the same version.
+- **changelog:** Place new changelog entries after the header in `CHANGELOG.md`.
 
 ## v0.9.0 2025 08 25
 

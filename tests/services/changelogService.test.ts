@@ -64,12 +64,34 @@ describe('ChangelogService', () => {
   });
 
   it('should update the changelog file', async () => {
-    const readFileSpy = vi.spyOn(fileHandler, 'readFile').mockResolvedValue('existing content');
+    const existingChangelogWithHeader = '# Header\n\n---\n\nexisting content';
+    const newContent = 'new content';
+    const expectedContent = '# Header\n\n---\n\nnew contentexisting content';
+
+    const readFileSpy = vi
+      .spyOn(fileHandler, 'readFile')
+      .mockResolvedValue(existingChangelogWithHeader);
     const writeFileSpy = vi.spyOn(fileHandler, 'writeFile').mockResolvedValue();
 
-    await changelogService.updateChangelog('new content');
+    await changelogService.updateChangelog(newContent);
 
     expect(readFileSpy).toHaveBeenCalledWith('CHANGELOG.md');
-    expect(writeFileSpy).toHaveBeenCalledWith('CHANGELOG.md', 'new contentexisting content');
+    expect(writeFileSpy).toHaveBeenCalledWith('CHANGELOG.md', expectedContent);
+  });
+
+  it('should not update the changelog file if the version already exists', async () => {
+    const existingChangelog = '## v1.1.0 2025-08-26\n\n### Added\n\n- existing feature\n\n';
+    const readFileSpy = vi.spyOn(fileHandler, 'readFile').mockResolvedValue(existingChangelog);
+    const writeFileSpy = vi.spyOn(fileHandler, 'writeFile').mockResolvedValue();
+    const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+
+    const newChangelog = '## v1.1.0 2025-08-26\n\n### Fixed\n\n- a bug fix\n\n';
+    await changelogService.updateChangelog(newChangelog);
+
+    expect(readFileSpy).toHaveBeenCalledWith('CHANGELOG.md');
+    expect(writeFileSpy).not.toHaveBeenCalled();
+    expect(consoleSpy).toHaveBeenCalledWith(
+      'Changelog for version ## v1.1.0 already exists. Skipping.',
+    );
   });
 });

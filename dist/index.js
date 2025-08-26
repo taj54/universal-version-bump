@@ -1,12 +1,12 @@
 /**
- * universal-version-bump v0.9.2
+ * universal-version-bump v0.9.3
  * Universal Version Bump
  *
  * Description: A GitHub Action to automatically bump versions across any app (Node, Python, PHP, Docker, etc.)
  * Author: Taj <tajulislamj200@gmail.com>
  * Homepage: https://github.com/taj54/universal-version-bump#readme
  * License: MIT
- * Generated on Tue, 26 Aug 2025 10:43:40 GMT
+ * Generated on Tue, 26 Aug 2025 13:13:01 GMT
  */
 require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
@@ -32997,8 +32997,26 @@ class ChangelogService {
     async updateChangelog(changelogContent) {
         const changelogPath = 'CHANGELOG.md';
         const existingChangelog = await this.fileHandler.readFile(changelogPath);
-        const newChangelog = changelogContent + existingChangelog;
-        await this.fileHandler.writeFile(changelogPath, newChangelog);
+        const versionMatch = changelogContent.match(/## v(\d+\.\d+\.\d+)/);
+        if (versionMatch) {
+            const newVersion = versionMatch[0];
+            if (existingChangelog.includes(newVersion)) {
+                console.log(`Changelog for version ${newVersion} already exists. Skipping.`);
+                return;
+            }
+        }
+        const separator = '\n---\n\n';
+        const headerIndex = existingChangelog.indexOf(separator);
+        if (headerIndex !== -1) {
+            const header = existingChangelog.substring(0, headerIndex + separator.length);
+            const restOfChangelog = existingChangelog.substring(headerIndex + separator.length);
+            const newChangelog = header + changelogContent + restOfChangelog;
+            await this.fileHandler.writeFile(changelogPath, newChangelog);
+        }
+        else {
+            const newChangelog = changelogContent + existingChangelog;
+            await this.fileHandler.writeFile(changelogPath, newChangelog);
+        }
     }
 }
 exports.ChangelogService = ChangelogService;
