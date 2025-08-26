@@ -1,12 +1,12 @@
 /**
- * universal-version-bump v0.9.3
+ * universal-version-bump v0.9.4
  * Universal Version Bump
  *
  * Description: A GitHub Action to automatically bump versions across any app (Node, Python, PHP, Docker, etc.)
  * Author: Taj <tajulislamj200@gmail.com>
  * Homepage: https://github.com/taj54/universal-version-bump#readme
  * License: MIT
- * Generated on Tue, 26 Aug 2025 13:20:32 GMT
+ * Generated on Tue, 26 Aug 2025 13:43:36 GMT
  */
 require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
@@ -32684,6 +32684,9 @@ exports.TARGET_PATH = core.getInput('target_path') || '.';
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.InvalidManifestError = exports.FileNotFoundError = exports.VersionBumpError = exports.PlatformDetectionError = void 0;
+/**
+ * Error thrown when platform detection fails.
+ */
 class PlatformDetectionError extends Error {
     constructor(message) {
         super(message);
@@ -32691,6 +32694,9 @@ class PlatformDetectionError extends Error {
     }
 }
 exports.PlatformDetectionError = PlatformDetectionError;
+/**
+ * Error thrown when version bumping fails.
+ */
 class VersionBumpError extends Error {
     constructor(message) {
         super(message);
@@ -32698,6 +32704,9 @@ class VersionBumpError extends Error {
     }
 }
 exports.VersionBumpError = VersionBumpError;
+/**
+ * Error thrown when a file is not found.
+ */
 class FileNotFoundError extends Error {
     constructor(message) {
         super(message);
@@ -32705,6 +32714,9 @@ class FileNotFoundError extends Error {
     }
 }
 exports.FileNotFoundError = FileNotFoundError;
+/**
+ * Error thrown when a manifest file is invalid.
+ */
 class InvalidManifestError extends Error {
     constructor(message) {
         super(message);
@@ -32858,16 +32870,32 @@ __exportStar(__nccwpck_require__(6019), exports);
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.UpdaterRegistry = void 0;
+/**
+ * Registry for managing updaters.
+ */
 class UpdaterRegistry {
     constructor() {
         this.updaters = new Map();
     }
+    /**
+     * Registers a new updater.
+     * @param updater The updater to register.
+     */
     registerUpdater(updater) {
         this.updaters.set(updater.platform, updater);
     }
+    /**
+     * Gets the updater for the specified platform.
+     * @param platform The platform to get the updater for.
+     * @returns The updater for the specified platform or undefined if not found.
+     */
     getUpdater(platform) {
         return this.updaters.get(platform);
     }
+    /**
+     * Gets all registered updaters.
+     * @returns An array of all registered updaters.
+     */
     getAllUpdaters() {
         return Array.from(this.updaters.values());
     }
@@ -33077,7 +33105,13 @@ exports.GitService = void 0;
 const exec = __importStar(__nccwpck_require__(8872));
 const core = __importStar(__nccwpck_require__(9999));
 const github = __importStar(__nccwpck_require__(5380));
+/**
+ * Service for interacting with Git.
+ */
 class GitService {
+    /**
+     * Configures the Git user.
+     */
     async configureGitUser() {
         await exec.exec('git', ['config', 'user.name', 'github-actions[bot]']);
         await exec.exec('git', [
@@ -33086,6 +33120,11 @@ class GitService {
             'github-actions[bot]@users.noreply.github.com',
         ]);
     }
+    /**
+     * Commits the changes with the specified commit message.
+     * @param message The commit message.
+     * @returns True if changes were committed, false otherwise.
+     */
     async commitChanges(message) {
         await exec.exec('git', ['add', '-A']);
         try {
@@ -33098,6 +33137,11 @@ class GitService {
             return true;
         }
     }
+    /**
+     * Creates a release branch for the specified version.
+     * @param version The version to create the branch for.
+     * @returns The name of the created branch or null if no changes were made.
+     */
     async createReleaseBranch(version) {
         const branch = `version/v${version}`;
         await exec.exec('git', ['checkout', '-b', branch]);
@@ -33109,10 +33153,20 @@ class GitService {
         await exec.exec('git', ['push', 'origin', branch, '--force']);
         return branch;
     }
+    /**
+     * Creates a Git tag for the specified version.
+     * @param version The version to create the tag for.
+     */
     async createAndPushTag(version) {
         await exec.exec('git', ['tag', `v${version}`]);
         await exec.exec('git', ['push', 'origin', 'HEAD', '--tags']);
     }
+    /**
+     * Creates a pull request for the specified branch and version.
+     * @param branch The branch to create the pull request for.
+     * @param version The version to include in the pull request.
+     * @returns The URL of the created pull request.
+     */
     async createPullRequest(branch, version) {
         const token = process.env.GITHUB_TOKEN;
         if (!token) {
@@ -33173,10 +33227,22 @@ __exportStar(__nccwpck_require__(5417), exports);
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.UpdaterService = void 0;
 const errors_1 = __nccwpck_require__(4830);
+/**
+ * Service for managing version updates.
+ */
 class UpdaterService {
+    /**
+     * Creates an instance of the UpdaterService.
+     * @param updaterRegistry The registry of updaters.
+     */
     constructor(updaterRegistry) {
         this.updaterRegistry = updaterRegistry;
     }
+    /**
+     * Get the platform for the specified target platform.
+     * @param targetPlatform The target platform to get.
+     * @returns The platform string.
+     */
     getPlatform(targetPlatform) {
         if (targetPlatform) {
             const updater = this.updaterRegistry.getUpdater(targetPlatform);
@@ -33191,6 +33257,12 @@ class UpdaterService {
         }
         return detectedUpdater.platform;
     }
+    /**
+     * Update the version for the specified platform and release type.
+     * @param platform The platform to update.
+     * @param releaseType The type of release (major, minor, patch).
+     * @returns The new version string.
+     */
     updateVersion(platform, releaseType) {
         const updater = this.updaterRegistry.getUpdater(platform);
         if (!updater) {
@@ -33212,6 +33284,9 @@ exports.UpdaterService = UpdaterService;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.DockerUpdater = void 0;
 const utils_1 = __nccwpck_require__(9499);
+/**
+ * Updater for Dockerfiles.
+ */
 class DockerUpdater {
     constructor() {
         this.platform = 'docker';
@@ -33219,10 +33294,18 @@ class DockerUpdater {
         const fileHandler = new utils_1.FileHandler();
         this.manifestParser = new utils_1.ManifestParser(fileHandler);
     }
+    /**
+     * Checks if the updater can handle the current repository.
+     * @returns True if the updater can handle the repo, false otherwise.
+     */
     canHandle() {
         this.manifestPath = this.manifestParser.detectManifest(['Dockerfile']);
         return this.manifestPath !== null;
     }
+    /**
+     * Gets the current version from the Dockerfile.
+     * @returns The current version or null if not found.
+     */
     getCurrentVersion() {
         if (!this.manifestPath)
             return null;
@@ -33230,6 +33313,11 @@ class DockerUpdater {
             regex: /LABEL version="([^"]+)"/,
         });
     }
+    /**
+     * Bumps the version in the Dockerfile.
+     * @param releaseType The type of release (patch, minor, major).
+     * @returns The new version.
+     */
     bumpVersion(releaseType) {
         if (!this.manifestPath)
             throw new Error('Dockerfile not found');
@@ -33256,6 +33344,9 @@ exports.DockerUpdater = DockerUpdater;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.GoUpdater = void 0;
 const utils_1 = __nccwpck_require__(9499);
+/**
+ * Updater for Go modules.
+ */
 class GoUpdater {
     constructor() {
         this.platform = 'go';
@@ -33263,10 +33354,18 @@ class GoUpdater {
         const fileHandler = new utils_1.FileHandler();
         this.manifestParser = new utils_1.ManifestParser(fileHandler);
     }
+    /**
+     * Checks if the updater can handle the current repository.
+     * @returns True if the updater can handle the repo, false otherwise.
+     */
     canHandle() {
         this.manifestPath = this.manifestParser.detectManifest(['go.mod']);
         return this.manifestPath !== null;
     }
+    /**
+     * Gets the current version from the go.mod file.
+     * @returns The current version or null if not found.
+     */
     getCurrentVersion() {
         if (!this.manifestPath)
             return null;
@@ -33274,6 +33373,11 @@ class GoUpdater {
             regex: /^module\s+[^\s]+\s+v?(\d+\.\d+\.\d+)/m,
         });
     }
+    /**
+     * Bumps the version in the go.mod file.
+     * @param releaseType The type of release (patch, minor, major).
+     * @returns The new version.
+     */
     bumpVersion(releaseType) {
         if (!this.manifestPath)
             throw new Error('go.mod not found');
@@ -33330,6 +33434,9 @@ __exportStar(__nccwpck_require__(4639), exports);
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.NodeUpdater = void 0;
 const utils_1 = __nccwpck_require__(9499);
+/**
+ * Updater for Node.js projects using package.json.
+ */
 class NodeUpdater {
     constructor() {
         this.platform = 'node';
@@ -33337,10 +33444,18 @@ class NodeUpdater {
         const fileHandler = new utils_1.FileHandler();
         this.manifestParser = new utils_1.ManifestParser(fileHandler);
     }
+    /**
+     * Checks if the updater can handle the current repository.
+     * @returns True if the updater can handle the repo, false otherwise.
+     */
     canHandle() {
         this.manifestPath = this.manifestParser.detectManifest(['package.json']);
         return this.manifestPath !== null;
     }
+    /**
+     * Gets the current version from the package.json file.
+     * @returns The current version or null if not found.
+     */
     getCurrentVersion() {
         if (!this.manifestPath)
             return null;
@@ -33348,6 +33463,11 @@ class NodeUpdater {
             jsonPath: ['version'],
         });
     }
+    /**
+     * Bumps the version in the package.json file.
+     * @param releaseType The type of release (patch, minor, major).
+     * @returns The new version.
+     */
     bumpVersion(releaseType) {
         if (!this.manifestPath)
             throw new Error('package.json not found');
@@ -33374,6 +33494,9 @@ exports.NodeUpdater = NodeUpdater;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.PHPUpdater = void 0;
 const utils_1 = __nccwpck_require__(9499);
+/**
+ * Updater for PHP projects.
+ */
 class PHPUpdater {
     constructor() {
         this.platform = 'php';
@@ -33381,6 +33504,10 @@ class PHPUpdater {
         const fileHandler = new utils_1.FileHandler();
         this.manifestParser = new utils_1.ManifestParser(fileHandler);
     }
+    /**
+     * Checks if the updater can handle the current repository.
+     * @returns True if the updater can handle the repo, false otherwise.
+     */
     canHandle() {
         this.manifestPath = this.manifestParser.detectManifest([
             'composer.json',
@@ -33390,6 +33517,10 @@ class PHPUpdater {
         ]);
         return this.manifestPath !== null;
     }
+    /**
+     * Gets the current version from the PHP manifest file.
+     * @returns The current version or null if not found.
+     */
     getCurrentVersion() {
         if (!this.manifestPath)
             return null;
@@ -33414,6 +33545,11 @@ class PHPUpdater {
                 return null;
         }
     }
+    /**
+     * Bumps the version in the PHP manifest file.
+     * @param releaseType The type of release (patch, minor, major).
+     * @returns The new version.
+     */
     bumpVersion(releaseType) {
         if (!this.manifestPath)
             throw new Error('PHP manifest file not found');
@@ -33461,6 +33597,9 @@ exports.PHPUpdater = PHPUpdater;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.PythonUpdater = void 0;
 const utils_1 = __nccwpck_require__(9499);
+/**
+ * Updater for Python projects.
+ */
 class PythonUpdater {
     constructor() {
         this.platform = 'python';
@@ -33468,10 +33607,18 @@ class PythonUpdater {
         const fileHandler = new utils_1.FileHandler();
         this.manifestParser = new utils_1.ManifestParser(fileHandler);
     }
+    /**
+     * Checks if the updater can handle the current repository.
+     * @returns True if the updater can handle the repo, false otherwise.
+     */
     canHandle() {
         this.manifestPath = this.manifestParser.detectManifest(['pyproject.toml', 'setup.py']);
         return this.manifestPath !== null;
     }
+    /**
+     * Gets the current version from the Python manifest file.
+     * @returns The current version or null if not found.
+     */
     getCurrentVersion() {
         if (!this.manifestPath)
             return null;
@@ -33488,6 +33635,11 @@ class PythonUpdater {
                 return null;
         }
     }
+    /**
+     * Bumps the version in the Python manifest file.
+     * @param releaseType The type of release (patch, minor, major).
+     * @returns The new version.
+     */
     bumpVersion(releaseType) {
         if (!this.manifestPath)
             throw new Error('Python manifest file not found');
@@ -33525,6 +33677,9 @@ exports.PythonUpdater = PythonUpdater;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.RustUpdater = void 0;
 const utils_1 = __nccwpck_require__(9499);
+/**
+ * Updater for Rust projects.
+ */
 class RustUpdater {
     constructor() {
         this.platform = 'rust';
@@ -33532,10 +33687,18 @@ class RustUpdater {
         const fileHandler = new utils_1.FileHandler();
         this.manifestParser = new utils_1.ManifestParser(fileHandler);
     }
+    /**
+     * Checks if the updater can handle the current repository.
+     * @returns True if the updater can handle the repo, false otherwise.
+     */
     canHandle() {
         this.manifestPath = this.manifestParser.detectManifest(['Cargo.toml']);
         return this.manifestPath !== null;
     }
+    /**
+     * Gets the current version from the Cargo.toml file.
+     * @returns The current version or null if not found.
+     */
     getCurrentVersion() {
         if (!this.manifestPath)
             return null;
@@ -33543,6 +33706,11 @@ class RustUpdater {
             regex: /version\s*=\s*"([^"]+)"/,
         });
     }
+    /**
+     * Bumps the version in the Cargo.toml file.
+     * @param releaseType The type of release (patch, minor, major).
+     * @returns The new version.
+     */
     bumpVersion(releaseType) {
         if (!this.manifestPath)
             throw new Error('Cargo.toml not found');
@@ -33573,21 +33741,36 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.FileHandler = void 0;
 const fs_1 = __importDefault(__nccwpck_require__(9896));
 const errors_1 = __nccwpck_require__(4830);
+/**
+ * Utility class for handling file operations.
+ */
 class FileHandler {
     constructor() { }
+    /**
+     * Checks if a file exists.
+     * @param filePath The path to the file.
+     * @returns True if the file exists, false otherwise.
+     */
     fileExists(filePath) {
         return fs_1.default.existsSync(filePath);
     }
+    /**
+     * Reads the contents of a file.
+     * @param filePath The path to the file.
+     * @returns The contents of the file.
+     */
     readFile(filePath) {
         if (!this.fileExists(filePath)) {
             throw new errors_1.FileNotFoundError(`File not found: ${filePath}`);
         }
         return fs_1.default.readFileSync(filePath, 'utf8');
     }
+    /**
+     * Writes the contents to a file.
+     * @param filePath The path to the file.
+     * @param content The content to write to the file.
+     */
     writeFile(filePath, content) {
-        // For writeFile, we don't necessarily need to check fileExists first
-        // as fs.writeFileSync will create the file if it doesn't exist.
-        // However, if we want to ensure the directory exists, that's a different concern.
         fs_1.default.writeFileSync(filePath, content);
     }
 }
@@ -33631,10 +33814,18 @@ __exportStar(__nccwpck_require__(2521), exports);
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.ManifestParser = void 0;
 const errors_1 = __nccwpck_require__(4830);
+/**
+ * Utility class for parsing and updating manifest files.
+ */
 class ManifestParser {
     constructor(fileHandler) {
         this.fileHandler = fileHandler;
     }
+    /**
+     * Detects the presence of a manifest file.
+     * @param manifestNames The names of the manifest files to check.
+     * @returns The path to the manifest file if found, null otherwise.
+     */
     detectManifest(manifestNames) {
         for (const name of manifestNames) {
             if (this.fileHandler.fileExists(name)) {
@@ -33643,6 +33834,13 @@ class ManifestParser {
         }
         return null;
     }
+    /**
+     * Gets the version from a manifest file.
+     * @param manifestPath The path to the manifest file.
+     * @param type The type of manifest (json or regex).
+     * @param options Options for extracting the version.
+     * @returns The version string or null if not found.
+     */
     getVersion(manifestPath, type, options) {
         const content = this.fileHandler.readFile(manifestPath);
         if (type === 'json') {
@@ -33675,6 +33873,13 @@ class ManifestParser {
         }
         return null;
     }
+    /**
+     * Updates the version in a manifest file.
+     * @param manifestPath The path to the manifest file.
+     * @param newVersion The new version to set.
+     * @param type The type of manifest (json or regex).
+     * @param options Options for updating the version.
+     */
     updateVersion(manifestPath, newVersion, type, options) {
         let content = this.fileHandler.readFile(manifestPath);
         if (type === 'json') {
@@ -33736,6 +33941,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.calculateNextVersion = calculateNextVersion;
 const semver_1 = __importDefault(__nccwpck_require__(2348));
+/**
+ * Calculates the next version based on the current version and release type.
+ * @param currentVersion The current version string.
+ * @param releaseType The type of release (patch, minor, major).
+ * @returns The new version string.
+ */
 function calculateNextVersion(currentVersion, releaseType) {
     const newVersion = semver_1.default.inc(currentVersion, releaseType);
     if (!newVersion) {

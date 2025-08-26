@@ -2,6 +2,9 @@ import { ReleaseType } from 'semver';
 import { UpdaterInterface } from '../interface';
 import { calculateNextVersion, ManifestParser, FileHandler } from '../utils';
 
+/**
+ * Updater for Python projects.
+ */
 export class PythonUpdater implements UpdaterInterface {
   platform = 'python';
   private manifestPath: string | null = null;
@@ -12,11 +15,19 @@ export class PythonUpdater implements UpdaterInterface {
     this.manifestParser = new ManifestParser(fileHandler);
   }
 
+  /**
+   * Checks if the updater can handle the current repository.
+   * @returns True if the updater can handle the repo, false otherwise.
+   */
   canHandle(): boolean {
     this.manifestPath = this.manifestParser.detectManifest(['pyproject.toml', 'setup.py']);
     return this.manifestPath !== null;
   }
 
+  /**
+   * Gets the current version from the Python manifest file.
+   * @returns The current version or null if not found.
+   */
   getCurrentVersion(): string | null {
     if (!this.manifestPath) return null;
 
@@ -34,6 +45,11 @@ export class PythonUpdater implements UpdaterInterface {
     }
   }
 
+  /**
+   * Bumps the version in the Python manifest file.
+   * @param releaseType The type of release (patch, minor, major).
+   * @returns The new version.
+   */
   bumpVersion(releaseType: ReleaseType): string {
     if (!this.manifestPath) throw new Error('Python manifest file not found');
     const current = this.getCurrentVersion();

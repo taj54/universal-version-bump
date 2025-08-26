@@ -2,7 +2,13 @@ import * as exec from '@actions/exec';
 import * as core from '@actions/core';
 import * as github from '@actions/github';
 
+/**
+ * Service for interacting with Git.
+ */
 export class GitService {
+  /**
+   * Configures the Git user.
+   */
   async configureGitUser(): Promise<void> {
     await exec.exec('git', ['config', 'user.name', 'github-actions[bot]']);
     await exec.exec('git', [
@@ -12,6 +18,11 @@ export class GitService {
     ]);
   }
 
+  /**
+   * Commits the changes with the specified commit message.
+   * @param message The commit message.
+   * @returns True if changes were committed, false otherwise.
+   */
   async commitChanges(message: string): Promise<boolean> {
     await exec.exec('git', ['add', '-A']);
     try {
@@ -24,6 +35,11 @@ export class GitService {
     }
   }
 
+  /**
+   * Creates a release branch for the specified version.
+   * @param version The version to create the branch for.
+   * @returns The name of the created branch or null if no changes were made.
+   */
   async createReleaseBranch(version: string): Promise<string | null> {
     const branch = `version/v${version}`;
     await exec.exec('git', ['checkout', '-b', branch]);
@@ -36,11 +52,21 @@ export class GitService {
     return branch;
   }
 
+  /**
+   * Creates a Git tag for the specified version.
+   * @param version The version to create the tag for.
+   */
   async createAndPushTag(version: string): Promise<void> {
     await exec.exec('git', ['tag', `v${version}`]);
     await exec.exec('git', ['push', 'origin', 'HEAD', '--tags']);
   }
 
+  /**
+   * Creates a pull request for the specified branch and version.
+   * @param branch The branch to create the pull request for.
+   * @param version The version to include in the pull request.
+   * @returns The URL of the created pull request.
+   */
   async createPullRequest(branch: string, version: string) {
     const token = process.env.GITHUB_TOKEN;
     if (!token) {

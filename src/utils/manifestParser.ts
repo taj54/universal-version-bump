@@ -1,6 +1,9 @@
 import { FileHandler } from './fileHandler';
 import { InvalidManifestError } from '../errors';
 
+/**
+ * Utility class for parsing and updating manifest files.
+ */
 export class ManifestParser {
   private fileHandler: FileHandler;
 
@@ -8,6 +11,11 @@ export class ManifestParser {
     this.fileHandler = fileHandler;
   }
 
+  /**
+   * Detects the presence of a manifest file.
+   * @param manifestNames The names of the manifest files to check.
+   * @returns The path to the manifest file if found, null otherwise.
+   */
   detectManifest(manifestNames: string[]): string | null {
     for (const name of manifestNames) {
       if (this.fileHandler.fileExists(name)) {
@@ -17,6 +25,13 @@ export class ManifestParser {
     return null;
   }
 
+  /**
+   * Gets the version from a manifest file.
+   * @param manifestPath The path to the manifest file.
+   * @param type The type of manifest (json or regex).
+   * @param options Options for extracting the version.
+   * @returns The version string or null if not found.
+   */
   getVersion(
     manifestPath: string,
     type: 'json' | 'regex',
@@ -59,6 +74,13 @@ export class ManifestParser {
     return null;
   }
 
+  /**
+   * Updates the version in a manifest file.
+   * @param manifestPath The path to the manifest file.
+   * @param newVersion The new version to set.
+   * @param type The type of manifest (json or regex).
+   * @param options Options for updating the version.
+   */
   updateVersion(
     manifestPath: string,
     newVersion: string,

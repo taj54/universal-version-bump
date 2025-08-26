@@ -1,5 +1,8 @@
 import type { ReleaseType } from 'semver';
 
+/**
+ * Interface for version updaters.
+ */
 export interface UpdaterInterface {
   /** Name of the platform/language */
   platform: string;

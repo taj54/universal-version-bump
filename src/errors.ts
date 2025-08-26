@@ -1,3 +1,6 @@
+/**
+ * Error thrown when platform detection fails.
+ */
 export class PlatformDetectionError extends Error {
   constructor(message: string) {
     super(message);
@@ -5,6 +8,9 @@ export class PlatformDetectionError extends Error {
   }
 }
 
+/**
+ * Error thrown when version bumping fails.
+ */
 export class VersionBumpError extends Error {
   constructor(message: string) {
     super(message);
@@ -12,6 +18,9 @@ export class VersionBumpError extends Error {
   }
 }
 
+/**
+ * Error thrown when a file is not found.
+ */
 export class FileNotFoundError extends Error {
   constructor(message: string) {
     super(message);
@@ -19,6 +28,9 @@ export class FileNotFoundError extends Error {
   }
 }
 
+/**
+ * Error thrown when a manifest file is invalid.
+ */
 export class InvalidManifestError extends Error {
   constructor(message: string) {
     super(message);

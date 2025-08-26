@@ -1,13 +1,26 @@
 import fs from 'fs';
 import { FileNotFoundError } from '../errors';
 
+/**
+ * Utility class for handling file operations.
+ */
 export class FileHandler {
   constructor() {}
 
+  /**
+   * Checks if a file exists.
+   * @param filePath The path to the file.
+   * @returns True if the file exists, false otherwise.
+   */
   fileExists(filePath: string): boolean {
     return fs.existsSync(filePath);
   }
 
+  /**
+   * Reads the contents of a file.
+   * @param filePath The path to the file.
+   * @returns The contents of the file.
+   */
   readFile(filePath: string): string {
     if (!this.fileExists(filePath)) {
       throw new FileNotFoundError(`File not found: ${filePath}`);
@@ -15,10 +28,12 @@ export class FileHandler {
     return fs.readFileSync(filePath, 'utf8');
   }
 
+  /**
+   * Writes the contents to a file.
+   * @param filePath The path to the file.
+   * @param content The content to write to the file.
+   */
   writeFile(filePath: string, content: string): void {
-    // For writeFile, we don't necessarily need to check fileExists first
-    // as fs.writeFileSync will create the file if it doesn't exist.
-    // However, if we want to ensure the directory exists, that's a different concern.
     fs.writeFileSync(filePath, content);
   }
 }

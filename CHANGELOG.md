@@ -9,7 +9,7 @@ All notable changes for each version of the Ambient Music extension.
 ### Added
 
 - add changelog generation
-- version bumpupdated this  taj54/universal-version-bump@v0.9.0
+- version bumpupdated this taj54/universal-version-bump@v0.9.0
 
 ### Changed
 
