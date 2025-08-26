@@ -1,12 +1,12 @@
 /**
- * universal-version-bump v0.9.1
+ * universal-version-bump v0.9.2
  * Universal Version Bump
  *
  * Description: A GitHub Action to automatically bump versions across any app (Node, Python, PHP, Docker, etc.)
  * Author: Taj <tajulislamj200@gmail.com>
  * Homepage: https://github.com/taj54/universal-version-bump#readme
  * License: MIT
- * Generated on Tue, 26 Aug 2025 10:10:42 GMT
+ * Generated on Tue, 26 Aug 2025 10:43:40 GMT
  */
 require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
