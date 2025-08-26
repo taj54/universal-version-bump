@@ -17,8 +17,6 @@ on:
           - minor
           - major
 
-
-
 jobs:
   bump:
     runs-on: ubuntu-latest
