@@ -1,0 +1,75 @@
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { ChangelogService } from '../../src/services/changelogService';
+import { FileHandler } from '../../src/utils/fileHandler';
+import * as exec from '@actions/exec';
+
+vi.mock('@actions/exec');
+vi.mock('../../src/utils/fileHandler');
+
+describe('ChangelogService', () => {
+  let changelogService: ChangelogService;
+  let fileHandler: FileHandler;
+
+  beforeEach(() => {
+    fileHandler = new FileHandler();
+    changelogService = new ChangelogService(fileHandler);
+  });
+
+  it('should get the latest tag', async () => {
+    const execSpy = vi.spyOn(exec, 'exec').mockImplementation((command, args, options) => {
+      options.listeners.stdout(Buffer.from('v1.0.0'));
+      return Promise.resolve(0);
+    });
+
+    const latestTag = await changelogService.getLatestTag();
+
+    expect(execSpy).toHaveBeenCalledWith(
+      'git',
+      ['describe', '--tags', '--abbrev=0'],
+      expect.any(Object),
+    );
+    expect(latestTag).toBe('v1.0.0');
+  });
+
+  it('should get commits since a tag', async () => {
+    const execSpy = vi.spyOn(exec, 'exec').mockImplementation((command, args, options) => {
+      options.listeners.stdout(Buffer.from('commit1\ncommit2'));
+      return Promise.resolve(0);
+    });
+
+    const commits = await changelogService.getCommitsSinceTag('v1.0.0');
+
+    expect(execSpy).toHaveBeenCalledWith(
+      'git',
+      ['log', 'v1.0.0..HEAD', '--oneline'],
+      expect.any(Object),
+    );
+    expect(commits).toEqual(['commit1', 'commit2']);
+  });
+
+  it('should generate a changelog', () => {
+    const commits = ['hash1 feat: new feature', 'hash2 fix: a bug fix', 'hash3 chore: maintenance'];
+    const newVersion = '1.1.0';
+
+    const changelog = changelogService.generateChangelog(commits, newVersion);
+    console.log(changelog);
+
+    expect(changelog).toContain('## v1.1.0');
+    expect(changelog).toContain('### Added');
+    expect(changelog).toContain('- new feature');
+    expect(changelog).toContain('### Fixed');
+    expect(changelog).toContain('- a bug fix');
+    expect(changelog).toContain('### Changed');
+    expect(changelog).toContain('- maintenance');
+  });
+
+  it('should update the changelog file', async () => {
+    const readFileSpy = vi.spyOn(fileHandler, 'readFile').mockResolvedValue('existing content');
+    const writeFileSpy = vi.spyOn(fileHandler, 'writeFile').mockResolvedValue();
+
+    await changelogService.updateChangelog('new content');
+
+    expect(readFileSpy).toHaveBeenCalledWith('CHANGELOG.md');
+    expect(writeFileSpy).toHaveBeenCalledWith('CHANGELOG.md', 'new contentexisting content');
+  });
+});

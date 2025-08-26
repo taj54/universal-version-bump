@@ -1,4 +1,5 @@
-import { UpdaterService, GitService } from './services';
+import { UpdaterService, GitService, ChangelogService } from './services';
+import { FileHandler } from './utils';
 import {
   DockerUpdater,
   GoUpdater,
@@ -33,12 +34,20 @@ async function run() {
 
     const updaterService = new UpdaterService(updaterRegistry);
     const gitService = new GitService();
+    const fileHandler = new FileHandler();
+    const changelogService = new ChangelogService(fileHandler);
 
     const platform = updaterService.getPlatform(targetPlatform);
     core.info(`Detected platform: ${platform}`);
 
     const version = updaterService.updateVersion(platform, releaseType);
     core.setOutput('new_version', version);
+
+    // Generate and update changelog
+    const latestTag = await changelogService.getLatestTag();
+    const commits = await changelogService.getCommitsSinceTag(latestTag);
+    const changelogContent = changelogService.generateChangelog(commits, version);
+    await changelogService.updateChangelog(changelogContent);
 
     // Git Commit & Tag
     const gitTag = GIT_TAG;

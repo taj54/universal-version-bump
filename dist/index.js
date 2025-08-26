@@ -1,12 +1,12 @@
 /**
- * universal-version-bump v0.9.0
+ * universal-version-bump v0.9.1
  * Universal Version Bump
  *
  * Description: A GitHub Action to automatically bump versions across any app (Node, Python, PHP, Docker, etc.)
  * Author: Taj <tajulislamj200@gmail.com>
  * Homepage: https://github.com/taj54/universal-version-bump#readme
  * License: MIT
- * Generated on Mon, 25 Aug 2025 10:58:18 GMT
+ * Generated on Tue, 26 Aug 2025 08:40:56 GMT
  */
 require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
@@ -32756,6 +32756,7 @@ var __importStar = (this && this.__importStar) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const services_1 = __nccwpck_require__(5234);
+const utils_1 = __nccwpck_require__(9499);
 const updaters_1 = __nccwpck_require__(1384);
 const registry_1 = __nccwpck_require__(8378);
 const errors_1 = __nccwpck_require__(4830);
@@ -32775,10 +32776,17 @@ async function run() {
         updaterRegistry.registerUpdater(new updaters_1.PHPUpdater());
         const updaterService = new services_1.UpdaterService(updaterRegistry);
         const gitService = new services_1.GitService();
+        const fileHandler = new utils_1.FileHandler();
+        const changelogService = new services_1.ChangelogService(fileHandler);
         const platform = updaterService.getPlatform(targetPlatform);
         core.info(`Detected platform: ${platform}`);
         const version = updaterService.updateVersion(platform, releaseType);
         core.setOutput('new_version', version);
+        // Generate and update changelog
+        const latestTag = await changelogService.getLatestTag();
+        const commits = await changelogService.getCommitsSinceTag(latestTag);
+        const changelogContent = changelogService.generateChangelog(commits, version);
+        await changelogService.updateChangelog(changelogContent);
         // Git Commit & Tag
         const gitTag = config_1.GIT_TAG;
         await gitService.configureGitUser();
@@ -32865,6 +32873,111 @@ class UpdaterRegistry {
     }
 }
 exports.UpdaterRegistry = UpdaterRegistry;
+
+
+/***/ }),
+
+/***/ 5417:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ChangelogService = void 0;
+const exec = __importStar(__nccwpck_require__(8872));
+class ChangelogService {
+    constructor(fileHandler) {
+        this.fileHandler = fileHandler;
+    }
+    async getLatestTag() {
+        let latestTag = '';
+        const options = {
+            listeners: {
+                stdout: (data) => {
+                    latestTag += data.toString();
+                },
+            },
+        };
+        await exec.exec('git', ['describe', '--tags', '--abbrev=0'], options);
+        return latestTag.trim();
+    }
+    async getCommitsSinceTag(tag) {
+        let commits = '';
+        const options = {
+            listeners: {
+                stdout: (data) => {
+                    commits += data.toString();
+                },
+            },
+        };
+        await exec.exec('git', ['log', `${tag}..HEAD`, '--oneline'], options);
+        return commits.split('\n').filter(Boolean);
+    }
+    generateChangelog(commits, newVersion) {
+        const changelogDate = new Date().toISOString().split('T')[0];
+        let changelogContent = `## v${newVersion} ${changelogDate}\n\n`;
+        const categorizedCommits = { Added: [], Changed: [], Fixed: [] };
+        for (const commit of commits) {
+            const commitMessage = commit.split(' ').slice(1).join(' ');
+            if (commitMessage.startsWith('feat') || commitMessage.startsWith('Added')) {
+                categorizedCommits.Added.push(`- ${commitMessage}`);
+            }
+            else if (commitMessage.startsWith('fix') || commitMessage.startsWith('Fixed')) {
+                categorizedCommits.Fixed.push(`- ${commitMessage}`);
+            }
+            else {
+                categorizedCommits.Changed.push(`- ${commitMessage}`);
+            }
+        }
+        for (const category in categorizedCommits) {
+            if (categorizedCommits[category].length > 0) {
+                changelogContent += `### ${category}\n\n`;
+                changelogContent += categorizedCommits[category].join('\n') + '\n\n';
+            }
+        }
+        return changelogContent;
+    }
+    async updateChangelog(changelogContent) {
+        const changelogPath = 'CHANGELOG.md';
+        const existingChangelog = await this.fileHandler.readFile(changelogPath);
+        const newChangelog = changelogContent + existingChangelog;
+        await this.fileHandler.writeFile(changelogPath, newChangelog);
+    }
+}
+exports.ChangelogService = ChangelogService;
 
 
 /***/ }),
@@ -32995,6 +33108,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 __exportStar(__nccwpck_require__(9104), exports);
 __exportStar(__nccwpck_require__(8743), exports);
+__exportStar(__nccwpck_require__(5417), exports);
 
 
 /***/ }),
@@ -33105,7 +33219,7 @@ class GoUpdater {
         if (!this.manifestPath)
             return null;
         return this.manifestParser.getVersion(this.manifestPath, 'regex', {
-            regex: /module\s+.*\n.*v(\d+\.\d+\.\d+)/,
+            regex: /^module\s+[^\s]+\s+v?(\d+\.\d+\.\d+)/m,
         });
     }
     bumpVersion(releaseType) {
