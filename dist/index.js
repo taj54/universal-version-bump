@@ -6,7 +6,7 @@
  * Author: Taj <tajulislamj200@gmail.com>
  * Homepage: https://github.com/taj54/universal-version-bump#readme
  * License: MIT
- * Generated on Tue, 26 Aug 2025 08:40:56 GMT
+ * Generated on Tue, 26 Aug 2025 10:10:42 GMT
  */
 require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
@@ -32918,10 +32918,17 @@ var __importStar = (this && this.__importStar) || (function () {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.ChangelogService = void 0;
 const exec = __importStar(__nccwpck_require__(8872));
+/**
+ * Service for managing the changelog file.
+ */
 class ChangelogService {
     constructor(fileHandler) {
         this.fileHandler = fileHandler;
     }
+    /**
+     * Get the latest git tag.
+     * @returns The latest tag as a string.
+     */
     async getLatestTag() {
         let latestTag = '';
         const options = {
@@ -32934,6 +32941,11 @@ class ChangelogService {
         await exec.exec('git', ['describe', '--tags', '--abbrev=0'], options);
         return latestTag.trim();
     }
+    /**
+     * Get the commits since a specific tag.
+     * @param tag The tag to get commits since.
+     * @returns An array of commit messages.
+     */
     async getCommitsSinceTag(tag) {
         let commits = '';
         const options = {
@@ -32946,20 +32958,28 @@ class ChangelogService {
         await exec.exec('git', ['log', `${tag}..HEAD`, '--oneline'], options);
         return commits.split('\n').filter(Boolean);
     }
+    /**
+     * Generate a changelog from the given commits.
+     * @param commits The list of commits to include in the changelog.
+     * @param newVersion The new version number.
+     * @returns The generated changelog as a string.
+     */
     generateChangelog(commits, newVersion) {
         const changelogDate = new Date().toISOString().split('T')[0];
         let changelogContent = `## v${newVersion} ${changelogDate}\n\n`;
         const categorizedCommits = { Added: [], Changed: [], Fixed: [] };
         for (const commit of commits) {
             const commitMessage = commit.split(' ').slice(1).join(' ');
+            const messageParts = commitMessage.split(':');
+            const message = messageParts.length > 1 ? messageParts.slice(1).join(':').trim() : commitMessage;
             if (commitMessage.startsWith('feat') || commitMessage.startsWith('Added')) {
-                categorizedCommits.Added.push(`- ${commitMessage}`);
+                categorizedCommits.Added.push(`- ${message}`);
             }
             else if (commitMessage.startsWith('fix') || commitMessage.startsWith('Fixed')) {
-                categorizedCommits.Fixed.push(`- ${commitMessage}`);
+                categorizedCommits.Fixed.push(`- ${message}`);
             }
             else {
-                categorizedCommits.Changed.push(`- ${commitMessage}`);
+                categorizedCommits.Changed.push(`- ${message}`);
             }
         }
         for (const category in categorizedCommits) {
@@ -32970,6 +32990,10 @@ class ChangelogService {
         }
         return changelogContent;
     }
+    /**
+     * Update the changelog file with the new content.
+     * @param changelogContent The new changelog content to add.
+     */
     async updateChangelog(changelogContent) {
         const changelogPath = 'CHANGELOG.md';
         const existingChangelog = await this.fileHandler.readFile(changelogPath);

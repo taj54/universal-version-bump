@@ -14,14 +14,14 @@ This action will automatically detect the version file and bump the version acco
 
 The action will first try to detect the platform of the project by looking for common version files in the root directory. The following files are supported:
 
-| Platform | Version File |
-| --- | --- |
-| Docker | `Dockerfile` |
-| Go | `go.mod` |
-| Node | `package.json` |
-| PHP | `composer.json` |
-| Python | `pyproject.toml`, `setup.py` |
-| Rust | `Cargo.toml` |
+| Platform | Version File                 |
+| -------- | ---------------------------- |
+| Docker   | `Dockerfile`                 |
+| Go       | `go.mod`                     |
+| Node     | `package.json`               |
+| PHP      | `composer.json`              |
+| Python   | `pyproject.toml`, `setup.py` |
+| Rust     | `Cargo.toml`                 |
 
 If a version file is found, the action will bump the version in that file. If no version file is found, the action will fail.
 
@@ -64,19 +64,19 @@ To explicitly target a platform, use the `target_platform` input:
 
 ## Inputs
 
-| Name | Description | Default |
-| --- | --- | --- |
-| `release_type` | Select the version bump type (patch, minor, major) | `patch` |
-| `git_tag` | Whether to create a Git tag after bump | `true` |
-| `target_platform` | Explicitly specify the platform to update (e.g., `node`, `python`). If not provided, the platform will be detected automatically. | `''` |
-| `target_path` | The target path where the version bump should be applied. If not provided, the action will run in the root directory. | `.` |
+| Name              | Description                                                                                                                       | Default |
+| ----------------- | --------------------------------------------------------------------------------------------------------------------------------- | ------- |
+| `release_type`    | Select the version bump type (patch, minor, major)                                                                                | `patch` |
+| `git_tag`         | Whether to create a Git tag after bump                                                                                            | `true`  |
+| `target_platform` | Explicitly specify the platform to update (e.g., `node`, `python`). If not provided, the platform will be detected automatically. | `''`    |
+| `target_path`     | The target path where the version bump should be applied. If not provided, the action will run in the root directory.             | `.`     |
 
 ## Outputs
 
-| Name | Description |
-| --- | --- |
-| `new_version` | The new bumped version |
-| `tag` | The created Git tag (if enabled) |
+| Name          | Description                      |
+| ------------- | -------------------------------- |
+| `new_version` | The new bumped version           |
+| `tag`         | The created Git tag (if enabled) |
 
 ## Example Workflow
 
@@ -100,8 +100,6 @@ on:
           - minor
           - major
 
-
-
 jobs:
   bump:
     runs-on: ubuntu-latest
@@ -118,7 +116,6 @@ jobs:
           git_tag: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
 ```
 
 ## Development
