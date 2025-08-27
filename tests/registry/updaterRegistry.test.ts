@@ -2,9 +2,9 @@ import { describe, it, expect } from 'vitest';
 import { UpdaterRegistry } from '../../src/registry';
 
 describe('UpdaterRegistry', () => {
-  it('should load all updaters from the updaters directory', async () => {
+  it('should load all updaters on instantiation', async () => {
     const registry = new UpdaterRegistry();
-    await registry.loadUpdaters();
+    await registry.ensureInitialized();
     const allUpdaters = registry.getAllUpdaters();
 
     // There are 6 updaters in the src/updaters directory

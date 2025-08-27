@@ -9,8 +9,15 @@ export class UpdaterRegistry {
   private updaters: Map<string, IUpdater> = new Map();
   private fileHandler: FileHandler;
 
+  private initializationPromise: Promise<void>;
+
   constructor() {
     this.fileHandler = new FileHandler();
+    this.initializationPromise = this.loadUpdaters();
+  }
+
+  public async ensureInitialized(): Promise<void> {
+    await this.initializationPromise;
   }
 
   /**

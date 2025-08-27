@@ -6,7 +6,7 @@
  * Author: Taj <tajulislamj200@gmail.com>
  * Homepage: https://github.com/taj54/universal-version-bump#readme
  * License: MIT
- * Generated on Wed, 27 Aug 2025 09:27:33 GMT
+ * Generated on Wed, 27 Aug 2025 09:46:33 GMT
  */
 require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
@@ -32784,7 +32784,7 @@ async function run() {
         const releaseType = config_1.RELEASE_TYPE;
         const targetPlatform = config_1.TARGET_PLATFORM;
         const updaterRegistry = new registry_1.UpdaterRegistry();
-        await updaterRegistry.loadUpdaters();
+        await updaterRegistry.ensureInitialized();
         const updaterService = new services_1.UpdaterService(updaterRegistry);
         const gitService = new services_1.GitService();
         const fileHandler = new utils_1.FileHandler();
@@ -32911,6 +32911,10 @@ class UpdaterRegistry {
     constructor() {
         this.updaters = new Map();
         this.fileHandler = new fileHandler_1.FileHandler();
+        this.initializationPromise = this.loadUpdaters();
+    }
+    async ensureInitialized() {
+        await this.initializationPromise;
     }
     /**
      * Dynamically loads and registers all updaters from the updaters directory.
