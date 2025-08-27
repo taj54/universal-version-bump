@@ -6,18 +6,10 @@ All notable changes for each version of the Ambient Music extension.
 
 ## v0.10.2 2025-08-27
 
-### Added
-
-- Improved updater loading mechanism
 
 ### Changed
 
 - restructure service initialization
-- Merge pull request #23 from taj54/version/v0.10.1
-- bump version to v0.10.1
-- simplify updater loading
-- improve UpdaterRegistry
-- replace fs with fileHandler
 
 ## v0.10.1 2025-08-27
 
