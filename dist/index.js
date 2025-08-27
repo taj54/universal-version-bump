@@ -1,12 +1,12 @@
 /**
- * universal-version-bump v0.9.4
+ * universal-version-bump v0.10.0
  * Universal Version Bump
  *
  * Description: A GitHub Action to automatically bump versions across any app (Node, Python, PHP, Docker, etc.)
  * Author: Taj <tajulislamj200@gmail.com>
  * Homepage: https://github.com/taj54/universal-version-bump#readme
  * License: MIT
- * Generated on Tue, 26 Aug 2025 13:59:07 GMT
+ * Generated on Wed, 27 Aug 2025 08:13:44 GMT
  */
 require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
@@ -32774,7 +32774,6 @@ var __importStar = (this && this.__importStar) || (function () {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const services_1 = __nccwpck_require__(5234);
 const utils_1 = __nccwpck_require__(9499);
-const updaters_1 = __nccwpck_require__(1384);
 const registry_1 = __nccwpck_require__(8378);
 const errors_1 = __nccwpck_require__(4830);
 const config_1 = __nccwpck_require__(5496);
@@ -32785,12 +32784,7 @@ async function run() {
         const releaseType = config_1.RELEASE_TYPE;
         const targetPlatform = config_1.TARGET_PLATFORM;
         const updaterRegistry = new registry_1.UpdaterRegistry();
-        updaterRegistry.registerUpdater(new updaters_1.NodeUpdater());
-        updaterRegistry.registerUpdater(new updaters_1.PythonUpdater());
-        updaterRegistry.registerUpdater(new updaters_1.RustUpdater());
-        updaterRegistry.registerUpdater(new updaters_1.GoUpdater());
-        updaterRegistry.registerUpdater(new updaters_1.DockerUpdater());
-        updaterRegistry.registerUpdater(new updaters_1.PHPUpdater());
+        await updaterRegistry.loadUpdaters();
         const updaterService = new services_1.UpdaterService(updaterRegistry);
         const gitService = new services_1.GitService();
         const fileHandler = new utils_1.FileHandler();
@@ -32869,18 +32863,73 @@ __exportStar(__nccwpck_require__(6019), exports);
 /***/ }),
 
 /***/ 6019:
-/***/ ((__unused_webpack_module, exports) => {
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
 
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.UpdaterRegistry = void 0;
+const path = __importStar(__nccwpck_require__(6928));
+const fs = __importStar(__nccwpck_require__(9896));
 /**
  * Registry for managing updaters.
  */
 class UpdaterRegistry {
     constructor() {
         this.updaters = new Map();
+    }
+    /**
+     * Dynamically loads and registers all updaters from the updaters directory.
+     */
+    async loadUpdaters() {
+        const updatersPath = path.join(__dirname, '../updaters');
+        const files = fs.readdirSync(updatersPath);
+        for (const file of files) {
+            if (file.endsWith('Updater.ts')) {
+                const modulePath = path.join(updatersPath, file);
+                const module = await __nccwpck_require__(7443)(modulePath);
+                for (const key in module) {
+                    if (typeof module[key] === 'function' &&
+                        typeof module[key].prototype.canHandle === 'function') {
+                        const updater = new module[key]();
+                        this.registerUpdater(updater);
+                    }
+                }
+            }
+        }
     }
     /**
      * Registers a new updater.
@@ -33281,459 +33330,6 @@ exports.UpdaterService = UpdaterService;
 
 /***/ }),
 
-/***/ 553:
-/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.DockerUpdater = void 0;
-const utils_1 = __nccwpck_require__(9499);
-/**
- * Updater for Dockerfiles.
- */
-class DockerUpdater {
-    constructor() {
-        this.platform = 'docker';
-        this.manifestPath = null;
-        const fileHandler = new utils_1.FileHandler();
-        this.manifestParser = new utils_1.ManifestParser(fileHandler);
-    }
-    /**
-     * Checks if the updater can handle the current repository.
-     * @returns True if the updater can handle the repo, false otherwise.
-     */
-    canHandle() {
-        this.manifestPath = this.manifestParser.detectManifest(['Dockerfile']);
-        return this.manifestPath !== null;
-    }
-    /**
-     * Gets the current version from the Dockerfile.
-     * @returns The current version or null if not found.
-     */
-    getCurrentVersion() {
-        if (!this.manifestPath)
-            return null;
-        return this.manifestParser.getVersion(this.manifestPath, 'regex', {
-            regex: /LABEL version="([^"]+)"/,
-        });
-    }
-    /**
-     * Bumps the version in the Dockerfile.
-     * @param releaseType The type of release (patch, minor, major).
-     * @returns The new version.
-     */
-    bumpVersion(releaseType) {
-        if (!this.manifestPath)
-            throw new Error('Dockerfile not found');
-        const current = this.getCurrentVersion();
-        if (!current)
-            throw new Error('Docker version not found');
-        const newVersion = (0, utils_1.calculateNextVersion)(current, releaseType);
-        this.manifestParser.updateVersion(this.manifestPath, newVersion, 'regex', {
-            regexReplace: /(LABEL\s+version=")([^"]+)(")/,
-        });
-        return newVersion;
-    }
-}
-exports.DockerUpdater = DockerUpdater;
-
-
-/***/ }),
-
-/***/ 319:
-/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.GoUpdater = void 0;
-const utils_1 = __nccwpck_require__(9499);
-/**
- * Updater for Go modules.
- */
-class GoUpdater {
-    constructor() {
-        this.platform = 'go';
-        this.manifestPath = null;
-        const fileHandler = new utils_1.FileHandler();
-        this.manifestParser = new utils_1.ManifestParser(fileHandler);
-    }
-    /**
-     * Checks if the updater can handle the current repository.
-     * @returns True if the updater can handle the repo, false otherwise.
-     */
-    canHandle() {
-        this.manifestPath = this.manifestParser.detectManifest(['go.mod']);
-        return this.manifestPath !== null;
-    }
-    /**
-     * Gets the current version from the go.mod file.
-     * @returns The current version or null if not found.
-     */
-    getCurrentVersion() {
-        if (!this.manifestPath)
-            return null;
-        return this.manifestParser.getVersion(this.manifestPath, 'regex', {
-            regex: /^module\s+[^\s]+\s+v?(\d+\.\d+\.\d+)/m,
-        });
-    }
-    /**
-     * Bumps the version in the go.mod file.
-     * @param releaseType The type of release (patch, minor, major).
-     * @returns The new version.
-     */
-    bumpVersion(releaseType) {
-        if (!this.manifestPath)
-            throw new Error('go.mod not found');
-        const current = this.getCurrentVersion();
-        if (!current)
-            throw new Error('Go version not found');
-        const newVersion = (0, utils_1.calculateNextVersion)(current, releaseType);
-        this.manifestParser.updateVersion(this.manifestPath, `v${newVersion}`, 'regex', {
-            regexReplace: /v\d+\.\d+\.\d+/,
-        });
-        return newVersion;
-    }
-}
-exports.GoUpdater = GoUpdater;
-
-
-/***/ }),
-
-/***/ 1384:
-/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
-
-"use strict";
-
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __exportStar = (this && this.__exportStar) || function(m, exports) {
-    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-__exportStar(__nccwpck_require__(1337), exports);
-__exportStar(__nccwpck_require__(5203), exports);
-__exportStar(__nccwpck_require__(2531), exports);
-__exportStar(__nccwpck_require__(319), exports);
-__exportStar(__nccwpck_require__(553), exports);
-__exportStar(__nccwpck_require__(4639), exports);
-
-
-/***/ }),
-
-/***/ 1337:
-/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.NodeUpdater = void 0;
-const utils_1 = __nccwpck_require__(9499);
-/**
- * Updater for Node.js projects using package.json.
- */
-class NodeUpdater {
-    constructor() {
-        this.platform = 'node';
-        this.manifestPath = null;
-        const fileHandler = new utils_1.FileHandler();
-        this.manifestParser = new utils_1.ManifestParser(fileHandler);
-    }
-    /**
-     * Checks if the updater can handle the current repository.
-     * @returns True if the updater can handle the repo, false otherwise.
-     */
-    canHandle() {
-        this.manifestPath = this.manifestParser.detectManifest(['package.json']);
-        return this.manifestPath !== null;
-    }
-    /**
-     * Gets the current version from the package.json file.
-     * @returns The current version or null if not found.
-     */
-    getCurrentVersion() {
-        if (!this.manifestPath)
-            return null;
-        return this.manifestParser.getVersion(this.manifestPath, 'json', {
-            jsonPath: ['version'],
-        });
-    }
-    /**
-     * Bumps the version in the package.json file.
-     * @param releaseType The type of release (patch, minor, major).
-     * @returns The new version.
-     */
-    bumpVersion(releaseType) {
-        if (!this.manifestPath)
-            throw new Error('package.json not found');
-        const current = this.getCurrentVersion();
-        if (!current)
-            throw new Error('Node version not found');
-        const newVersion = (0, utils_1.calculateNextVersion)(current, releaseType);
-        this.manifestParser.updateVersion(this.manifestPath, newVersion, 'json', {
-            jsonPath: ['version'],
-        });
-        return newVersion;
-    }
-}
-exports.NodeUpdater = NodeUpdater;
-
-
-/***/ }),
-
-/***/ 4639:
-/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.PHPUpdater = void 0;
-const utils_1 = __nccwpck_require__(9499);
-/**
- * Updater for PHP projects.
- */
-class PHPUpdater {
-    constructor() {
-        this.platform = 'php';
-        this.manifestPath = null;
-        const fileHandler = new utils_1.FileHandler();
-        this.manifestParser = new utils_1.ManifestParser(fileHandler);
-    }
-    /**
-     * Checks if the updater can handle the current repository.
-     * @returns True if the updater can handle the repo, false otherwise.
-     */
-    canHandle() {
-        this.manifestPath = this.manifestParser.detectManifest([
-            'composer.json',
-            'VERSION',
-            'version.php',
-            'config.php',
-        ]);
-        return this.manifestPath !== null;
-    }
-    /**
-     * Gets the current version from the PHP manifest file.
-     * @returns The current version or null if not found.
-     */
-    getCurrentVersion() {
-        if (!this.manifestPath)
-            return null;
-        switch (this.manifestPath) {
-            case 'composer.json':
-                return this.manifestParser.getVersion(this.manifestPath, 'json', {
-                    jsonPath: ['version'],
-                });
-            case 'VERSION':
-                return this.manifestParser.getVersion(this.manifestPath, 'regex', {
-                    regex: /^([\d.]+)$/m, // Matches the entire content as version
-                });
-            case 'version.php':
-                return this.manifestParser.getVersion(this.manifestPath, 'regex', {
-                    regex: /['"]([\d.]+)['']/, // Matches version in quotes
-                });
-            case 'config.php':
-                return this.manifestParser.getVersion(this.manifestPath, 'regex', {
-                    regex: /'version'\s*=>\s*'([\d.]+)'/, // Matches version in config array
-                });
-            default:
-                return null;
-        }
-    }
-    /**
-     * Bumps the version in the PHP manifest file.
-     * @param releaseType The type of release (patch, minor, major).
-     * @returns The new version.
-     */
-    bumpVersion(releaseType) {
-        if (!this.manifestPath)
-            throw new Error('PHP manifest file not found');
-        const current = this.getCurrentVersion();
-        if (!current)
-            throw new Error('PHP version not found');
-        const newVersion = (0, utils_1.calculateNextVersion)(current, releaseType);
-        switch (this.manifestPath) {
-            case 'composer.json':
-                this.manifestParser.updateVersion(this.manifestPath, newVersion, 'json', {
-                    jsonPath: ['version'],
-                });
-                break;
-            case 'VERSION':
-                this.manifestParser.updateVersion(this.manifestPath, newVersion, 'regex', {
-                    regexReplace: /^([\d.]+)$/m,
-                });
-                break;
-            case 'version.php':
-                this.manifestParser.updateVersion(this.manifestPath, newVersion, 'regex', {
-                    regexReplace: /(['"])([\d.]+)(['"])/,
-                });
-                break;
-            case 'config.php':
-                this.manifestParser.updateVersion(this.manifestPath, newVersion, 'regex', {
-                    regexReplace: /('version'\s*=>\s*')([\d.]+)(')/,
-                });
-                break;
-            default:
-                throw new Error(`Unsupported PHP manifest file: ${this.manifestPath}`);
-        }
-        return newVersion;
-    }
-}
-exports.PHPUpdater = PHPUpdater;
-
-
-/***/ }),
-
-/***/ 5203:
-/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.PythonUpdater = void 0;
-const utils_1 = __nccwpck_require__(9499);
-/**
- * Updater for Python projects.
- */
-class PythonUpdater {
-    constructor() {
-        this.platform = 'python';
-        this.manifestPath = null;
-        const fileHandler = new utils_1.FileHandler();
-        this.manifestParser = new utils_1.ManifestParser(fileHandler);
-    }
-    /**
-     * Checks if the updater can handle the current repository.
-     * @returns True if the updater can handle the repo, false otherwise.
-     */
-    canHandle() {
-        this.manifestPath = this.manifestParser.detectManifest(['pyproject.toml', 'setup.py']);
-        return this.manifestPath !== null;
-    }
-    /**
-     * Gets the current version from the Python manifest file.
-     * @returns The current version or null if not found.
-     */
-    getCurrentVersion() {
-        if (!this.manifestPath)
-            return null;
-        switch (this.manifestPath) {
-            case 'pyproject.toml':
-                return this.manifestParser.getVersion(this.manifestPath, 'regex', {
-                    regex: /version\s*=\s*"([^"]+)"/,
-                });
-            case 'setup.py':
-                return this.manifestParser.getVersion(this.manifestPath, 'regex', {
-                    regex: /version\s*=\s*["']([^"']+)["']/, // Matches single or double quotes
-                });
-            default:
-                return null;
-        }
-    }
-    /**
-     * Bumps the version in the Python manifest file.
-     * @param releaseType The type of release (patch, minor, major).
-     * @returns The new version.
-     */
-    bumpVersion(releaseType) {
-        if (!this.manifestPath)
-            throw new Error('Python manifest file not found');
-        const current = this.getCurrentVersion();
-        if (!current)
-            throw new Error('Python version not found');
-        const newVersion = (0, utils_1.calculateNextVersion)(current, releaseType);
-        switch (this.manifestPath) {
-            case 'pyproject.toml':
-                this.manifestParser.updateVersion(this.manifestPath, newVersion, 'regex', {
-                    regexReplace: /(version\s*=\s*")([^"]+)(")/,
-                });
-                break;
-            case 'setup.py':
-                this.manifestParser.updateVersion(this.manifestPath, newVersion, 'regex', {
-                    regexReplace: /(version\s*=\s*["'])([^"']+)(["'])/,
-                });
-                break;
-            default:
-                throw new Error(`Unsupported Python manifest file: ${this.manifestPath}`);
-        }
-        return newVersion;
-    }
-}
-exports.PythonUpdater = PythonUpdater;
-
-
-/***/ }),
-
-/***/ 2531:
-/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.RustUpdater = void 0;
-const utils_1 = __nccwpck_require__(9499);
-/**
- * Updater for Rust projects.
- */
-class RustUpdater {
-    constructor() {
-        this.platform = 'rust';
-        this.manifestPath = null;
-        const fileHandler = new utils_1.FileHandler();
-        this.manifestParser = new utils_1.ManifestParser(fileHandler);
-    }
-    /**
-     * Checks if the updater can handle the current repository.
-     * @returns True if the updater can handle the repo, false otherwise.
-     */
-    canHandle() {
-        this.manifestPath = this.manifestParser.detectManifest(['Cargo.toml']);
-        return this.manifestPath !== null;
-    }
-    /**
-     * Gets the current version from the Cargo.toml file.
-     * @returns The current version or null if not found.
-     */
-    getCurrentVersion() {
-        if (!this.manifestPath)
-            return null;
-        return this.manifestParser.getVersion(this.manifestPath, 'regex', {
-            regex: /version\s*=\s*"([^"]+)"/,
-        });
-    }
-    /**
-     * Bumps the version in the Cargo.toml file.
-     * @param releaseType The type of release (patch, minor, major).
-     * @returns The new version.
-     */
-    bumpVersion(releaseType) {
-        if (!this.manifestPath)
-            throw new Error('Cargo.toml not found');
-        const current = this.getCurrentVersion();
-        if (!current)
-            throw new Error('Rust version not found');
-        const newVersion = (0, utils_1.calculateNextVersion)(current, releaseType);
-        this.manifestParser.updateVersion(this.manifestPath, newVersion, 'regex', {
-            regexReplace: /(version\s*=\s*")([^"]+)(")/,
-        });
-        return newVersion;
-    }
-}
-exports.RustUpdater = RustUpdater;
-
-
-/***/ }),
-
 /***/ 1013:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -33960,6 +33556,25 @@ function calculateNextVersion(currentVersion, releaseType) {
     return newVersion;
 }
 
+
+/***/ }),
+
+/***/ 7443:
+/***/ ((module) => {
+
+function webpackEmptyAsyncContext(req) {
+	// Here Promise.resolve().then() is used instead of new Promise() to prevent
+	// uncaught exception popping up in devtools
+	return Promise.resolve().then(() => {
+		var e = new Error("Cannot find module '" + req + "'");
+		e.code = 'MODULE_NOT_FOUND';
+		throw e;
+	});
+}
+webpackEmptyAsyncContext.keys = () => ([]);
+webpackEmptyAsyncContext.resolve = webpackEmptyAsyncContext;
+webpackEmptyAsyncContext.id = 7443;
+module.exports = webpackEmptyAsyncContext;
 
 /***/ }),
 
@@ -35869,6 +35484,11 @@ module.exports = parseParams
 /******/ 	}
 /******/ 	
 /************************************************************************/
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	(() => {
+/******/ 		__nccwpck_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
+/******/ 	})();
+/******/ 	
 /******/ 	/* webpack/runtime/compat */
 /******/ 	
 /******/ 	if (typeof __nccwpck_require__ !== 'undefined') __nccwpck_require__.ab = __dirname + "/";

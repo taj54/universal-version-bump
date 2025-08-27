@@ -1,13 +1,5 @@
 import { UpdaterService, GitService, ChangelogService } from './services';
 import { FileHandler } from './utils';
-import {
-  DockerUpdater,
-  GoUpdater,
-  NodeUpdater,
-  PHPUpdater,
-  PythonUpdater,
-  RustUpdater,
-} from './updaters';
 import { UpdaterRegistry } from './registry';
 import {
   PlatformDetectionError,
@@ -25,12 +17,7 @@ async function run() {
     const targetPlatform = TARGET_PLATFORM;
 
     const updaterRegistry = new UpdaterRegistry();
-    updaterRegistry.registerUpdater(new NodeUpdater());
-    updaterRegistry.registerUpdater(new PythonUpdater());
-    updaterRegistry.registerUpdater(new RustUpdater());
-    updaterRegistry.registerUpdater(new GoUpdater());
-    updaterRegistry.registerUpdater(new DockerUpdater());
-    updaterRegistry.registerUpdater(new PHPUpdater());
+    await updaterRegistry.loadUpdaters();
 
     const updaterService = new UpdaterService(updaterRegistry);
     const gitService = new GitService();
