@@ -4,6 +4,18 @@ All notable changes for each version of the Ambient Music extension.
 
 ---
 
+## v0.10.1 2025-08-27
+
+### Added
+
+- Improved updater loading mechanism
+
+### Changed
+
+- simplify updater loading
+- improve UpdaterRegistry
+- replace fs with fileHandler
+
 ## v0.10.0 2025-08-27
 
 ### Added
