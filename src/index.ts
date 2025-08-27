@@ -17,7 +17,7 @@ async function run() {
     const targetPlatform = TARGET_PLATFORM;
 
     const updaterRegistry = new UpdaterRegistry();
-    await updaterRegistry.ensureInitialized();
+    await updaterRegistry.loadUpdaters();
     const updaterService = new UpdaterService(updaterRegistry);
     const gitService = new GitService();
     const fileHandler = new FileHandler();

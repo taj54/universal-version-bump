@@ -4,7 +4,7 @@ import { UpdaterRegistry } from '../../src/registry';
 describe('UpdaterRegistry', () => {
   it('should load all updaters on instantiation', async () => {
     const registry = new UpdaterRegistry();
-    await registry.ensureInitialized();
+    await registry.loadUpdaters();
     const allUpdaters = registry.getAllUpdaters();
 
     // There are 6 updaters in the src/updaters directory

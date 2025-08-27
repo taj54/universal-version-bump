@@ -1,45 +1,31 @@
 import { UpdaterInterface as IUpdater } from '../interface';
-import * as path from 'path';
-import { FileHandler } from '../utils/fileHandler';
+import {
+  DockerUpdater,
+  GoUpdater,
+  NodeUpdater,
+  PHPUpdater,
+  PythonUpdater,
+  RustUpdater,
+} from '../updaters';
 
 /**
  * Registry for managing updaters.
  */
 export class UpdaterRegistry {
   private updaters: Map<string, IUpdater> = new Map();
-  private fileHandler: FileHandler;
 
-  private initializationPromise: Promise<void>;
-
-  constructor() {
-    this.fileHandler = new FileHandler();
-    this.initializationPromise = this.loadUpdaters();
-  }
-
-  public async ensureInitialized(): Promise<void> {
-    await this.initializationPromise;
-  }
+  constructor() {}
 
   /**
-   * Dynamically loads and registers all updaters from the updaters directory.
+   * Loads and registers all updaters.
    */
-  async loadUpdaters(updatersPath: string = path.join(__dirname, '../updaters')): Promise<void> {
-    const files = this.fileHandler.readDir(updatersPath);
-    for (const file of files) {
-      if (file.endsWith('Updater.ts')) {
-        const modulePath = path.join(updatersPath, file);
-        const module = await import(modulePath);
-        for (const key in module) {
-          if (
-            typeof module[key] === 'function' &&
-            typeof module[key].prototype.canHandle === 'function'
-          ) {
-            const updater = new module[key]();
-            this.registerUpdater(updater);
-          }
-        }
-      }
-    }
+  async loadUpdaters(): Promise<void> {
+    this.registerUpdater(new DockerUpdater());
+    this.registerUpdater(new GoUpdater());
+    this.registerUpdater(new NodeUpdater());
+    this.registerUpdater(new PHPUpdater());
+    this.registerUpdater(new PythonUpdater());
+    this.registerUpdater(new RustUpdater());
   }
 
   /**
