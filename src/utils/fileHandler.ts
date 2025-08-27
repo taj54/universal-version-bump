@@ -36,4 +36,17 @@ export class FileHandler {
   writeFile(filePath: string, content: string): void {
     fs.writeFileSync(filePath, content);
   }
+
+  /**
+   * Reads the contents of a directory.
+   * @param dirPath The path to the directory.
+   * @returns An array of file names in the directory.
+   * @throws Error if the directory does not exist.
+   */
+  readDir(dirPath: string): string[] {
+    if (!this.fileExists(dirPath)) {
+      throw new FileNotFoundError(`Directory not found: ${dirPath}`);
+    }
+    return fs.readdirSync(dirPath);
+  }
 }

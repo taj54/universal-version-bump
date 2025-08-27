@@ -1,20 +1,23 @@
 import { UpdaterInterface as IUpdater } from '../interface';
 import * as path from 'path';
-import * as fs from 'fs';
+import { FileHandler } from '../utils/fileHandler';
 
 /**
  * Registry for managing updaters.
  */
 export class UpdaterRegistry {
   private updaters: Map<string, IUpdater> = new Map();
+  private fileHandler: FileHandler;
+
+  constructor() {
+    this.fileHandler = new FileHandler();
+  }
 
   /**
    * Dynamically loads and registers all updaters from the updaters directory.
    */
-  async loadUpdaters(): Promise<void> {
-    const updatersPath = path.join(__dirname, '../updaters');
-    const files = fs.readdirSync(updatersPath);
-
+  async loadUpdaters(updatersPath: string = path.join(__dirname, '../updaters')): Promise<void> {
+    const files = this.fileHandler.readDir(updatersPath);
     for (const file of files) {
       if (file.endsWith('Updater.ts')) {
         const modulePath = path.join(updatersPath, file);

@@ -6,7 +6,7 @@
  * Author: Taj <tajulislamj200@gmail.com>
  * Homepage: https://github.com/taj54/universal-version-bump#readme
  * License: MIT
- * Generated on Wed, 27 Aug 2025 08:13:44 GMT
+ * Generated on Wed, 27 Aug 2025 09:27:33 GMT
  */
 require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
@@ -32903,20 +32903,20 @@ var __importStar = (this && this.__importStar) || (function () {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.UpdaterRegistry = void 0;
 const path = __importStar(__nccwpck_require__(6928));
-const fs = __importStar(__nccwpck_require__(9896));
+const fileHandler_1 = __nccwpck_require__(1013);
 /**
  * Registry for managing updaters.
  */
 class UpdaterRegistry {
     constructor() {
         this.updaters = new Map();
+        this.fileHandler = new fileHandler_1.FileHandler();
     }
     /**
      * Dynamically loads and registers all updaters from the updaters directory.
      */
-    async loadUpdaters() {
-        const updatersPath = path.join(__dirname, '../updaters');
-        const files = fs.readdirSync(updatersPath);
+    async loadUpdaters(updatersPath = path.join(__dirname, '../updaters')) {
+        const files = this.fileHandler.readDir(updatersPath);
         for (const file of files) {
             if (file.endsWith('Updater.ts')) {
                 const modulePath = path.join(updatersPath, file);
@@ -33373,6 +33373,18 @@ class FileHandler {
      */
     writeFile(filePath, content) {
         fs_1.default.writeFileSync(filePath, content);
+    }
+    /**
+     * Reads the contents of a directory.
+     * @param dirPath The path to the directory.
+     * @returns An array of file names in the directory.
+     * @throws Error if the directory does not exist.
+     */
+    readDir(dirPath) {
+        if (!this.fileExists(dirPath)) {
+            throw new errors_1.FileNotFoundError(`Directory not found: ${dirPath}`);
+        }
+        return fs_1.default.readdirSync(dirPath);
     }
 }
 exports.FileHandler = FileHandler;
