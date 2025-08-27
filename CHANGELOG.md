@@ -4,6 +4,42 @@ All notable changes for each version of the Ambient Music extension.
 
 ---
 
+## v0.10.0 2025-08-27
+
+### Added
+
+- add changelog generation
+- version bumpupdated this  taj54/universal-version-bump@v0.9.0
+
+### Changed
+
+- improve error handling
+- bump version to v0.9.4
+- Merge pull request #21 from taj54/version/v0.9.4
+- bump version to v0.9.4
+- add changelog for version bumps
+- Merge pull request #18 from taj54/version/v0.9.3
+- bump version to v0.9.3
+- fix path to reusable workflow
+- bump version to v0.9.2
+- Merge pull request #17 from taj54/version/v0.9.2
+- bump version to v0.9.2
+- Merge pull request #16 from taj54/develop-changelog-add-process
+- update changelog and readme
+- update CHANGELOG.md
+- add unit tests for updaters
+- update vitest and dependencies
+- improve README with enhanced structure and details
+- Merge pull request #15 from taj54/version/v0.9.1
+- Update CHANGELOG.md for v0.9.1
+- bump version to v0.9.1
+
+### Fixed
+
+- improve changelog update logic
+- prevent duplicate changelog entries
+- improve error handling in updater tests
+
 ## v0.9.4 2025-08-26
 
 ### Added
