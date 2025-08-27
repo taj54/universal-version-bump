@@ -6,12 +6,18 @@ import * as github from '@actions/github';
  * Service for interacting with Git.
  */
 export class GitService {
+  constructor(private baseBranch: string = 'main') {}
+
+  private async _execGitCommand(args: string[], options?: exec.ExecOptions): Promise<number> {
+    return await exec.exec('git', args, options);
+  }
+
   /**
    * Configures the Git user.
    */
   async configureGitUser(): Promise<void> {
-    await exec.exec('git', ['config', 'user.name', 'github-actions[bot]']);
-    await exec.exec('git', [
+    await this._execGitCommand(['config', 'user.name', 'github-actions[bot]']);
+    await this._execGitCommand([
       'config',
       'user.email',
       'github-actions[bot]@users.noreply.github.com',
@@ -24,13 +30,13 @@ export class GitService {
    * @returns True if changes were committed, false otherwise.
    */
   async commitChanges(message: string): Promise<boolean> {
-    await exec.exec('git', ['add', '-A']);
+    await this._execGitCommand(['add', '-A']);
     try {
-      await exec.exec('git', ['diff-index', '--quiet', 'HEAD']);
+      await this._execGitCommand(['diff-index', '--quiet', 'HEAD']);
       core.info('⚠️ No changes to commit');
       return false;
     } catch {
-      await exec.exec('git', ['commit', '-m', message]);
+      await this._execGitCommand(['commit', '-m', message]);
       return true;
     }
   }
@@ -42,13 +48,13 @@ export class GitService {
    */
   async createReleaseBranch(version: string): Promise<string | null> {
     const branch = `version/v${version}`;
-    await exec.exec('git', ['checkout', '-b', branch]);
+    await this._execGitCommand(['checkout', '-b', branch]);
     const committed = await this.commitChanges(`chore(release): bump version to v${version}`);
     if (!committed) {
       core.info('⚠️ Skipping branch push, no changes detected');
       return null;
     }
-    await exec.exec('git', ['push', 'origin', branch, '--force']);
+    await this._execGitCommand(['push', 'origin', branch, '--force']);
     return branch;
   }
 
@@ -57,8 +63,43 @@ export class GitService {
    * @param version The version to create the tag for.
    */
   async createAndPushTag(version: string): Promise<void> {
-    await exec.exec('git', ['tag', `v${version}`]);
-    await exec.exec('git', ['push', 'origin', 'HEAD', '--tags']);
+    await this._execGitCommand(['tag', `v${version}`]);
+    await this._execGitCommand(['push', 'origin', 'HEAD', '--tags']);
+  }
+
+  /**
+   * Get the latest git tag.
+   * @returns The latest tag as a string.
+   */
+  async getLatestTag(): Promise<string> {
+    let latestTag = '';
+    const options = {
+      listeners: {
+        stdout: (data: Buffer) => {
+          latestTag += data.toString();
+        },
+      },
+    };
+    await this._execGitCommand(['describe', '--tags', '--abbrev=0'], options);
+    return latestTag.trim();
+  }
+
+  /**
+   * Get the commits since a specific tag.
+   * @param tag The tag to get commits since.
+   * @returns An array of commit messages.
+   */
+  async getCommitsSinceTag(tag: string): Promise<string[]> {
+    let commits = '';
+    const options = {
+      listeners: {
+        stdout: (data: Buffer) => {
+          commits += data.toString();
+        },
+      },
+    };
+    await this._execGitCommand(['log', `${tag}..HEAD`, '--oneline'], options);
+    return commits.split('\n').filter(Boolean);
   }
 
   /**
@@ -84,7 +125,7 @@ export class GitService {
       repo,
       title: prTitle,
       head: branch,
-      base: 'main',
+      base: this.baseBranch,
       body: prBody,
     });
 

@@ -1,46 +1,16 @@
-import * as exec from '@actions/exec';
 import { FileHandler } from '../utils/fileHandler';
+import { GitService } from './gitService';
+import * as core from '@actions/core';
 
 /**
  * Service for managing the changelog file.
  */
 export class ChangelogService {
-  constructor(private fileHandler: FileHandler) {}
-
-  /**
-   * Get the latest git tag.
-   * @returns The latest tag as a string.
-   */
-  async getLatestTag(): Promise<string> {
-    let latestTag = '';
-    const options = {
-      listeners: {
-        stdout: (data: Buffer) => {
-          latestTag += data.toString();
-        },
-      },
-    };
-    await exec.exec('git', ['describe', '--tags', '--abbrev=0'], options);
-    return latestTag.trim();
-  }
-
-  /**
-   * Get the commits since a specific tag.
-   * @param tag The tag to get commits since.
-   * @returns An array of commit messages.
-   */
-  async getCommitsSinceTag(tag: string): Promise<string[]> {
-    let commits = '';
-    const options = {
-      listeners: {
-        stdout: (data: Buffer) => {
-          commits += data.toString();
-        },
-      },
-    };
-    await exec.exec('git', ['log', `${tag}..HEAD`, '--oneline'], options);
-    return commits.split('\n').filter(Boolean);
-  }
+  constructor(
+    private fileHandler: FileHandler,
+    private gitService: GitService,
+    private changelogPath: string = 'CHANGELOG.md',
+  ) {}
 
   /**
    * Generate a changelog from the given commits.
@@ -79,17 +49,30 @@ export class ChangelogService {
    * @param changelogContent The new changelog content to add.
    */
   async updateChangelog(changelogContent: string): Promise<void> {
-    const changelogPath = 'CHANGELOG.md';
+    const changelogPath = this._getChangelogPath();
     const existingChangelog = await this.fileHandler.readFile(changelogPath);
     const versionMatch = changelogContent.match(/## v(\d+\.\d+\.\d+)/);
     if (versionMatch) {
       const newVersion = versionMatch[0];
-      if (existingChangelog.includes(newVersion)) {
-        console.log(`Changelog for version ${newVersion} already exists. Skipping.`);
+      if (this._versionExistsInChangelog(existingChangelog, newVersion)) {
+        core.info(`Changelog for version ${newVersion} already exists. Skipping.`);
         return;
       }
     }
 
+    const updatedChangelog = this._insertChangelogContent(existingChangelog, changelogContent);
+    await this.fileHandler.writeFile(changelogPath, updatedChangelog);
+  }
+
+  private _getChangelogPath(): string {
+    return this.changelogPath;
+  }
+
+  private _versionExistsInChangelog(existingChangelog: string, newVersion: string): boolean {
+    return existingChangelog.includes(newVersion);
+  }
+
+  private _insertChangelogContent(existingChangelog: string, changelogContent: string): string {
     const separator = '\n---\n\n';
     const headerIndex = existingChangelog.indexOf(separator);
 
@@ -100,17 +83,14 @@ export class ChangelogService {
 
       if (firstVersionIndex !== -1) {
         const oldChangelog = contentAfterHeader.substring(firstVersionIndex);
-        const newChangelog = header + changelogContent + oldChangelog;
-        await this.fileHandler.writeFile(changelogPath, newChangelog);
+        return header + changelogContent + oldChangelog;
       } else {
         // No version found after header, so just append the new changelog
-        const newChangelog = header + changelogContent;
-        await this.fileHandler.writeFile(changelogPath, newChangelog);
+        return header + changelogContent;
       }
     } else {
       // No separator found, so prepend the new changelog
-      const newChangelog = changelogContent + existingChangelog;
-      await this.fileHandler.writeFile(changelogPath, newChangelog);
+      return changelogContent + existingChangelog;
     }
   }
 }

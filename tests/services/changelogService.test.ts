@@ -1,50 +1,23 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { ChangelogService } from '../../src/services/changelogService';
 import { FileHandler } from '../../src/utils/fileHandler';
-import * as exec from '@actions/exec';
+import { GitService } from '../../src/services/gitService';
+import * as core from '@actions/core';
 
 vi.mock('@actions/exec');
 vi.mock('../../src/utils/fileHandler');
+vi.mock('../../src/services/gitService');
+vi.mock('@actions/core');
 
 describe('ChangelogService', () => {
   let changelogService: ChangelogService;
   let fileHandler: FileHandler;
+  let gitService: GitService;
 
   beforeEach(() => {
     fileHandler = new FileHandler();
-    changelogService = new ChangelogService(fileHandler);
-  });
-
-  it('should get the latest tag', async () => {
-    const execSpy = vi.spyOn(exec, 'exec').mockImplementation((command, args, options) => {
-      options.listeners.stdout(Buffer.from('v1.0.0'));
-      return Promise.resolve(0);
-    });
-
-    const latestTag = await changelogService.getLatestTag();
-
-    expect(execSpy).toHaveBeenCalledWith(
-      'git',
-      ['describe', '--tags', '--abbrev=0'],
-      expect.any(Object),
-    );
-    expect(latestTag).toBe('v1.0.0');
-  });
-
-  it('should get commits since a tag', async () => {
-    const execSpy = vi.spyOn(exec, 'exec').mockImplementation((command, args, options) => {
-      options.listeners.stdout(Buffer.from('commit1\ncommit2'));
-      return Promise.resolve(0);
-    });
-
-    const commits = await changelogService.getCommitsSinceTag('v1.0.0');
-
-    expect(execSpy).toHaveBeenCalledWith(
-      'git',
-      ['log', 'v1.0.0..HEAD', '--oneline'],
-      expect.any(Object),
-    );
-    expect(commits).toEqual(['commit1', 'commit2']);
+    gitService = new GitService();
+    changelogService = new ChangelogService(fileHandler, gitService);
   });
 
   it('should generate a changelog', () => {
@@ -63,7 +36,7 @@ describe('ChangelogService', () => {
     expect(changelog).toContain('- maintenance');
   });
 
-  it('should update the changelog file, skipping last change noted info', async () => {
+  it('should update the changelog file', async () => {
     const existingChangelog =
       '# Changelog\n\n---\n\nThis is the last change noted info.\n\n## v1.0.0\n\n- Initial release';
     const newContent = '## v1.1.0\n\n- New feature';
@@ -80,16 +53,15 @@ describe('ChangelogService', () => {
 
   it('should not update the changelog file if the version already exists', async () => {
     const existingChangelog = '## v1.1.0 2025-08-26\n\n### Added\n\n- existing feature\n\n';
-    const readFileSpy = vi.spyOn(fileHandler, 'readFile').mockResolvedValue(existingChangelog);
+    vi.spyOn(fileHandler, 'readFile').mockResolvedValue(existingChangelog);
     const writeFileSpy = vi.spyOn(fileHandler, 'writeFile').mockResolvedValue();
-    const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    const coreInfoSpy = vi.spyOn(core, 'info').mockImplementation(() => {});
 
     const newChangelog = '## v1.1.0 2025-08-26\n\n### Fixed\n\n- a bug fix\n\n';
     await changelogService.updateChangelog(newChangelog);
 
-    expect(readFileSpy).toHaveBeenCalledWith('CHANGELOG.md');
     expect(writeFileSpy).not.toHaveBeenCalled();
-    expect(consoleSpy).toHaveBeenCalledWith(
+    expect(coreInfoSpy).toHaveBeenCalledWith(
       'Changelog for version ## v1.1.0 already exists. Skipping.',
     );
   });

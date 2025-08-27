@@ -10,18 +10,29 @@ import {
 import { RELEASE_TYPE, TARGET_PLATFORM, GIT_TAG, TARGET_PATH } from './config';
 import * as core from '@actions/core';
 
+async function initializeServices() {
+  const updaterRegistry = new UpdaterRegistry();
+  await updaterRegistry.loadUpdaters();
+  const updaterService = new UpdaterService(updaterRegistry);
+  const gitService = new GitService('main');
+  const fileHandler = new FileHandler();
+  const changelogService = new ChangelogService(fileHandler, gitService, 'CHANGELOG.md');
+  return {
+    updaterRegistry,
+    updaterService,
+    gitService,
+    fileHandler,
+    changelogService,
+  };
+}
+
 async function run() {
   try {
     process.chdir(TARGET_PATH);
     const releaseType = RELEASE_TYPE;
     const targetPlatform = TARGET_PLATFORM;
 
-    const updaterRegistry = new UpdaterRegistry();
-    await updaterRegistry.loadUpdaters();
-    const updaterService = new UpdaterService(updaterRegistry);
-    const gitService = new GitService();
-    const fileHandler = new FileHandler();
-    const changelogService = new ChangelogService(fileHandler);
+    const { updaterService, gitService, changelogService } = await initializeServices();
 
     const platform = updaterService.getPlatform(targetPlatform);
     core.info(`Detected platform: ${platform}`);
@@ -30,8 +41,8 @@ async function run() {
     core.setOutput('new_version', version);
 
     // Generate and update changelog
-    const latestTag = await changelogService.getLatestTag();
-    const commits = await changelogService.getCommitsSinceTag(latestTag);
+    const latestTag = await gitService.getLatestTag();
+    const commits = await gitService.getCommitsSinceTag(latestTag);
     const changelogContent = changelogService.generateChangelog(commits, version);
     await changelogService.updateChangelog(changelogContent);
 
@@ -48,19 +59,23 @@ async function run() {
       await gitService.createAndPushTag(version);
     }
   } catch (error: unknown) {
-    if (error instanceof PlatformDetectionError) {
-      core.setFailed(`Platform detection failed: ${error.message}`);
-    } else if (error instanceof VersionBumpError) {
-      core.setFailed(`Version bump failed: ${error.message}`);
-    } else if (error instanceof FileNotFoundError) {
-      core.setFailed(`File not found: ${error.message}`);
-    } else if (error instanceof InvalidManifestError) {
-      core.setFailed(`Invalid manifest: ${error.message}`);
-    } else if (error instanceof Error) {
-      core.setFailed(error.message);
-    } else {
-      core.setFailed(String(error));
-    }
+    handleError(error);
+  }
+}
+
+function handleError(error: unknown) {
+  if (error instanceof PlatformDetectionError) {
+    core.setFailed(`Platform detection failed: ${error.message}`);
+  } else if (error instanceof VersionBumpError) {
+    core.setFailed(`Version bump failed: ${error.message}`);
+  } else if (error instanceof FileNotFoundError) {
+    core.setFailed(`File not found: ${error.message}`);
+  } else if (error instanceof InvalidManifestError) {
+    core.setFailed(`Invalid manifest: ${error.message}`);
+  } else if (error instanceof Error) {
+    core.setFailed(error.message);
+  } else {
+    core.setFailed(String(error));
   }
 }
 

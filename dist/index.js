@@ -1,12 +1,12 @@
 /**
- * universal-version-bump v0.10.0
+ * universal-version-bump v0.10.1
  * Universal Version Bump
  *
  * Description: A GitHub Action to automatically bump versions across any app (Node, Python, PHP, Docker, etc.)
  * Author: Taj <tajulislamj200@gmail.com>
  * Homepage: https://github.com/taj54/universal-version-bump#readme
  * License: MIT
- * Generated on Wed, 27 Aug 2025 09:57:56 GMT
+ * Generated on Wed, 27 Aug 2025 10:24:47 GMT
  */
 require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
@@ -32778,24 +32778,34 @@ const registry_1 = __nccwpck_require__(8378);
 const errors_1 = __nccwpck_require__(4830);
 const config_1 = __nccwpck_require__(5496);
 const core = __importStar(__nccwpck_require__(9999));
+async function initializeServices() {
+    const updaterRegistry = new registry_1.UpdaterRegistry();
+    await updaterRegistry.loadUpdaters();
+    const updaterService = new services_1.UpdaterService(updaterRegistry);
+    const gitService = new services_1.GitService('main');
+    const fileHandler = new utils_1.FileHandler();
+    const changelogService = new services_1.ChangelogService(fileHandler, gitService, 'CHANGELOG.md');
+    return {
+        updaterRegistry,
+        updaterService,
+        gitService,
+        fileHandler,
+        changelogService,
+    };
+}
 async function run() {
     try {
         process.chdir(config_1.TARGET_PATH);
         const releaseType = config_1.RELEASE_TYPE;
         const targetPlatform = config_1.TARGET_PLATFORM;
-        const updaterRegistry = new registry_1.UpdaterRegistry();
-        await updaterRegistry.loadUpdaters();
-        const updaterService = new services_1.UpdaterService(updaterRegistry);
-        const gitService = new services_1.GitService();
-        const fileHandler = new utils_1.FileHandler();
-        const changelogService = new services_1.ChangelogService(fileHandler);
+        const { updaterService, gitService, changelogService } = await initializeServices();
         const platform = updaterService.getPlatform(targetPlatform);
         core.info(`Detected platform: ${platform}`);
         const version = updaterService.updateVersion(platform, releaseType);
         core.setOutput('new_version', version);
         // Generate and update changelog
-        const latestTag = await changelogService.getLatestTag();
-        const commits = await changelogService.getCommitsSinceTag(latestTag);
+        const latestTag = await gitService.getLatestTag();
+        const commits = await gitService.getCommitsSinceTag(latestTag);
         const changelogContent = changelogService.generateChangelog(commits, version);
         await changelogService.updateChangelog(changelogContent);
         // Git Commit & Tag
@@ -32812,24 +32822,27 @@ async function run() {
         }
     }
     catch (error) {
-        if (error instanceof errors_1.PlatformDetectionError) {
-            core.setFailed(`Platform detection failed: ${error.message}`);
-        }
-        else if (error instanceof errors_1.VersionBumpError) {
-            core.setFailed(`Version bump failed: ${error.message}`);
-        }
-        else if (error instanceof errors_1.FileNotFoundError) {
-            core.setFailed(`File not found: ${error.message}`);
-        }
-        else if (error instanceof errors_1.InvalidManifestError) {
-            core.setFailed(`Invalid manifest: ${error.message}`);
-        }
-        else if (error instanceof Error) {
-            core.setFailed(error.message);
-        }
-        else {
-            core.setFailed(String(error));
-        }
+        handleError(error);
+    }
+}
+function handleError(error) {
+    if (error instanceof errors_1.PlatformDetectionError) {
+        core.setFailed(`Platform detection failed: ${error.message}`);
+    }
+    else if (error instanceof errors_1.VersionBumpError) {
+        core.setFailed(`Version bump failed: ${error.message}`);
+    }
+    else if (error instanceof errors_1.FileNotFoundError) {
+        core.setFailed(`File not found: ${error.message}`);
+    }
+    else if (error instanceof errors_1.InvalidManifestError) {
+        core.setFailed(`Invalid manifest: ${error.message}`);
+    }
+    else if (error instanceof Error) {
+        core.setFailed(error.message);
+    }
+    else {
+        core.setFailed(String(error));
     }
 }
 run();
@@ -32956,46 +32969,15 @@ var __importStar = (this && this.__importStar) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.ChangelogService = void 0;
-const exec = __importStar(__nccwpck_require__(8872));
+const core = __importStar(__nccwpck_require__(9999));
 /**
  * Service for managing the changelog file.
  */
 class ChangelogService {
-    constructor(fileHandler) {
+    constructor(fileHandler, gitService, changelogPath = 'CHANGELOG.md') {
         this.fileHandler = fileHandler;
-    }
-    /**
-     * Get the latest git tag.
-     * @returns The latest tag as a string.
-     */
-    async getLatestTag() {
-        let latestTag = '';
-        const options = {
-            listeners: {
-                stdout: (data) => {
-                    latestTag += data.toString();
-                },
-            },
-        };
-        await exec.exec('git', ['describe', '--tags', '--abbrev=0'], options);
-        return latestTag.trim();
-    }
-    /**
-     * Get the commits since a specific tag.
-     * @param tag The tag to get commits since.
-     * @returns An array of commit messages.
-     */
-    async getCommitsSinceTag(tag) {
-        let commits = '';
-        const options = {
-            listeners: {
-                stdout: (data) => {
-                    commits += data.toString();
-                },
-            },
-        };
-        await exec.exec('git', ['log', `${tag}..HEAD`, '--oneline'], options);
-        return commits.split('\n').filter(Boolean);
+        this.gitService = gitService;
+        this.changelogPath = changelogPath;
     }
     /**
      * Generate a changelog from the given commits.
@@ -33034,16 +33016,26 @@ class ChangelogService {
      * @param changelogContent The new changelog content to add.
      */
     async updateChangelog(changelogContent) {
-        const changelogPath = 'CHANGELOG.md';
+        const changelogPath = this._getChangelogPath();
         const existingChangelog = await this.fileHandler.readFile(changelogPath);
         const versionMatch = changelogContent.match(/## v(\d+\.\d+\.\d+)/);
         if (versionMatch) {
             const newVersion = versionMatch[0];
-            if (existingChangelog.includes(newVersion)) {
-                console.log(`Changelog for version ${newVersion} already exists. Skipping.`);
+            if (this._versionExistsInChangelog(existingChangelog, newVersion)) {
+                core.info(`Changelog for version ${newVersion} already exists. Skipping.`);
                 return;
             }
         }
+        const updatedChangelog = this._insertChangelogContent(existingChangelog, changelogContent);
+        await this.fileHandler.writeFile(changelogPath, updatedChangelog);
+    }
+    _getChangelogPath() {
+        return this.changelogPath;
+    }
+    _versionExistsInChangelog(existingChangelog, newVersion) {
+        return existingChangelog.includes(newVersion);
+    }
+    _insertChangelogContent(existingChangelog, changelogContent) {
         const separator = '\n---\n\n';
         const headerIndex = existingChangelog.indexOf(separator);
         if (headerIndex !== -1) {
@@ -33052,19 +33044,16 @@ class ChangelogService {
             const firstVersionIndex = contentAfterHeader.search(/## v\d+\.\d+\.\d+/);
             if (firstVersionIndex !== -1) {
                 const oldChangelog = contentAfterHeader.substring(firstVersionIndex);
-                const newChangelog = header + changelogContent + oldChangelog;
-                await this.fileHandler.writeFile(changelogPath, newChangelog);
+                return header + changelogContent + oldChangelog;
             }
             else {
                 // No version found after header, so just append the new changelog
-                const newChangelog = header + changelogContent;
-                await this.fileHandler.writeFile(changelogPath, newChangelog);
+                return header + changelogContent;
             }
         }
         else {
             // No separator found, so prepend the new changelog
-            const newChangelog = changelogContent + existingChangelog;
-            await this.fileHandler.writeFile(changelogPath, newChangelog);
+            return changelogContent + existingChangelog;
         }
     }
 }
@@ -33120,12 +33109,18 @@ const github = __importStar(__nccwpck_require__(5380));
  * Service for interacting with Git.
  */
 class GitService {
+    constructor(baseBranch = 'main') {
+        this.baseBranch = baseBranch;
+    }
+    async _execGitCommand(args, options) {
+        return await exec.exec('git', args, options);
+    }
     /**
      * Configures the Git user.
      */
     async configureGitUser() {
-        await exec.exec('git', ['config', 'user.name', 'github-actions[bot]']);
-        await exec.exec('git', [
+        await this._execGitCommand(['config', 'user.name', 'github-actions[bot]']);
+        await this._execGitCommand([
             'config',
             'user.email',
             'github-actions[bot]@users.noreply.github.com',
@@ -33137,14 +33132,14 @@ class GitService {
      * @returns True if changes were committed, false otherwise.
      */
     async commitChanges(message) {
-        await exec.exec('git', ['add', '-A']);
+        await this._execGitCommand(['add', '-A']);
         try {
-            await exec.exec('git', ['diff-index', '--quiet', 'HEAD']);
+            await this._execGitCommand(['diff-index', '--quiet', 'HEAD']);
             core.info('⚠️ No changes to commit');
             return false;
         }
         catch {
-            await exec.exec('git', ['commit', '-m', message]);
+            await this._execGitCommand(['commit', '-m', message]);
             return true;
         }
     }
@@ -33155,13 +33150,13 @@ class GitService {
      */
     async createReleaseBranch(version) {
         const branch = `version/v${version}`;
-        await exec.exec('git', ['checkout', '-b', branch]);
+        await this._execGitCommand(['checkout', '-b', branch]);
         const committed = await this.commitChanges(`chore(release): bump version to v${version}`);
         if (!committed) {
             core.info('⚠️ Skipping branch push, no changes detected');
             return null;
         }
-        await exec.exec('git', ['push', 'origin', branch, '--force']);
+        await this._execGitCommand(['push', 'origin', branch, '--force']);
         return branch;
     }
     /**
@@ -33169,8 +33164,41 @@ class GitService {
      * @param version The version to create the tag for.
      */
     async createAndPushTag(version) {
-        await exec.exec('git', ['tag', `v${version}`]);
-        await exec.exec('git', ['push', 'origin', 'HEAD', '--tags']);
+        await this._execGitCommand(['tag', `v${version}`]);
+        await this._execGitCommand(['push', 'origin', 'HEAD', '--tags']);
+    }
+    /**
+     * Get the latest git tag.
+     * @returns The latest tag as a string.
+     */
+    async getLatestTag() {
+        let latestTag = '';
+        const options = {
+            listeners: {
+                stdout: (data) => {
+                    latestTag += data.toString();
+                },
+            },
+        };
+        await this._execGitCommand(['describe', '--tags', '--abbrev=0'], options);
+        return latestTag.trim();
+    }
+    /**
+     * Get the commits since a specific tag.
+     * @param tag The tag to get commits since.
+     * @returns An array of commit messages.
+     */
+    async getCommitsSinceTag(tag) {
+        let commits = '';
+        const options = {
+            listeners: {
+                stdout: (data) => {
+                    commits += data.toString();
+                },
+            },
+        };
+        await this._execGitCommand(['log', `${tag}..HEAD`, '--oneline'], options);
+        return commits.split('\n').filter(Boolean);
     }
     /**
      * Creates a pull request for the specified branch and version.
@@ -33192,7 +33220,7 @@ class GitService {
             repo,
             title: prTitle,
             head: branch,
-            base: 'main',
+            base: this.baseBranch,
             body: prBody,
         });
         return pr.html_url;
