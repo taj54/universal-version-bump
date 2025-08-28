@@ -1,4 +1,4 @@
-name: 'release'
+name: Release
 
 on:
   release:
@@ -6,11 +6,12 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: write   # required for pushing + uploading release assets
 
 jobs:
   release:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
@@ -34,5 +35,15 @@ jobs:
       - name: Build
         run: pnpm run build
 
-      - name: Add build artifacts
-        run: git add dist -f
+      - name: Commit build artifacts
+        run: |
+          git add dist -f
+          git commit -m "chore: add build artifacts for release ${{ github.ref_name }}" || echo "No changes to commit"
+          git push origin HEAD:${{ github.ref_name }}
+
+      - name: Upload release artifacts
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/**/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
