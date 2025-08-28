@@ -11,6 +11,7 @@ on:
 jobs:
   create-tag-and-release:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
@@ -35,11 +36,8 @@ jobs:
 
           NEW_MAJOR=$(echo $NEW | cut -d. -f1)
           NEW_MINOR=$(echo $NEW | cut -d. -f2)
-          NEW_PATCH=$(echo $NEW | cut -d. -f3)
-
           OLD_MAJOR=$(echo $OLD | cut -d. -f1)
           OLD_MINOR=$(echo $OLD | cut -d. -f2)
-          OLD_PATCH=$(echo $OLD | cut -d. -f3)
 
           if [ "$NEW_MAJOR" -gt "$OLD_MAJOR" ]; then
             echo "release_type=major" >> $GITHUB_ENV
@@ -51,15 +49,19 @@ jobs:
 
       - name: Skip if patch
         if: env.release_type == 'patch'
-        run: echo "Patch release detected → no tag or release will be created."
+        run: echo "⚠️ Patch release detected → skipping tag & release."
 
       - name: Create and push git tag
         if: env.release_type != 'patch'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git tag v${{ env.version }}
-          git push origin v${{ env.version }}
+          if git rev-parse "v${{ env.version }}" >/dev/null 2>&1; then
+            echo "✅ Tag v${{ env.version }} already exists, skipping."
+          else
+            git tag v${{ env.version }}
+            git push origin v${{ env.version }}
+          fi
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -70,32 +72,29 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build
-        run: pnpm run prepare
+        run: pnpm run build
 
       - name: Extract release notes from CHANGELOG
         if: env.release_type != 'patch'
-        id: changelog
         run: |
-          # Match lines starting with "## vX.Y.Z " until the next "## "
           awk "/^## v${{ env.version }}[[:space:]]/{flag=1; next} /^## /{flag=0} flag" CHANGELOG.md > RELEASE_NOTES.md
-
-          echo "notes<<EOF" >> $GITHUB_ENV
+          
           if [ "${{ env.release_type }}" = "major" ]; then
-            echo "## 🚀 Major Release" >> $GITHUB_ENV
+            echo "## 🚀 Major Release" > FINAL_NOTES.md
           elif [ "${{ env.release_type }}" = "minor" ]; then
-            echo "## ✨ Minor Release" >> $GITHUB_ENV
+            echo "## ✨ Minor Release" > FINAL_NOTES.md
           fi
-          echo "" >> $GITHUB_ENV
-          cat RELEASE_NOTES.md >> $GITHUB_ENV
-          echo "EOF" >> $GITHUB_ENV
+          echo "" >> FINAL_NOTES.md
+          cat RELEASE_NOTES.md >> FINAL_NOTES.md
 
       - name: Create GitHub Release
         if: env.release_type != 'patch'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ env.version }}
-          name: 'Release v${{ env.version }}'
-          body: ${{ env.notes }}
+          name: Release v${{ env.version }}
+          body_path: FINAL_NOTES.md
           make_latest: true
+          files: dist/**/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
