@@ -6,7 +6,7 @@
  * Author: Taj <tajulislamj200@gmail.com>
  * Homepage: https://github.com/taj54/universal-version-bump#readme
  * License: MIT
- * Generated on Fri, 29 Aug 2025 17:44:13 GMT
+ * Generated on Fri, 29 Aug 2025 17:54:19 GMT
  */
 require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
@@ -32802,7 +32802,7 @@ async function run() {
         const { updaterService, gitService, changelogService } = await initializeServices();
         const platform = updaterService.getPlatform(targetPlatform);
         core.info(`Detected platform: ${platform}`);
-        const bumpTargets = JSON.parse(config_1.BUMP_TARGETS);
+        const bumpTargets = (0, utils_1.safeParseJSON)(config_1.BUMP_TARGETS);
         core.info(`Bump targets: ${bumpTargets.length > 0 ? bumpTargets.join(', ') : 'All'}`);
         const version = updaterService.updateVersion(platform, releaseType);
         core.setOutput('new_version', version);
@@ -33962,6 +33962,35 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 __exportStar(__nccwpck_require__(2431), exports);
 __exportStar(__nccwpck_require__(1013), exports);
 __exportStar(__nccwpck_require__(2521), exports);
+__exportStar(__nccwpck_require__(8396), exports);
+
+
+/***/ }),
+
+/***/ 8396:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.safeParseJSON = safeParseJSON;
+/**
+ * Safely parses a JSON string.
+ * Returns null (or a fallback) if parsing fails or input is invalid.
+ */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+function safeParseJSON(str, fallback = null) {
+    try {
+        if (!str || typeof str !== 'string' || str.trim() === '') {
+            return fallback;
+        }
+        return JSON.parse(str);
+    }
+    catch (e) {
+        console.error('Invalid JSON:', e instanceof Error ? e.message : e);
+        return fallback;
+    }
+}
 
 
 /***/ }),
