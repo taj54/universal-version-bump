@@ -1,5 +1,5 @@
 import { UpdaterService, GitService, ChangelogService } from './services';
-import { FileHandler } from './utils';
+import { FileHandler, safeParseJSON } from './utils';
 import { UpdaterRegistry } from './registry';
 import {
   PlatformDetectionError,
@@ -8,6 +8,7 @@ import {
   InvalidManifestError,
 } from './errors';
 import { RELEASE_TYPE, TARGET_PLATFORM, GIT_TAG, TARGET_PATH, BUMP_TARGETS } from './config';
+
 import * as core from '@actions/core';
 
 async function initializeServices() {
@@ -37,7 +38,7 @@ async function run() {
     const platform = updaterService.getPlatform(targetPlatform);
     core.info(`Detected platform: ${platform}`);
 
-    const bumpTargets = JSON.parse(BUMP_TARGETS);
+    const bumpTargets = safeParseJSON<{ path: string; variable: string }[]>(BUMP_TARGETS);
     const version = updaterService.updateVersion(platform, releaseType, bumpTargets);
     core.setOutput('new_version', version);
 
