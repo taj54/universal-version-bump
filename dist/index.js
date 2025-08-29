@@ -6,7 +6,7 @@
  * Author: Taj <tajulislamj200@gmail.com>
  * Homepage: https://github.com/taj54/universal-version-bump#readme
  * License: MIT
- * Generated on Fri, 29 Aug 2025 17:39:20 GMT
+ * Generated on Fri, 29 Aug 2025 17:44:13 GMT
  */
 require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
@@ -32802,7 +32802,8 @@ async function run() {
         const { updaterService, gitService, changelogService } = await initializeServices();
         const platform = updaterService.getPlatform(targetPlatform);
         core.info(`Detected platform: ${platform}`);
-        // const bumpTargets = JSON.parse(BUMP_TARGETS);
+        const bumpTargets = JSON.parse(config_1.BUMP_TARGETS);
+        core.info(`Bump targets: ${bumpTargets.length > 0 ? bumpTargets.join(', ') : 'All'}`);
         const version = updaterService.updateVersion(platform, releaseType);
         core.setOutput('new_version', version);
         // Generate and update changelog
