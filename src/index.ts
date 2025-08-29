@@ -38,8 +38,7 @@ async function run() {
     core.info(`Detected platform: ${platform}`);
 
     const bumpTargets = safeParseJSON(BUMP_TARGETS);
-    core.info(`Bump targets: ${bumpTargets.length > 0 ? bumpTargets.join(', ') : 'All'}`);
-    const version = updaterService.updateVersion(platform, releaseType);
+    const version = updaterService.updateVersion(platform, releaseType, bumpTargets);
     core.setOutput('new_version', version);
 
     // Generate and update changelog
