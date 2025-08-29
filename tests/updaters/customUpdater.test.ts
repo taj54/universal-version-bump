@@ -21,8 +21,8 @@ describe('CustomUpdater', () => {
     customUpdater = new CustomUpdater(filePath, variableName);
 
     // Mock the constructor's internal assignments
-    (customUpdater as any).fileHandler = mockFileHandler;
-    (customUpdater as any).manifestParser = mockManifestParser;
+    (customUpdater as unknown).fileHandler = mockFileHandler;
+    (customUpdater as unknown).manifestParser = mockManifestParser;
   });
 
   it('should always return true for canHandle', () => {
