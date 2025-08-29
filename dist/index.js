@@ -1,12 +1,12 @@
 /**
- * universal-version-bump v0.10.3
+ * universal-version-bump v0.10.4
  * Universal Version Bump
  *
  * Description: A GitHub Action to automatically bump versions across any app (Node, Python, PHP, Docker, etc.)
  * Author: Taj <tajulislamj200@gmail.com>
  * Homepage: https://github.com/taj54/universal-version-bump#readme
  * License: MIT
- * Generated on Fri, 29 Aug 2025 18:37:37 GMT
+ * Generated on Fri, 29 Aug 2025 19:02:47 GMT
  */
 require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
@@ -32972,6 +32972,7 @@ var __importStar = (this && this.__importStar) || (function () {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.ChangelogService = void 0;
 const core = __importStar(__nccwpck_require__(9999));
+const errors_1 = __nccwpck_require__(4830);
 /**
  * Service for managing the changelog file.
  */
@@ -33019,7 +33020,16 @@ class ChangelogService {
      */
     async updateChangelog(changelogContent) {
         const changelogPath = this._getChangelogPath();
-        const existingChangelog = await this.fileHandler.readFile(changelogPath);
+        let existingChangelog;
+        try {
+            existingChangelog = await this.fileHandler.readFile(changelogPath);
+        }
+        catch (error) {
+            if (error instanceof errors_1.FileNotFoundError) {
+                throw new errors_1.FileNotFoundError(`Changelog file not found at ${changelogPath}`);
+            }
+            throw error;
+        }
         const versionMatch = changelogContent.match(/## v(\d+\.\d+\.\d+)/);
         if (versionMatch) {
             const newVersion = versionMatch[0];
