@@ -69,8 +69,7 @@ describe('ChangelogService', () => {
 
   it('should throw FileNotFoundError if changelog file does not exist', async () => {
     const changelogPath = 'CHANGELOG.md';
-    const error = new Error('File not found') as any;
-    error.code = 'ENOENT';
+    const error = new FileNotFoundError('File not found');
     vi.spyOn(fileHandler, 'readFile').mockRejectedValue(error);
 
     await expect(changelogService.updateChangelog('## v1.1.0\n\n- New feature')).rejects.toThrow(

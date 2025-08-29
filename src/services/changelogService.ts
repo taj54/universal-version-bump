@@ -54,11 +54,9 @@ export class ChangelogService {
     let existingChangelog: string;
     try {
       existingChangelog = await this.fileHandler.readFile(changelogPath);
-    } catch (error: any) {
-      if (error.code === 'ENOENT') {
-        throw new FileNotFoundError(
-          `Changelog file not found at ${changelogPath}`,
-        );
+    } catch (error: unknown) {
+      if (error instanceof FileNotFoundError) {
+        throw new FileNotFoundError(`Changelog file not found at ${changelogPath}`);
       }
       throw error;
     }
