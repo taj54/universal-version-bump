@@ -6,7 +6,7 @@
  * Author: Taj <tajulislamj200@gmail.com>
  * Homepage: https://github.com/taj54/universal-version-bump#readme
  * License: MIT
- * Generated on Fri, 29 Aug 2025 12:57:13 GMT
+ * Generated on Fri, 29 Aug 2025 17:28:44 GMT
  */
 require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
@@ -32667,13 +32667,12 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.BUMP_TARGETS = exports.TARGET_PATH = exports.GIT_TAG = exports.TARGET_PLATFORM = exports.RELEASE_TYPE = void 0;
+exports.TARGET_PATH = exports.GIT_TAG = exports.TARGET_PLATFORM = exports.RELEASE_TYPE = void 0;
 const core = __importStar(__nccwpck_require__(9999));
 exports.RELEASE_TYPE = (core.getInput('release_type') || 'patch');
 exports.TARGET_PLATFORM = core.getInput('target_platform');
 exports.GIT_TAG = core.getInput('git_tag') === 'true';
 exports.TARGET_PATH = core.getInput('target_path') || '.';
-exports.BUMP_TARGETS = JSON.parse(core.getInput('bump_targets') || '[]');
 
 
 /***/ }),
@@ -32802,8 +32801,7 @@ async function run() {
         const { updaterService, gitService, changelogService } = await initializeServices();
         const platform = updaterService.getPlatform(targetPlatform);
         core.info(`Detected platform: ${platform}`);
-        const bumpTargets = JSON.parse(config_1.BUMP_TARGETS);
-        const version = updaterService.updateVersion(platform, releaseType, bumpTargets);
+        const version = updaterService.updateVersion(platform, releaseType);
         core.setOutput('new_version', version);
         // Generate and update changelog
         const latestTag = await gitService.getLatestTag();
@@ -33268,7 +33266,6 @@ __exportStar(__nccwpck_require__(5417), exports);
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.UpdaterService = void 0;
 const errors_1 = __nccwpck_require__(4830);
-const customUpdater_1 = __nccwpck_require__(5432);
 /**
  * Service for managing version updates.
  */
@@ -33305,122 +33302,15 @@ class UpdaterService {
      * @param releaseType The type of release (major, minor, patch).
      * @returns The new version string.
      */
-    updateVersion(platform, releaseType, bumpTargets = []) {
-        if (platform === 'custom') {
-            if (bumpTargets.length === 0) {
-                throw new errors_1.VersionBumpError('No bump_targets provided for custom platform.');
-            }
-            let lastBumpedVersion = '';
-            for (const target of bumpTargets) {
-                const customUpdater = new customUpdater_1.CustomUpdater(target.path, target.variable);
-                lastBumpedVersion = customUpdater.bumpVersion(releaseType);
-            }
-            return lastBumpedVersion;
+    updateVersion(platform, releaseType) {
+        const updater = this.updaterRegistry.getUpdater(platform);
+        if (!updater) {
+            throw new errors_1.VersionBumpError(`No updater found for platform: ${platform}`);
         }
-        else {
-            const updater = this.updaterRegistry.getUpdater(platform);
-            if (!updater) {
-                throw new errors_1.VersionBumpError(`No updater found for platform: ${platform}`);
-            }
-            return updater.bumpVersion(releaseType);
-        }
+        return updater.bumpVersion(releaseType);
     }
 }
 exports.UpdaterService = UpdaterService;
-
-
-/***/ }),
-
-/***/ 5432:
-/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
-
-"use strict";
-
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || (function () {
-    var ownKeys = function(o) {
-        ownKeys = Object.getOwnPropertyNames || function (o) {
-            var ar = [];
-            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
-            return ar;
-        };
-        return ownKeys(o);
-    };
-    return function (mod) {
-        if (mod && mod.__esModule) return mod;
-        var result = {};
-        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
-        __setModuleDefault(result, mod);
-        return result;
-    };
-})();
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.CustomUpdater = void 0;
-const core = __importStar(__nccwpck_require__(9999));
-const versionUtil_1 = __nccwpck_require__(2431);
-const fileHandler_1 = __nccwpck_require__(1013);
-const manifestParser_1 = __nccwpck_require__(2521);
-class CustomUpdater {
-    constructor(filePath, variableName) {
-        this.platform = 'custom';
-        this.currentVersion = null;
-        this.filePath = filePath;
-        this.variableName = variableName;
-        this.fileHandler = new fileHandler_1.FileHandler();
-        this.manifestParser = new manifestParser_1.ManifestParser(this.fileHandler);
-    }
-    canHandle() {
-        // This updater is explicitly called, so it can always handle if constructed.
-        return true;
-    }
-    getCurrentVersion() {
-        if (this.currentVersion) {
-            return this.currentVersion;
-        }
-        try {
-            // eslint-disable-next-line no-useless-escape
-            const regex = new RegExp(`(${this.variableName}\s*=\s*['"]?)([\\d.]+)(['"]?)`);
-            this.currentVersion = this.manifestParser.getVersion(this.filePath, 'regex', {
-                regex: regex,
-            });
-            return this.currentVersion;
-        }
-        catch (error) {
-            core.debug(`Could not read or parse version from ${this.filePath}: ${error}`);
-        }
-        return null;
-    }
-    bumpVersion(releaseType) {
-        const oldVersion = this.getCurrentVersion();
-        if (!oldVersion) {
-            throw new Error(`Could not find current version for variable '${this.variableName}' in file '${this.filePath}'`);
-        }
-        const newVersion = (0, versionUtil_1.calculateNextVersion)(oldVersion, releaseType);
-        // eslint-disable-next-line no-useless-escape
-        const regexReplace = new RegExp(`(${this.variableName}\s*=\s*['"]?)${oldVersion}(['"]?)`);
-        this.manifestParser.updateVersion(this.filePath, newVersion, 'regex', {
-            regexReplace: regexReplace,
-        });
-        core.info(`Bumped ${this.variableName} in ${this.filePath} from ${oldVersion} to ${newVersion}`);
-        return newVersion;
-    }
-}
-exports.CustomUpdater = CustomUpdater;
 
 
 /***/ }),
