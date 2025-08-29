@@ -78,7 +78,7 @@ jobs:
         if: env.release_type != 'patch'
         run: |
           awk "/^## v${{ env.version }}[[:space:]]/{flag=1; next} /^## /{flag=0} flag" CHANGELOG.md > RELEASE_NOTES.md
-          
+
           if [ "${{ env.release_type }}" = "major" ]; then
             echo "## 🚀 Major Release" > FINAL_NOTES.md
           elif [ "${{ env.release_type }}" = "minor" ]; then

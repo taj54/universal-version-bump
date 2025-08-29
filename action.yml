@@ -22,7 +22,14 @@ inputs:
     description: 'The target path where the version bump should be applied. If not provided, the action will run in the root directory.'
     required: false
     default: '.'
-
+  bump_targets:
+    description: |
+      Optional list of version update targets.
+      Provide the `path` and the `variable` to update, the Action will build regex automatically.
+      Example:
+      '[{"path": "setup.py", "variable": "version"}, {"path": "Dockerfile", "variable": "APP_VERSION"}]'
+    required: false
+    default: '[]'
 outputs:
   new_version:
     description: 'The new bumped version'

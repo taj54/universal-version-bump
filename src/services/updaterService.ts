@@ -1,6 +1,7 @@
 import semver from 'semver';
 import { PlatformDetectionError, VersionBumpError } from '../errors';
 import { UpdaterRegistry } from '../registry/updaterRegistry';
+import { CustomUpdater } from '../updaters/customUpdater';
 
 /**
  * Service for managing version updates.
@@ -47,11 +48,27 @@ export class UpdaterService {
    * @param releaseType The type of release (major, minor, patch).
    * @returns The new version string.
    */
-  updateVersion(platform: string, releaseType: semver.ReleaseType): string {
-    const updater = this.updaterRegistry.getUpdater(platform);
-    if (!updater) {
-      throw new VersionBumpError(`No updater found for platform: ${platform}`);
+  updateVersion(
+    platform: string,
+    releaseType: semver.ReleaseType,
+    bumpTargets: Array<{ path: string; variable: string }> = [],
+  ): string {
+    if (platform === 'custom') {
+      if (bumpTargets.length === 0) {
+        throw new VersionBumpError('No bump_targets provided for custom platform.');
+      }
+      let lastBumpedVersion: string = '';
+      for (const target of bumpTargets) {
+        const customUpdater = new CustomUpdater(target.path, target.variable);
+        lastBumpedVersion = customUpdater.bumpVersion(releaseType);
+      }
+      return lastBumpedVersion;
+    } else {
+      const updater = this.updaterRegistry.getUpdater(platform);
+      if (!updater) {
+        throw new VersionBumpError(`No updater found for platform: ${platform}`);
+      }
+      return updater.bumpVersion(releaseType);
     }
-    return updater.bumpVersion(releaseType);
   }
 }
