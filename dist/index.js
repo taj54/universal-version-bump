@@ -1,12 +1,12 @@
 /**
- * universal-version-bump v0.10.3
+ * universal-version-bump v0.10.4
  * Universal Version Bump
  *
  * Description: A GitHub Action to automatically bump versions across any app (Node, Python, PHP, Docker, etc.)
  * Author: Taj <tajulislamj200@gmail.com>
  * Homepage: https://github.com/taj54/universal-version-bump#readme
  * License: MIT
- * Generated on Fri, 29 Aug 2025 12:57:13 GMT
+ * Generated on Fri, 29 Aug 2025 13:02:33 GMT
  */
 require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
@@ -33372,17 +33372,15 @@ var __importStar = (this && this.__importStar) || (function () {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.CustomUpdater = void 0;
 const core = __importStar(__nccwpck_require__(9999));
-const versionUtil_1 = __nccwpck_require__(2431);
-const fileHandler_1 = __nccwpck_require__(1013);
-const manifestParser_1 = __nccwpck_require__(2521);
+const utils_1 = __nccwpck_require__(9499);
 class CustomUpdater {
     constructor(filePath, variableName) {
         this.platform = 'custom';
         this.currentVersion = null;
         this.filePath = filePath;
         this.variableName = variableName;
-        this.fileHandler = new fileHandler_1.FileHandler();
-        this.manifestParser = new manifestParser_1.ManifestParser(this.fileHandler);
+        this.fileHandler = new utils_1.FileHandler();
+        this.manifestParser = new utils_1.ManifestParser(this.fileHandler);
     }
     canHandle() {
         // This updater is explicitly called, so it can always handle if constructed.
@@ -33410,7 +33408,7 @@ class CustomUpdater {
         if (!oldVersion) {
             throw new Error(`Could not find current version for variable '${this.variableName}' in file '${this.filePath}'`);
         }
-        const newVersion = (0, versionUtil_1.calculateNextVersion)(oldVersion, releaseType);
+        const newVersion = (0, utils_1.calculateNextVersion)(oldVersion, releaseType);
         // eslint-disable-next-line no-useless-escape
         const regexReplace = new RegExp(`(${this.variableName}\s*=\s*['"]?)${oldVersion}(['"]?)`);
         this.manifestParser.updateVersion(this.filePath, newVersion, 'regex', {
