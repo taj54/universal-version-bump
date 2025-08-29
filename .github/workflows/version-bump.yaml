@@ -30,6 +30,9 @@ jobs:
         uses: ./
         with:
           release_type: ${{ inputs.release_type }}
-          git_tag: false
+          bump_targets: >
+            [
+              {'package.json','version'}
+            ]
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
