@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write   # required for pushing + uploading release assets
+  contents: write # required for pushing + uploading release assets
 
 jobs:
   release:

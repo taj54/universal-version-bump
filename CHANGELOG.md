@@ -6,7 +6,6 @@ All notable changes for each version of the Ambient Music extension.
 
 ## v0.10.2 2025-08-27
 
-
 ### Changed
 
 - restructure service initialization
