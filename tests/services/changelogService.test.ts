@@ -3,6 +3,7 @@ import { ChangelogService } from '../../src/services/changelogService';
 import { FileHandler } from '../../src/utils/fileHandler';
 import { GitService } from '../../src/services/gitService';
 import * as core from '@actions/core';
+import { FileNotFoundError } from '../../src/errors';
 
 vi.mock('@actions/exec');
 vi.mock('../../src/utils/fileHandler');
@@ -63,6 +64,17 @@ describe('ChangelogService', () => {
     expect(writeFileSpy).not.toHaveBeenCalled();
     expect(coreInfoSpy).toHaveBeenCalledWith(
       'Changelog for version ## v1.1.0 already exists. Skipping.',
+    );
+  });
+
+  it('should throw FileNotFoundError if changelog file does not exist', async () => {
+    const changelogPath = 'CHANGELOG.md';
+    const error = new Error('File not found') as any;
+    error.code = 'ENOENT';
+    vi.spyOn(fileHandler, 'readFile').mockRejectedValue(error);
+
+    await expect(changelogService.updateChangelog('## v1.1.0\n\n- New feature')).rejects.toThrow(
+      new FileNotFoundError(`Changelog file not found at ${changelogPath}`),
     );
   });
 });

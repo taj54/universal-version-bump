@@ -1,6 +1,7 @@
 import { FileHandler } from '../utils/fileHandler';
 import { GitService } from './gitService';
 import * as core from '@actions/core';
+import { FileNotFoundError } from '../errors';
 
 /**
  * Service for managing the changelog file.
@@ -50,7 +51,18 @@ export class ChangelogService {
    */
   async updateChangelog(changelogContent: string): Promise<void> {
     const changelogPath = this._getChangelogPath();
-    const existingChangelog = await this.fileHandler.readFile(changelogPath);
+    let existingChangelog: string;
+    try {
+      existingChangelog = await this.fileHandler.readFile(changelogPath);
+    } catch (error: any) {
+      if (error.code === 'ENOENT') {
+        throw new FileNotFoundError(
+          `Changelog file not found at ${changelogPath}`,
+        );
+      }
+      throw error;
+    }
+
     const versionMatch = changelogContent.match(/## v(\d+\.\d+\.\d+)/);
     if (versionMatch) {
       const newVersion = versionMatch[0];

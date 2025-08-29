@@ -43,3 +43,12 @@ export class InvalidManifestError extends CustomError {
     super(message, 'InvalidManifestError');
   }
 }
+
+/**
+ * Error thrown when the changelog file is not found.
+ */
+export class ChangelogFileNotFoundError extends CustomError {
+  constructor(message: string) {
+    super(message, 'ChangelogFileNotFoundError');
+  }
+}
