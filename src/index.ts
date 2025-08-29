@@ -37,8 +37,8 @@ async function run() {
     const platform = updaterService.getPlatform(targetPlatform);
     core.info(`Detected platform: ${platform}`);
 
-    const bumpTargets = JSON.parse(BUMP_TARGETS);
-    const version = updaterService.updateVersion(platform, releaseType, bumpTargets);
+    // const bumpTargets = JSON.parse(BUMP_TARGETS);
+    const version = updaterService.updateVersion(platform, releaseType);
     core.setOutput('new_version', version);
 
     // Generate and update changelog
