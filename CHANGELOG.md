@@ -4,6 +4,37 @@ All notable changes for each version of the Ambient Music extension.
 
 ---
 
+## v0.10.4 2025-08-29
+
+### Added
+
+- add custom version bump targets
+- Improved updater loading mechanism
+
+### Changed
+
+- pass bumpTargets to updateVersion
+- pass bumpTargets to updateVersion
+- add safe JSON parsing util
+- remove unused bumpTargets
+- remove unused bumpTargets
+- improve tag creation and release process
+- update release workflow
+- change release trigger to 'published'
+- Merge pull request #24 from taj54/version/v0.10.2
+- update CHANGELOG.md
+- bump version to v0.10.2
+- restructure service initialization
+- Merge pull request #23 from taj54/version/v0.10.1
+- bump version to v0.10.1
+- simplify updater loading
+- improve UpdaterRegistry
+- replace fs with fileHandler
+
+### Fixed
+
+- use config for bump targets
+
 ## v0.10.2 2025-08-27
 
 ### Changed
