@@ -1,5 +1,5 @@
 import { UpdaterService, GitService, ChangelogService } from './services';
-import { FileHandler, safeParseJSON } from './utils';
+import { FileHandler } from './utils';
 import { UpdaterRegistry } from './registry';
 import {
   PlatformDetectionError,
@@ -32,13 +32,13 @@ export async function run() {
     process.chdir(TARGET_PATH);
     const releaseType = RELEASE_TYPE;
     const targetPlatform = TARGET_PLATFORM;
+    const bumpTargets = BUMP_TARGETS;
 
     const { updaterService, gitService, changelogService } = await initializeServices();
 
     const platform = updaterService.getPlatform(targetPlatform);
     core.info(`Detected platform: ${platform}`);
 
-    const bumpTargets = safeParseJSON<{ path: string; variable: string }[]>(BUMP_TARGETS);
     core.info(`Bump targets: ${JSON.stringify(bumpTargets)}`);
     const version = updaterService.updateVersion(platform, releaseType, bumpTargets);
     core.setOutput('new_version', version);

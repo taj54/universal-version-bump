@@ -1,12 +1,12 @@
 /**
- * universal-version-bump v0.12.1
+ * universal-version-bump v0.12.2
  * Universal Version Bump
  *
  * Description: A GitHub Action to automatically bump versions across any app (Node, Python, PHP, Docker, etc.)
  * Author: Taj <tajulislamj200@gmail.com>
  * Homepage: https://github.com/taj54/universal-version-bump#readme
  * License: MIT
- * Generated on Sat, 30 Aug 2025 13:50:05 GMT
+ * Generated on Sat, 30 Aug 2025 14:20:54 GMT
  */
 require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
@@ -32669,11 +32669,12 @@ var __importStar = (this && this.__importStar) || (function () {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.BUMP_TARGETS = exports.TARGET_PATH = exports.GIT_TAG = exports.TARGET_PLATFORM = exports.RELEASE_TYPE = void 0;
 const core = __importStar(__nccwpck_require__(9999));
+const utils_1 = __nccwpck_require__(9499);
 exports.RELEASE_TYPE = (core.getInput('release_type') || 'patch');
 exports.TARGET_PLATFORM = core.getInput('target_platform');
 exports.GIT_TAG = core.getInput('git_tag') === 'true';
 exports.TARGET_PATH = core.getInput('target_path') || '.';
-exports.BUMP_TARGETS = core.getInput('bump_targets') || '[]';
+exports.BUMP_TARGETS = (0, utils_1.safeParseJSON)(core.getInput('bump_targets'));
 
 
 /***/ }),
@@ -32800,10 +32801,10 @@ async function run() {
         process.chdir(config_1.TARGET_PATH);
         const releaseType = config_1.RELEASE_TYPE;
         const targetPlatform = config_1.TARGET_PLATFORM;
+        const bumpTargets = config_1.BUMP_TARGETS;
         const { updaterService, gitService, changelogService } = await initializeServices();
         const platform = updaterService.getPlatform(targetPlatform);
         core.info(`Detected platform: ${platform}`);
-        const bumpTargets = (0, utils_1.safeParseJSON)(config_1.BUMP_TARGETS);
         core.info(`Bump targets: ${JSON.stringify(bumpTargets)}`);
         const version = updaterService.updateVersion(platform, releaseType, bumpTargets);
         core.setOutput('new_version', version);
