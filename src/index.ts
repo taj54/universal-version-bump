@@ -27,7 +27,7 @@ async function initializeServices() {
   };
 }
 
-async function run() {
+export async function run() {
   try {
     process.chdir(TARGET_PATH);
     const releaseType = RELEASE_TYPE;
