@@ -4,6 +4,15 @@ All notable changes for each version of the Ambient Music extension.
 
 ---
 
+## v0.12.0 2025-08-30
+
+### Changed
+
+- Merge pull request #40 from nyaomaru/chore/update-node-version
+- update action runtime to node20
+- v0.11.0
+- Merge pull request #39 from taj54/version/v0.11.0
+
 ## v0.11.0 2025-08-30
 
 ### Added
