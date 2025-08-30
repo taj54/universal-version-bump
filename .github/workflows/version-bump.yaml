@@ -34,3 +34,5 @@ jobs:
           bump_targets: '[{"path": "package.json", "variable": "version"}]'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - run: echo "bump_targets=${{ steps.bump.outputs.bump_targets }}"

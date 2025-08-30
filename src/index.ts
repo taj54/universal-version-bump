@@ -39,6 +39,7 @@ export async function run() {
     core.info(`Detected platform: ${platform}`);
 
     const bumpTargets = safeParseJSON<{ path: string; variable: string }[]>(BUMP_TARGETS);
+    core.info(`Bump targets: ${JSON.stringify(bumpTargets)}`);
     const version = updaterService.updateVersion(platform, releaseType, bumpTargets);
     core.setOutput('new_version', version);
 
