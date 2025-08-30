@@ -6,6 +6,7 @@ import {
   PHPUpdater,
   PythonUpdater,
   RustUpdater,
+  CustomUpdater,
 } from '../updaters';
 
 /**
@@ -26,6 +27,7 @@ export class UpdaterRegistry {
     this.registerUpdater(new PHPUpdater());
     this.registerUpdater(new PythonUpdater());
     this.registerUpdater(new RustUpdater());
+    this.registerUpdater(new CustomUpdater());
   }
 
   /**

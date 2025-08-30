@@ -11,9 +11,9 @@ export class CustomUpdater implements UpdaterInterface {
   private fileHandler: FileHandler;
   private manifestParser: ManifestParser;
 
-  constructor(filePath: string, variableName: string) {
-    this.filePath = filePath;
-    this.variableName = variableName;
+  constructor(filePath?: string | null, variableName?: string | null) {
+    this.filePath = filePath || 'package.json';
+    this.variableName = variableName || 'version';
     this.fileHandler = new FileHandler();
     this.manifestParser = new ManifestParser(this.fileHandler);
   }

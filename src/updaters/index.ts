@@ -4,3 +4,4 @@ export * from './rustUpdater';
 export * from './goUpdater';
 export * from './dockerUpdater';
 export * from './phpUpdater';
+export * from './customUpdater';
