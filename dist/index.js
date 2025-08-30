@@ -6,7 +6,7 @@
  * Author: Taj <tajulislamj200@gmail.com>
  * Homepage: https://github.com/taj54/universal-version-bump#readme
  * License: MIT
- * Generated on Sat, 30 Aug 2025 14:23:57 GMT
+ * Generated on Sat, 30 Aug 2025 14:27:57 GMT
  */
 require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
