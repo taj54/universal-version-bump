@@ -47,7 +47,7 @@ export class GitService {
    * @returns The name of the created branch or null if no changes were made.
    */
   async createReleaseBranch(version: string): Promise<string | null> {
-    const branch = `version/v${version}`;
+    const branch = `version-bump/v${version}`;
     await this._execGitCommand(['checkout', '-b', branch]);
     const committed = await this.commitChanges(`chore(release): bump version to v${version}`);
     if (!committed) {
