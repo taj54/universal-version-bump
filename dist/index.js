@@ -6,7 +6,7 @@
  * Author: Taj <tajulislamj200@gmail.com>
  * Homepage: https://github.com/taj54/universal-version-bump#readme
  * License: MIT
- * Generated on Fri, 29 Aug 2025 19:18:30 GMT
+ * Generated on Sat, 30 Aug 2025 07:57:10 GMT
  */
 require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
@@ -32773,6 +32773,7 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.run = run;
 const services_1 = __nccwpck_require__(5234);
 const utils_1 = __nccwpck_require__(9499);
 const registry_1 = __nccwpck_require__(8378);
