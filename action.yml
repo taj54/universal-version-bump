@@ -37,5 +37,5 @@ outputs:
     description: 'The created Git tag (if enabled)'
 
 runs:
-  using: 'node16'
+  using: 'node20'
   main: 'dist/index.js'
