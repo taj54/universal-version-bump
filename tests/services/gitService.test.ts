@@ -12,7 +12,9 @@ describe('GitService', () => {
   describe('getLatestTag', () => {
     it('should throw an error if no tags are found', async () => {
       vi.spyOn(exec, 'exec').mockResolvedValue(1); // Simulate git command failure
-      await expect(gitService.getLatestTag()).rejects.toThrow('No tags found in the repository. Please create a tag first.');
+      await expect(gitService.getLatestTag()).rejects.toThrow(
+        'No tags found in the repository. Please create a tag first.',
+      );
     });
 
     it('should return the latest tag if tags are found', async () => {
