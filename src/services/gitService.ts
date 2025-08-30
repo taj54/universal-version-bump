@@ -79,8 +79,14 @@ export class GitService {
           latestTag += data.toString();
         },
       },
+      ignoreReturnCode: true,
     };
-    await this._execGitCommand(['describe', '--tags', '--abbrev=0'], options);
+    const exitCode = await this._execGitCommand(['describe', '--tags', '--abbrev=0'], options);
+
+    if (exitCode !== 0) {
+      throw new Error('No tags found in the repository. Please create a tag first.');
+    }
+
     return latestTag.trim();
   }
 
