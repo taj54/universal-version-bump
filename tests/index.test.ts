@@ -28,7 +28,7 @@ vi.mock('../src/config', async (importOriginal) => {
 });
 
 // Mock process.chdir
-const chdirSpy = vi.spyOn(process, 'chdir').mockImplementation(() => {});
+const chdirSpy = vi.spyOn(process, 'chdir').mockImplementation(() => { });
 
 describe('Main Action Logic', () => {
   let mockUpdaterService: vi.Mocked<UpdaterService>;
@@ -86,8 +86,7 @@ describe('Main Action Logic', () => {
     expect(mockUpdaterRegistry.loadUpdaters).toHaveBeenCalled();
     expect(mockUpdaterService.getPlatform).toHaveBeenCalledWith('node');
     expect(core.info).toHaveBeenCalledWith('Detected platform: node');
-    expect(safeParseJSON).toHaveBeenCalledWith('[]');
-    expect(mockUpdaterService.updateVersion).toHaveBeenCalledWith('node', 'patch', []);
+    expect(mockUpdaterService.updateVersion).toHaveBeenCalledWith('node', 'patch', '[]');
     expect(core.setOutput).toHaveBeenCalledWith('new_version', '1.0.1');
     expect(mockGitService.getLatestTag).toHaveBeenCalled();
     expect(mockGitService.getCommitsSinceTag).toHaveBeenCalledWith('v1.0.0');
@@ -165,10 +164,9 @@ describe('Main Action Logic', () => {
   });
 
   it('should handle InvalidManifestError', async () => {
-    (safeParseJSON as vi.Mock).mockImplementation(() => {
+    mockGitService.configureGitUser.mockImplementation(() => {
       throw new InvalidManifestError('Invalid JSON');
     });
-
     const { run } = await import('../src/index');
     await run();
 
