@@ -7,8 +7,8 @@ describe('UpdaterRegistry', () => {
     await registry.loadUpdaters();
     const allUpdaters = registry.getAllUpdaters();
 
-    // There are 6 updaters in the src/updaters directory
-    expect(allUpdaters).toHaveLength(6);
+    // There are all updaters in the src/updaters directory
+    expect(allUpdaters).toHaveLength(7);
 
     // Check if all platforms are loaded
     const platforms = allUpdaters.map((updater) => updater.platform);
