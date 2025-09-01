@@ -6,7 +6,7 @@
  * Author: Taj <tajulislamj200@gmail.com>
  * Homepage: https://github.com/taj54/universal-version-bump#readme
  * License: MIT
- * Generated on Mon, 01 Sep 2025 13:30:16 GMT
+ * Generated on Mon, 01 Sep 2025 13:33:59 GMT
  */
 require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
@@ -33427,7 +33427,7 @@ class CustomUpdater {
         }
         const newVersion = (0, utils_1.calculateNextVersion)(oldVersion, releaseType);
         // eslint-disable-next-line no-useless-escape
-        const regexReplace = new RegExp(`("${this.variableName}"\\s*:\\s*["'])(?:${oldVersion})(["'])`);
+        const regexReplace = new RegExp(`("${this.variableName}"\\s*:\\s*["'])([0-9]+\\.[0-9]+\\.[0-9]+(?:-[a-zA-Z0-9_.-]+)?(?:\\+[a-zA-Z0-9_.-]+)?)(["'])`);
         this.manifestParser.updateVersion(this.filePath, newVersion, 'regex', {
             regexReplace,
         });
