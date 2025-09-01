@@ -52,8 +52,9 @@ export class CustomUpdater implements UpdaterInterface {
 
     const newVersion = calculateNextVersion(oldVersion, releaseType);
     // eslint-disable-next-line no-useless-escape
-    const regexReplace: RegExp = new RegExp(`"${this.variableName}"\\s*:\\s*["']${oldVersion}["']`);
-
+    const regexReplace: RegExp = new RegExp(
+      `("${this.variableName}"\\s*:\\s*["'])(?:${oldVersion})(["'])`,
+    );
     this.manifestParser.updateVersion(this.filePath, newVersion, 'regex', {
       regexReplace,
     });
