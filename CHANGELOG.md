@@ -4,6 +4,16 @@ All notable changes for each version of the Ambient Music extension.
 
 ---
 
+## v0.13.1 2025-09-01
+
+### Changed
+
+- //github.com/taj54/universal-version-bump
+
+### Fixed
+
+- improve version regex
+
 ## v0.13.0 2025-09-01
 
 ### Added
