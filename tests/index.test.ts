@@ -28,7 +28,7 @@ vi.mock('../src/config', async (importOriginal) => {
 });
 
 // Mock process.chdir
-const chdirSpy = vi.spyOn(process, 'chdir').mockImplementation(() => { });
+const chdirSpy = vi.spyOn(process, 'chdir').mockImplementation(() => {});
 
 describe('Main Action Logic', () => {
   let mockUpdaterService: vi.Mocked<UpdaterService>;

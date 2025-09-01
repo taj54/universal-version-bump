@@ -6,7 +6,7 @@
  * Author: Taj <tajulislamj200@gmail.com>
  * Homepage: https://github.com/taj54/universal-version-bump#readme
  * License: MIT
- * Generated on Mon, 01 Sep 2025 12:51:16 GMT
+ * Generated on Mon, 01 Sep 2025 13:02:11 GMT
  */
 require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
@@ -34063,6 +34063,8 @@ class ManifestParser {
             catch (e) {
                 throw new errors_1.InvalidManifestError(`Invalid JSON in ${manifestPath}: ${e instanceof Error ? e.message : String(e)}`);
             }
+            console.log('data:', data);
+            console.log('options.jsonPath:', options.jsonPath);
             let version = data;
             if (options.jsonPath) {
                 for (const key of options.jsonPath) {
@@ -34074,6 +34076,7 @@ class ManifestParser {
                     }
                 }
             }
+            console.log('version:', version);
             return typeof version === 'string' ? version : null;
         }
         else if (type === 'regex' && options.regex) {

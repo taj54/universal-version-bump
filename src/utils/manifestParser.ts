@@ -49,6 +49,9 @@ export class ManifestParser {
         );
       }
 
+      console.log('data:', data);
+      console.log('options.jsonPath:', options.jsonPath);
+
       let version: unknown = data;
       if (options.jsonPath) {
         for (const key of options.jsonPath) {
@@ -61,6 +64,7 @@ export class ManifestParser {
           }
         }
       }
+      console.log('version:', version);
       return typeof version === 'string' ? version : null;
     } else if (type === 'regex' && options.regex) {
       const match = content.match(options.regex);
