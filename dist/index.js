@@ -6,7 +6,7 @@
  * Author: Taj <tajulislamj200@gmail.com>
  * Homepage: https://github.com/taj54/universal-version-bump#readme
  * License: MIT
- * Generated on Sat, 30 Aug 2025 14:27:57 GMT
+ * Generated on Mon, 01 Sep 2025 12:51:16 GMT
  */
 require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
@@ -32798,6 +32798,11 @@ async function initializeServices() {
 }
 async function run() {
     try {
+        console.log('RELEASE_TYPE:', config_1.RELEASE_TYPE);
+        console.log('TARGET_PLATFORM:', config_1.TARGET_PLATFORM);
+        console.log('GIT_TAG:', config_1.GIT_TAG);
+        console.log('TARGET_PATH:', config_1.TARGET_PATH);
+        console.log('BUMP_TARGETS:', config_1.BUMP_TARGETS);
         process.chdir(config_1.TARGET_PATH);
         const releaseType = config_1.RELEASE_TYPE;
         const targetPlatform = config_1.TARGET_PLATFORM;

@@ -29,6 +29,12 @@ async function initializeServices() {
 
 export async function run() {
   try {
+    console.log('RELEASE_TYPE:', RELEASE_TYPE);
+    console.log('TARGET_PLATFORM:', TARGET_PLATFORM);
+    console.log('GIT_TAG:', GIT_TAG);
+    console.log('TARGET_PATH:', TARGET_PATH);
+    console.log('BUMP_TARGETS:', BUMP_TARGETS);
+
     process.chdir(TARGET_PATH);
     const releaseType = RELEASE_TYPE;
     const targetPlatform = TARGET_PLATFORM;
