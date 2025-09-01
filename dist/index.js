@@ -6,7 +6,7 @@
  * Author: Taj <tajulislamj200@gmail.com>
  * Homepage: https://github.com/taj54/universal-version-bump#readme
  * License: MIT
- * Generated on Mon, 01 Sep 2025 13:02:11 GMT
+ * Generated on Mon, 01 Sep 2025 13:24:50 GMT
  */
 require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
@@ -32798,11 +32798,6 @@ async function initializeServices() {
 }
 async function run() {
     try {
-        console.log('RELEASE_TYPE:', config_1.RELEASE_TYPE);
-        console.log('TARGET_PLATFORM:', config_1.TARGET_PLATFORM);
-        console.log('GIT_TAG:', config_1.GIT_TAG);
-        console.log('TARGET_PATH:', config_1.TARGET_PATH);
-        console.log('BUMP_TARGETS:', config_1.BUMP_TARGETS);
         process.chdir(config_1.TARGET_PATH);
         const releaseType = config_1.RELEASE_TYPE;
         const targetPlatform = config_1.TARGET_PLATFORM;
@@ -33414,10 +33409,9 @@ class CustomUpdater {
             return this.currentVersion;
         }
         try {
-            // eslint-disable-next-line no-useless-escape
-            const regex = new RegExp(`(${this.variableName}\s*=\s*['"]?)([\\d.]+)(['"]?)`);
+            const regex = new RegExp(`"${this.variableName}"\\s*:\\s*["']((?:[0-9]+\\.){2}[0-9]+(?:-[a-zA-Z0-9_.-]+)?(?:\\+[a-zA-Z0-9_.-]+)?)["']`);
             this.currentVersion = this.manifestParser.getVersion(this.filePath, 'regex', {
-                regex: regex,
+                regex,
             });
             return this.currentVersion;
         }
@@ -33433,9 +33427,9 @@ class CustomUpdater {
         }
         const newVersion = (0, utils_1.calculateNextVersion)(oldVersion, releaseType);
         // eslint-disable-next-line no-useless-escape
-        const regexReplace = new RegExp(`(${this.variableName}\s*=\s*['"]?)${oldVersion}(['"]?)`);
+        const regexReplace = new RegExp(`"${this.variableName}"\\s*:\\s*["']${oldVersion}["']`);
         this.manifestParser.updateVersion(this.filePath, newVersion, 'regex', {
-            regexReplace: regexReplace,
+            regexReplace,
         });
         core.info(`Bumped ${this.variableName} in ${this.filePath} from ${oldVersion} to ${newVersion}`);
         return newVersion;

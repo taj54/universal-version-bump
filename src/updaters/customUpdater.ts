@@ -29,10 +29,11 @@ export class CustomUpdater implements UpdaterInterface {
     }
 
     try {
-      // eslint-disable-next-line no-useless-escape
-      const regex = new RegExp(`(${this.variableName}\s*=\s*['"]?)([\\d.]+)(['"]?)`);
+      const regex: RegExp = new RegExp(
+        `"${this.variableName}"\\s*:\\s*["']((?:[0-9]+\\.){2}[0-9]+(?:-[a-zA-Z0-9_.-]+)?(?:\\+[a-zA-Z0-9_.-]+)?)["']`,
+      );
       this.currentVersion = this.manifestParser.getVersion(this.filePath, 'regex', {
-        regex: regex,
+        regex,
       });
       return this.currentVersion;
     } catch (error) {
@@ -51,10 +52,10 @@ export class CustomUpdater implements UpdaterInterface {
 
     const newVersion = calculateNextVersion(oldVersion, releaseType);
     // eslint-disable-next-line no-useless-escape
-    const regexReplace = new RegExp(`(${this.variableName}\s*=\s*['"]?)${oldVersion}(['"]?)`);
+    const regexReplace: RegExp = new RegExp(`"${this.variableName}"\\s*:\\s*["']${oldVersion}["']`);
 
     this.manifestParser.updateVersion(this.filePath, newVersion, 'regex', {
-      regexReplace: regexReplace,
+      regexReplace,
     });
 
     core.info(

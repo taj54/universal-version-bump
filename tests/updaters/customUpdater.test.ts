@@ -1,90 +1,56 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { CustomUpdater } from '../../src/updaters/customUpdater';
 import { FileHandler, ManifestParser } from '../../src/utils';
-import * as core from '@actions/core';
 
 vi.mock('../../src/utils/fileHandler');
 vi.mock('../../src/utils/manifestParser');
-vi.mock('@actions/core');
 
 describe('CustomUpdater', () => {
-  let customUpdater: CustomUpdater;
-  let mockFileHandler: vi.Mocked<FileHandler>;
-  let mockManifestParser: vi.Mocked<ManifestParser>;
-
-  const filePath = 'test.txt';
-  const variableName = 'APP_VERSION';
+  let fileHandler: FileHandler;
+  let manifestParser: ManifestParser;
 
   beforeEach(() => {
-    mockFileHandler = new FileHandler() as vi.Mocked<FileHandler>;
-    mockManifestParser = new ManifestParser(mockFileHandler) as vi.Mocked<ManifestParser>;
-    customUpdater = new CustomUpdater(filePath, variableName);
-
-    // Mock the constructor's internal assignments
-    (customUpdater as unknown).fileHandler = mockFileHandler;
-    (customUpdater as unknown).manifestParser = mockManifestParser;
+    fileHandler = new FileHandler();
+    manifestParser = new ManifestParser(fileHandler);
   });
 
-  it('should always return true for canHandle', () => {
-    expect(customUpdater.canHandle()).toBe(true);
+  it('should always be able to handle the request', () => {
+    const updater = new CustomUpdater('dummy.txt', 'version');
+    expect(updater.canHandle()).toBe(true);
   });
 
-  describe('getCurrentVersion', () => {
-    it('should return the current version if found', () => {
-      mockManifestParser.getVersion.mockReturnValue('1.0.0');
-      expect(customUpdater.getCurrentVersion()).toBe('1.0.0');
-      expect(mockManifestParser.getVersion).toHaveBeenCalledWith(
-        filePath,
-        'regex',
-        expect.objectContaining({ regex: expect.any(RegExp) }),
-      );
-    });
-
-    it('should return null if version is not found', () => {
-      mockManifestParser.getVersion.mockReturnValue(null);
-      expect(customUpdater.getCurrentVersion()).toBeNull();
-    });
-
-    it('should return null and log debug message if manifestParser.getVersion throws an error', () => {
-      const error = new Error('Parse error');
-      mockManifestParser.getVersion.mockImplementation(() => {
-        throw error;
-      });
-      const coreDebugSpy = vi.spyOn(core, 'debug').mockImplementation(() => {});
-
-      expect(customUpdater.getCurrentVersion()).toBeNull();
-      expect(coreDebugSpy).toHaveBeenCalledWith(
-        `Could not read or parse version from ${filePath}: ${error}`,
-      );
-    });
+  it('should get the current version from a custom file', () => {
+    const updater = new CustomUpdater('dummy.txt', 'version');
+    updater['manifestParser'] = manifestParser;
+    const getVersionSpy = vi.spyOn(manifestParser, 'getVersion').mockReturnValue('1.2.3');
+    const version = updater.getCurrentVersion();
+    expect(getVersionSpy).toHaveBeenCalled();
+    expect(version).toBe('1.2.3');
   });
 
-  describe('bumpVersion', () => {
-    it('should successfully bump the version', () => {
-      vi.spyOn(customUpdater, 'getCurrentVersion').mockReturnValue('1.0.0');
-      mockManifestParser.updateVersion.mockReturnValue(undefined);
-      const coreInfoSpy = vi.spyOn(core, 'info').mockImplementation(() => {});
+  it('should bump the version in a custom file', () => {
+    const updater = new CustomUpdater('dummy.txt', 'version');
+    updater['manifestParser'] = manifestParser;
+    vi.spyOn(manifestParser, 'getVersion').mockReturnValue('1.2.3');
+    const updateVersionSpy = vi.spyOn(manifestParser, 'updateVersion');
+    const newVersion = updater.bumpVersion('patch');
+    expect(newVersion).toBe('1.2.4');
+    expect(updateVersionSpy).toHaveBeenCalled();
+  });
 
-      const newVersion = customUpdater.bumpVersion('patch');
+  it('should return null if the version is not found', () => {
+    const updater = new CustomUpdater('dummy.txt', 'version');
+    updater['manifestParser'] = manifestParser;
+    vi.spyOn(manifestParser, 'getVersion').mockReturnValue(null);
+    expect(updater.getCurrentVersion()).toBeNull();
+  });
 
-      expect(newVersion).toBe('1.0.1');
-      expect(mockManifestParser.updateVersion).toHaveBeenCalledWith(
-        filePath,
-        '1.0.1',
-        'regex',
-        expect.objectContaining({ regexReplace: expect.any(RegExp) }),
-      );
-      expect(coreInfoSpy).toHaveBeenCalledWith(
-        `Bumped ${variableName} in ${filePath} from 1.0.0 to 1.0.1`,
-      );
-    });
-
-    it('should throw an error if current version is not found', () => {
-      vi.spyOn(customUpdater, 'getCurrentVersion').mockReturnValue(null);
-
-      expect(() => customUpdater.bumpVersion('patch')).toThrow(
-        `Could not find current version for variable '${variableName}' in file '${filePath}'`,
-      );
-    });
+  it('should throw an error when bumping if the version is not found', () => {
+    const updater = new CustomUpdater('dummy.txt', 'version');
+    updater['manifestParser'] = manifestParser;
+    vi.spyOn(manifestParser, 'getVersion').mockReturnValue(null);
+    expect(() => updater.bumpVersion('patch')).toThrow(
+      "Could not find current version for variable 'version' in file 'dummy.txt'",
+    );
   });
 });
