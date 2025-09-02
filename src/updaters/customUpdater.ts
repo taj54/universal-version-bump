@@ -59,14 +59,21 @@ export class CustomUpdater implements UpdaterInterface {
     }
 
     const newVersion = calculateNextVersion(oldVersion, releaseType);
-    // eslint-disable-next-line no-useless-escape
-    const regexReplace: RegExp = new RegExp(
-      `(${this.variableName}\\s*(=|=>|:)\\s*['"])([0-9]+\\.[0-9]+\\.[0-9]+(?:-[a-zA-Z0-9_.-]+)?(?:\\+[a-zA-Z0-9_.-]+)?)(['"])`,
-    );
-    this.manifestParser.updateVersion(this.filePath, newVersion, 'regex', {
-      regexReplace,
-    });
-
+    const lastPath = this.filePath.split('/').pop() || '';
+    const extension = lastPath.split('.').pop() || '';
+    if (extension === 'json') {
+      this.manifestParser.updateVersion(this.filePath, newVersion, 'json', {
+        jsonPath: [this.variableName],
+      });
+    } else {
+      // eslint-disable-next-line no-useless-escape
+      const regexReplace: RegExp = new RegExp(
+        `(${this.variableName}\\s*(=|=>|:)\\s*['"])([0-9]+\\.[0-9]+\\.[0-9]+(?:-[a-zA-Z0-9_.-]+)?(?:\\+[a-zA-Z0-9_.-]+)?)(['"])`,
+      );
+      this.manifestParser.updateVersion(this.filePath, newVersion, 'regex', {
+        regexReplace,
+      });
+    }
     core.info(
       `Bumped ${this.variableName} in ${this.filePath} from ${oldVersion} to ${newVersion}`,
     );

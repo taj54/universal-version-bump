@@ -6,7 +6,7 @@
  * Author: Taj <tajulislamj200@gmail.com>
  * Homepage: https://github.com/taj54/universal-version-bump#readme
  * License: MIT
- * Generated on Tue, 02 Sep 2025 13:11:06 GMT
+ * Generated on Tue, 02 Sep 2025 13:17:46 GMT
  */
 require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
@@ -33468,11 +33468,20 @@ class CustomUpdater {
             throw new Error(`Could not find current version for variable '${this.variableName}' in file '${this.filePath}'`);
         }
         const newVersion = (0, utils_1.calculateNextVersion)(oldVersion, releaseType);
-        // eslint-disable-next-line no-useless-escape
-        const regexReplace = new RegExp(`(${this.variableName}\\s*(=|=>|:)\\s*['"])([0-9]+\\.[0-9]+\\.[0-9]+(?:-[a-zA-Z0-9_.-]+)?(?:\\+[a-zA-Z0-9_.-]+)?)(['"])`);
-        this.manifestParser.updateVersion(this.filePath, newVersion, 'regex', {
-            regexReplace,
-        });
+        const lastPath = this.filePath.split('/').pop() || '';
+        const extension = lastPath.split('.').pop() || '';
+        if (extension === 'json') {
+            this.manifestParser.updateVersion(this.filePath, newVersion, 'json', {
+                jsonPath: [this.variableName],
+            });
+        }
+        else {
+            // eslint-disable-next-line no-useless-escape
+            const regexReplace = new RegExp(`(${this.variableName}\\s*(=|=>|:)\\s*['"])([0-9]+\\.[0-9]+\\.[0-9]+(?:-[a-zA-Z0-9_.-]+)?(?:\\+[a-zA-Z0-9_.-]+)?)(['"])`);
+            this.manifestParser.updateVersion(this.filePath, newVersion, 'regex', {
+                regexReplace,
+            });
+        }
         core.info(`Bumped ${this.variableName} in ${this.filePath} from ${oldVersion} to ${newVersion}`);
         return newVersion;
     }
