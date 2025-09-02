@@ -1,5 +1,6 @@
 import { FileHandler } from './fileHandler';
 import { InvalidManifestError } from '../errors';
+import { safeParseJSON } from './jsonUtils';
 
 /**
  * Utility class for parsing and updating manifest files.
@@ -42,7 +43,7 @@ export class ManifestParser {
     if (type === 'json') {
       let data: unknown;
       try {
-        data = JSON.parse(content);
+        data = safeParseJSON(content);
       } catch (e: unknown) {
         throw new InvalidManifestError(
           `Invalid JSON in ${manifestPath}: ${e instanceof Error ? e.message : String(e)}`,

@@ -24,22 +24,22 @@ describe('CustomUpdaterService', () => {
   it('should call the custom updater for each bump target', () => {
     const service = new CustomUpdaterService();
     const bumpTargets = [
-      { path: 'path/to/file1', variable: 'version1' },
-      { path: 'path/to/file2', variable: 'version2' },
+      { path: 'path/to/file1.json', variable: 'version1' },
+      { path: 'path/to/file2.php', variable: 'version2' },
     ];
 
     service.updateCustomVersions('patch', bumpTargets);
 
     expect(CustomUpdater).toHaveBeenCalledTimes(2);
-    expect(CustomUpdater).toHaveBeenCalledWith('path/to/file1', 'version1');
-    expect(CustomUpdater).toHaveBeenCalledWith('path/to/file2', 'version2');
+    expect(CustomUpdater).toHaveBeenCalledWith('path/to/file1.json', 'version1');
+    expect(CustomUpdater).toHaveBeenCalledWith('path/to/file2.php', 'version2');
   });
 
   it('should return the last bumped version', () => {
     const service = new CustomUpdaterService();
     const bumpTargets = [
-      { path: 'path/to/file1', variable: 'version1' },
-      { path: 'path/to/file2', variable: 'version2' },
+      { path: 'path/to/file1.json', variable: 'version1' },
+      { path: 'path/to/file2.php', variable: 'version2' },
     ];
 
     const mockBumpVersion = vi.fn();

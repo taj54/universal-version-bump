@@ -1,12 +1,12 @@
 /**
- * universal-version-bump v0.12.2
+ * universal-version-bump v0.13.0
  * Universal Version Bump
  *
  * Description: A GitHub Action to automatically bump versions across any app (Node, Python, PHP, Docker, etc.)
  * Author: Taj <tajulislamj200@gmail.com>
  * Homepage: https://github.com/taj54/universal-version-bump#readme
  * License: MIT
- * Generated on Mon, 01 Sep 2025 13:33:59 GMT
+ * Generated on Tue, 02 Sep 2025 13:11:06 GMT
  */
 require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
@@ -7564,12 +7564,12 @@ const { safeRe: re, t } = __nccwpck_require__(6211)
 const cmp = __nccwpck_require__(5618)
 const debug = __nccwpck_require__(7611)
 const SemVer = __nccwpck_require__(4839)
-const Range = __nccwpck_require__(6093)
+const Range = __nccwpck_require__(8474)
 
 
 /***/ }),
 
-/***/ 6093:
+/***/ 8474:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
@@ -8941,7 +8941,7 @@ module.exports = rsort
 "use strict";
 
 
-const Range = __nccwpck_require__(6093)
+const Range = __nccwpck_require__(8474)
 const satisfies = (version, range, options) => {
   try {
     range = new Range(range, options)
@@ -9019,7 +9019,7 @@ const lte = __nccwpck_require__(3353)
 const cmp = __nccwpck_require__(5618)
 const coerce = __nccwpck_require__(3597)
 const Comparator = __nccwpck_require__(863)
-const Range = __nccwpck_require__(6093)
+const Range = __nccwpck_require__(8474)
 const satisfies = __nccwpck_require__(9751)
 const toComparators = __nccwpck_require__(2258)
 const maxSatisfying = __nccwpck_require__(9269)
@@ -9506,7 +9506,7 @@ module.exports = gtr
 "use strict";
 
 
-const Range = __nccwpck_require__(6093)
+const Range = __nccwpck_require__(8474)
 const intersects = (r1, r2, options) => {
   r1 = new Range(r1, options)
   r2 = new Range(r2, options)
@@ -9538,7 +9538,7 @@ module.exports = ltr
 
 
 const SemVer = __nccwpck_require__(4839)
-const Range = __nccwpck_require__(6093)
+const Range = __nccwpck_require__(8474)
 
 const maxSatisfying = (versions, range, options) => {
   let max = null
@@ -9573,7 +9573,7 @@ module.exports = maxSatisfying
 
 
 const SemVer = __nccwpck_require__(4839)
-const Range = __nccwpck_require__(6093)
+const Range = __nccwpck_require__(8474)
 const minSatisfying = (versions, range, options) => {
   let min = null
   let minSV = null
@@ -9607,7 +9607,7 @@ module.exports = minSatisfying
 
 
 const SemVer = __nccwpck_require__(4839)
-const Range = __nccwpck_require__(6093)
+const Range = __nccwpck_require__(8474)
 const gt = __nccwpck_require__(5283)
 
 const minVersion = (range, loose) => {
@@ -9680,7 +9680,7 @@ module.exports = minVersion
 const SemVer = __nccwpck_require__(4839)
 const Comparator = __nccwpck_require__(863)
 const { ANY } = Comparator
-const Range = __nccwpck_require__(6093)
+const Range = __nccwpck_require__(8474)
 const satisfies = __nccwpck_require__(9751)
 const gt = __nccwpck_require__(5283)
 const lt = __nccwpck_require__(6108)
@@ -9824,7 +9824,7 @@ module.exports = (versions, range, options) => {
 "use strict";
 
 
-const Range = __nccwpck_require__(6093)
+const Range = __nccwpck_require__(8474)
 const Comparator = __nccwpck_require__(863)
 const { ANY } = Comparator
 const satisfies = __nccwpck_require__(9751)
@@ -10081,7 +10081,7 @@ module.exports = subset
 "use strict";
 
 
-const Range = __nccwpck_require__(6093)
+const Range = __nccwpck_require__(8474)
 
 // Mostly just for testing and legacy API reasons
 const toComparators = (range, options) =>
@@ -10099,7 +10099,7 @@ module.exports = toComparators
 "use strict";
 
 
-const Range = __nccwpck_require__(6093)
+const Range = __nccwpck_require__(8474)
 const validRange = (range, options) => {
   try {
     // Return '*' instead of '' so that truthiness works.
@@ -33078,6 +33078,45 @@ exports.ChangelogService = ChangelogService;
 
 /***/ }),
 
+/***/ 2267:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.CustomUpdaterService = void 0;
+const errors_1 = __nccwpck_require__(4830);
+const updaters_1 = __nccwpck_require__(1384);
+/**
+ * Service for handling custom version updates.
+ */
+class CustomUpdaterService {
+    /**
+     * Updates the version for the specified bump targets.
+     * @param releaseType The type of release (major, minor, patch).
+     * @param bumpTargets The targets to bump.
+     * @returns The new version string.
+     */
+    updateCustomVersions(releaseType, bumpTargets) {
+        if (bumpTargets.length === 0) {
+            throw new errors_1.VersionBumpError('No bump_targets provided for custom platform.');
+        }
+        let lastBumpedVersion = '';
+        for (const target of bumpTargets) {
+            if (!target.path || !target.variable) {
+                throw new errors_1.VersionBumpError('Invalid bump_target provided for custom platform.');
+            }
+            const customUpdater = new updaters_1.CustomUpdater(target.path, target.variable);
+            lastBumpedVersion = customUpdater.bumpVersion(releaseType);
+        }
+        return lastBumpedVersion;
+    }
+}
+exports.CustomUpdaterService = CustomUpdaterService;
+
+
+/***/ }),
+
 /***/ 8743:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -33274,6 +33313,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 __exportStar(__nccwpck_require__(9104), exports);
 __exportStar(__nccwpck_require__(8743), exports);
 __exportStar(__nccwpck_require__(5417), exports);
+__exportStar(__nccwpck_require__(2267), exports);
 
 
 /***/ }),
@@ -33286,7 +33326,7 @@ __exportStar(__nccwpck_require__(5417), exports);
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.UpdaterService = void 0;
 const errors_1 = __nccwpck_require__(4830);
-const customUpdater_1 = __nccwpck_require__(5432);
+const customUpdaterService_1 = __nccwpck_require__(2267);
 /**
  * Service for managing version updates.
  */
@@ -33325,15 +33365,8 @@ class UpdaterService {
      */
     updateVersion(platform, releaseType, bumpTargets = []) {
         if (platform === 'custom') {
-            if (bumpTargets.length === 0) {
-                throw new errors_1.VersionBumpError('No bump_targets provided for custom platform.');
-            }
-            let lastBumpedVersion = '';
-            for (const target of bumpTargets) {
-                const customUpdater = new customUpdater_1.CustomUpdater(target.path, target.variable);
-                lastBumpedVersion = customUpdater.bumpVersion(releaseType);
-            }
-            return lastBumpedVersion;
+            const customUpdaterService = new customUpdaterService_1.CustomUpdaterService();
+            return customUpdaterService.updateCustomVersions(releaseType, bumpTargets);
         }
         else {
             const updater = this.updaterRegistry.getUpdater(platform);
@@ -33409,10 +33442,19 @@ class CustomUpdater {
             return this.currentVersion;
         }
         try {
-            const regex = new RegExp(`"${this.variableName}"\\s*:\\s*["']((?:[0-9]+\\.){2}[0-9]+(?:-[a-zA-Z0-9_.-]+)?(?:\\+[a-zA-Z0-9_.-]+)?)["']`);
-            this.currentVersion = this.manifestParser.getVersion(this.filePath, 'regex', {
-                regex,
-            });
+            const lastPath = this.filePath.split('/').pop() || '';
+            const extension = lastPath.split('.').pop() || '';
+            if (extension === 'json') {
+                this.currentVersion = this.manifestParser.getVersion(this.filePath, 'json', {
+                    jsonPath: [this.variableName],
+                });
+            }
+            else {
+                const regex = new RegExp(`(${this.variableName}\\s*(=|=>|:)\\s*['"])([0-9]+\\.[0-9]+\\.[0-9]+(?:-[a-zA-Z0-9_.-]+)?(?:\\+[a-zA-Z0-9_.-]+)?)(['"])`);
+                this.currentVersion = this.manifestParser.getVersion(this.filePath, 'regex', {
+                    regex,
+                });
+            }
             return this.currentVersion;
         }
         catch (error) {
@@ -33427,7 +33469,7 @@ class CustomUpdater {
         }
         const newVersion = (0, utils_1.calculateNextVersion)(oldVersion, releaseType);
         // eslint-disable-next-line no-useless-escape
-        const regexReplace = new RegExp(`("${this.variableName}"\\s*:\\s*["'])([0-9]+\\.[0-9]+\\.[0-9]+(?:-[a-zA-Z0-9_.-]+)?(?:\\+[a-zA-Z0-9_.-]+)?)(["'])`);
+        const regexReplace = new RegExp(`(${this.variableName}\\s*(=|=>|:)\\s*['"])([0-9]+\\.[0-9]+\\.[0-9]+(?:-[a-zA-Z0-9_.-]+)?(?:\\+[a-zA-Z0-9_.-]+)?)(['"])`);
         this.manifestParser.updateVersion(this.filePath, newVersion, 'regex', {
             regexReplace,
         });
@@ -33899,12 +33941,42 @@ exports.RustUpdater = RustUpdater;
 
 "use strict";
 
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.FileHandler = void 0;
-const fs_1 = __importDefault(__nccwpck_require__(9896));
+const fs = __importStar(__nccwpck_require__(9896));
 const errors_1 = __nccwpck_require__(4830);
 /**
  * Utility class for handling file operations.
@@ -33917,7 +33989,7 @@ class FileHandler {
      * @returns True if the file exists, false otherwise.
      */
     fileExists(filePath) {
-        return fs_1.default.existsSync(filePath);
+        return fs.existsSync(filePath);
     }
     /**
      * Reads the contents of a file.
@@ -33928,7 +34000,7 @@ class FileHandler {
         if (!this.fileExists(filePath)) {
             throw new errors_1.FileNotFoundError(`File not found: ${filePath}`);
         }
-        return fs_1.default.readFileSync(filePath, 'utf8');
+        return fs.readFileSync(filePath, 'utf-8');
     }
     /**
      * Writes the contents to a file.
@@ -33936,7 +34008,7 @@ class FileHandler {
      * @param content The content to write to the file.
      */
     writeFile(filePath, content) {
-        fs_1.default.writeFileSync(filePath, content);
+        fs.writeFileSync(filePath, content);
     }
     /**
      * Reads the contents of a directory.
@@ -33948,7 +34020,7 @@ class FileHandler {
         if (!this.fileExists(dirPath)) {
             throw new errors_1.FileNotFoundError(`Directory not found: ${dirPath}`);
         }
-        return fs_1.default.readdirSync(dirPath);
+        return fs.readdirSync(dirPath);
     }
 }
 exports.FileHandler = FileHandler;
@@ -34020,6 +34092,7 @@ function safeParseJSON(str) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.ManifestParser = void 0;
 const errors_1 = __nccwpck_require__(4830);
+const jsonUtils_1 = __nccwpck_require__(8396);
 /**
  * Utility class for parsing and updating manifest files.
  */
@@ -34052,7 +34125,7 @@ class ManifestParser {
         if (type === 'json') {
             let data;
             try {
-                data = JSON.parse(content);
+                data = (0, jsonUtils_1.safeParseJSON)(content);
             }
             catch (e) {
                 throw new errors_1.InvalidManifestError(`Invalid JSON in ${manifestPath}: ${e instanceof Error ? e.message : String(e)}`);
@@ -34279,7 +34352,7 @@ module.exports = require("node:crypto");
 
 /***/ }),
 
-/***/ 8474:
+/***/ 6093:
 /***/ ((module) => {
 
 "use strict";
@@ -34642,7 +34715,7 @@ module.exports = Dicer
 "use strict";
 
 
-const EventEmitter = (__nccwpck_require__(8474).EventEmitter)
+const EventEmitter = (__nccwpck_require__(6093).EventEmitter)
 const inherits = (__nccwpck_require__(7975).inherits)
 const getLimit = __nccwpck_require__(1954)
 
@@ -34797,7 +34870,7 @@ module.exports = PartStream
  * Based heavily on the Streaming Boyer-Moore-Horspool C++ implementation
  * by Hongli Lai at: https://github.com/FooBarWidget/boyer-moore-horspool
  */
-const EventEmitter = (__nccwpck_require__(8474).EventEmitter)
+const EventEmitter = (__nccwpck_require__(6093).EventEmitter)
 const inherits = (__nccwpck_require__(7975).inherits)
 
 function SBMH (needle) {

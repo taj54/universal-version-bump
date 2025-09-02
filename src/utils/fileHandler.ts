@@ -1,4 +1,4 @@
-import fs from 'fs';
+import * as fs from 'fs';
 import { FileNotFoundError } from '../errors';
 
 /**
@@ -25,7 +25,7 @@ export class FileHandler {
     if (!this.fileExists(filePath)) {
       throw new FileNotFoundError(`File not found: ${filePath}`);
     }
-    return fs.readFileSync(filePath, 'utf8');
+    return fs.readFileSync(filePath, 'utf-8');
   }
 
   /**

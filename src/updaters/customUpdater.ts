@@ -29,12 +29,20 @@ export class CustomUpdater implements UpdaterInterface {
     }
 
     try {
-      const regex: RegExp = new RegExp(
-        `(${this.variableName}\\s*(=|=>|:)\\s*['"])([0-9]+\\.[0-9]+\\.[0-9]+(?:-[a-zA-Z0-9_.-]+)?(?:\\+[a-zA-Z0-9_.-]+)?)(['"])`,
-      );
-      this.currentVersion = this.manifestParser.getVersion(this.filePath, 'regex', {
-        regex,
-      });
+      const lastPath = this.filePath.split('/').pop() || '';
+      const extension = lastPath.split('.').pop() || '';
+      if (extension === 'json') {
+        this.currentVersion = this.manifestParser.getVersion(this.filePath, 'json', {
+          jsonPath: [this.variableName],
+        });
+      } else {
+        const regex: RegExp = new RegExp(
+          `(${this.variableName}\\s*(=|=>|:)\\s*['"])([0-9]+\\.[0-9]+\\.[0-9]+(?:-[a-zA-Z0-9_.-]+)?(?:\\+[a-zA-Z0-9_.-]+)?)(['"])`,
+        );
+        this.currentVersion = this.manifestParser.getVersion(this.filePath, 'regex', {
+          regex,
+        });
+      }
       return this.currentVersion;
     } catch (error) {
       core.debug(`Could not read or parse version from ${this.filePath}: ${error}`);

@@ -24,8 +24,6 @@ export class CustomUpdaterService {
       if (!target.path || !target.variable) {
         throw new VersionBumpError('Invalid bump_target provided for custom platform.');
       }
-      const lastPath = target.path.split('/').pop();
-      console.log(lastPath);
       const customUpdater = new CustomUpdater(target.path, target.variable);
       lastBumpedVersion = customUpdater.bumpVersion(releaseType);
     }

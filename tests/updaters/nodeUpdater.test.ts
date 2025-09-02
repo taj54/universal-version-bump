@@ -60,7 +60,7 @@ describe('NodeUpdater', () => {
       nodeUpdater.canHandle(); // Ensure manifestPath is set
       (readFileSync as vi.Mock).mockReturnValueOnce(JSON.stringify({ version: '1.0.0' }));
       expect(nodeUpdater.getCurrentVersion()).toBe('1.0.0');
-      expect(readFileSync).toHaveBeenCalledWith('package.json', 'utf8');
+      expect(readFileSync).toHaveBeenCalledWith('package.json', 'utf-8');
     });
 
     it('should return null if package.json does not exist', () => {
