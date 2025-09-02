@@ -1,7 +1,7 @@
 import semver from 'semver';
 import { PlatformDetectionError, VersionBumpError } from '../errors';
-import { UpdaterRegistry } from '../registry/updaterRegistry';
-import { CustomUpdater } from '../updaters/customUpdater';
+import { UpdaterRegistry } from '../registry';
+import { CustomUpdaterService } from './customUpdaterService';
 
 /**
  * Service for managing version updates.
@@ -54,18 +54,8 @@ export class UpdaterService {
     bumpTargets: Array<{ path: string; variable: string }> = [],
   ): string {
     if (platform === 'custom') {
-      if (bumpTargets.length === 0) {
-        throw new VersionBumpError('No bump_targets provided for custom platform.');
-      }
-      let lastBumpedVersion: string = '';
-      for (const target of bumpTargets) {
-        if (!target.path || !target.variable) {
-          throw new VersionBumpError('Invalid bump_target provided for custom platform.');
-        }
-        const customUpdater = new CustomUpdater(target.path, target.variable);
-        lastBumpedVersion = customUpdater.bumpVersion(releaseType);
-      }
-      return lastBumpedVersion;
+      const customUpdaterService = new CustomUpdaterService();
+      return customUpdaterService.updateCustomVersions(releaseType, bumpTargets);
     } else {
       const updater = this.updaterRegistry.getUpdater(platform);
       if (!updater) {
