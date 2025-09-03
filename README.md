@@ -62,14 +62,34 @@ To explicitly target a platform, use the `target_platform` input:
     target_platform: 'node' # Explicitly target Node.js
 ```
 
+### Custom Updater Usage
+
+For custom version updates in arbitrary files, use `target_platform: 'custom'` along with the `bump_targets` input. The `bump_targets` input should be a JSON array of objects, where each object specifies the `path` to the file and the `variable` name containing the version.
+
+For JSON files, the `variable` should be the JSON path to the version field. For other text files, the `variable` will be used in a regular expression to find and replace the version.
+
+```yaml
+- name: Bump custom version
+  uses: taj54/universal-version-bump@v0.8.2
+  with:
+    release_type: 'patch'
+    target_platform: 'custom'
+    bump_targets: |
+      [
+        {"path": "version.txt", "variable": "APP_VERSION"},
+        {"path": "config.json", "variable": "app.version"}
+      ]
+```
+
 ## Inputs
 
-| Name              | Description                                                                                                                       | Default |
-| ----------------- | --------------------------------------------------------------------------------------------------------------------------------- | ------- |
-| `release_type`    | Select the version bump type (patch, minor, major)                                                                                | `patch` |
-| `git_tag`         | Whether to create a Git tag after bump                                                                                            | `true`  |
-| `target_platform` | Explicitly specify the platform to update (e.g., `node`, `python`). If not provided, the platform will be detected automatically. | `''`    |
-| `target_path`     | The target path where the version bump should be applied. If not provided, the action will run in the root directory.             | `.`     |
+| Name              | Description                                                                                                                                                                                                                                      | Default |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------- |
+| `release_type`    | Select the version bump type (patch, minor, major)                                                                                                                                                                                               | `patch` |
+| `git_tag`         | Whether to create a Git tag after bump                                                                                                                                                                                                           | `true`  |
+| `target_platform` | Explicitly specify the platform to update (e.g., `node`, `python`). If not provided, the platform will be detected automatically.                                                                                                                | `''`    |
+| `target_path`     | The target path where the version bump should be applied. If not provided, the action will run in the root directory.                                                                                                                            | `.`     |
+| `bump_targets`    | Optional list of version update targets. Provide the `path` and the `variable` to update, the Action will build regex automatically. Example: `[{"path": "setup.py", "variable": "version"}, {"path": "Dockerfile", "variable": "APP_VERSION"}]` | `[]`    |
 
 ## Outputs
 
@@ -113,7 +133,6 @@ jobs:
         uses: taj54/universal-version-bump@v0.9.0
         with:
           release_type: ${{ inputs.release_type }}
-          git_tag: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
