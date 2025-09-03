@@ -1,12 +1,12 @@
 /**
- * universal-version-bump v0.13.0
+ * universal-version-bump v0.13.3
  * Universal Version Bump
  *
  * Description: A GitHub Action to automatically bump versions across any app (Node, Python, PHP, Docker, etc.)
  * Author: Taj <tajulislamj200@gmail.com>
  * Homepage: https://github.com/taj54/universal-version-bump#readme
  * License: MIT
- * Generated on Tue, 02 Sep 2025 13:17:46 GMT
+ * Generated on Wed, 03 Sep 2025 14:49:27 GMT
  */
 require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
@@ -33442,15 +33442,15 @@ class CustomUpdater {
             return this.currentVersion;
         }
         try {
-            const lastPath = this.filePath.split('/').pop() || '';
-            const extension = lastPath.split('.').pop() || '';
+            const extension = this.filePath.split('.').pop() || '';
             if (extension === 'json') {
                 this.currentVersion = this.manifestParser.getVersion(this.filePath, 'json', {
                     jsonPath: [this.variableName],
                 });
             }
             else {
-                const regex = new RegExp(`(${this.variableName}\\s*(=|=>|:)\\s*['"])([0-9]+\\.[0-9]+\\.[0-9]+(?:-[a-zA-Z0-9_.-]+)?(?:\\+[a-zA-Z0-9_.-]+)?)(['"])`);
+                // console.log(extension, this.filePath);
+                const regex = new RegExp(`(${this.variableName}\\s*(?:=|=>|:)\\s*['"])([0-9]+\\.[0-9]+\\.[0-9]+(?:-[a-zA-Z0-9_.-]+)?(?:\\+[a-zA-Z0-9_.-]+)?)(['"])`);
                 this.currentVersion = this.manifestParser.getVersion(this.filePath, 'regex', {
                     regex,
                 });
@@ -33468,8 +33468,7 @@ class CustomUpdater {
             throw new Error(`Could not find current version for variable '${this.variableName}' in file '${this.filePath}'`);
         }
         const newVersion = (0, utils_1.calculateNextVersion)(oldVersion, releaseType);
-        const lastPath = this.filePath.split('/').pop() || '';
-        const extension = lastPath.split('.').pop() || '';
+        const extension = this.filePath.split('.').pop() || '';
         if (extension === 'json') {
             this.manifestParser.updateVersion(this.filePath, newVersion, 'json', {
                 jsonPath: [this.variableName],
@@ -33477,7 +33476,7 @@ class CustomUpdater {
         }
         else {
             // eslint-disable-next-line no-useless-escape
-            const regexReplace = new RegExp(`(${this.variableName}\\s*(=|=>|:)\\s*['"])([0-9]+\\.[0-9]+\\.[0-9]+(?:-[a-zA-Z0-9_.-]+)?(?:\\+[a-zA-Z0-9_.-]+)?)(['"])`);
+            const regexReplace = new RegExp(`(${this.variableName}\\s*(?:=|=>|:)\\s*['"])([0-9]+\\.[0-9]+\\.[0-9]+(?:-[a-zA-Z0-9_.-]+)?(?:\\+[a-zA-Z0-9_.-]+)?)(['"])`);
             this.manifestParser.updateVersion(this.filePath, newVersion, 'regex', {
                 regexReplace,
             });
@@ -34139,8 +34138,6 @@ class ManifestParser {
             catch (e) {
                 throw new errors_1.InvalidManifestError(`Invalid JSON in ${manifestPath}: ${e instanceof Error ? e.message : String(e)}`);
             }
-            console.log('data:', data);
-            console.log('options.jsonPath:', options.jsonPath);
             let version = data;
             if (options.jsonPath) {
                 for (const key of options.jsonPath) {
