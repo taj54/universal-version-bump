@@ -35,6 +35,8 @@ export class CustomUpdater implements UpdaterInterface {
           jsonPath: [this.variableName],
         });
       } else {
+        // console.log(extension, this.filePath);
+
         const regex: RegExp = new RegExp(
           `(${this.variableName}\\s*(=|=>|:)\\s*['"])([0-9]+\\.[0-9]+\\.[0-9]+(?:-[a-zA-Z0-9_.-]+)?(?:\\+[a-zA-Z0-9_.-]+)?)(['"])`,
         );

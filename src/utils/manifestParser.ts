@@ -39,7 +39,6 @@ export class ManifestParser {
     options: { regex?: RegExp; jsonPath?: string[] },
   ): string | null {
     const content = this.fileHandler.readFile(manifestPath);
-
     if (type === 'json') {
       let data: unknown;
       try {
@@ -49,9 +48,6 @@ export class ManifestParser {
           `Invalid JSON in ${manifestPath}: ${e instanceof Error ? e.message : String(e)}`,
         );
       }
-
-      console.log('data:', data);
-      console.log('options.jsonPath:', options.jsonPath);
 
       let version: unknown = data;
       if (options.jsonPath) {

@@ -25,6 +25,7 @@ describe('CustomUpdater', () => {
 
     it('should get the current version from a custom file', () => {
       const updater = new CustomUpdater('dummy.json', 'version');
+      updater['fileHandler'] = fileHandler;
       updater['manifestParser'] = manifestParser;
       const getVersionSpy = vi.spyOn(manifestParser, 'getVersion').mockReturnValue('1.2.3');
       const version = updater.getCurrentVersion();
