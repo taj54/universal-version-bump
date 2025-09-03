@@ -50,13 +50,21 @@ It's recommended to run `pnpm run prepare` before committing, which will lint, f
 
 ## Project Structure
 
-- `src/`: Contains the main source code for the action.
-  - `updaters/`: Contains logic for bumping versions for different platforms (e.g., `nodeUpdater.ts`, `pythonUpdater.ts`).
-  - `services/`: Contains core services like Git operations and the main updater logic.
-  - `utils/`: Utility functions.
-- `tests/`: Contains unit tests for the source code.
-- `dist/`: Compiled JavaScript output.
-- `scripts/`: Build scripts.
+The project follows a clear and modular structure to facilitate development and maintenance:
+
+- `src/`: This directory holds the primary source code for the GitHub Action.
+  - `config/`: Configuration related files.
+  - `interface/`: TypeScript interfaces defining contracts and types used across the application.
+  - `registry/`: Manages the registration and retrieval of different updaters.
+  - `services/`: Contains core business logic and orchestrates operations, such as Git interactions (`gitService.ts`), changelog generation (`changelogService.ts`), and the main version bumping logic (`updaterService.ts`).
+  - `updaters/`: Houses the specific logic for bumping versions across various platforms and file types (e.g., `nodeUpdater.ts` for `package.json`, `pythonUpdater.ts` for Python projects, `customUpdater.ts` for arbitrary files). Each updater implements the `UpdaterInterface`.
+  - `utils/`: Provides common utility functions and helper classes used throughout the project, such as file handling (`fileHandler.ts`), JSON manipulation (`jsonUtils.ts`), and version parsing (`versionUtil.ts`).
+  - `index.ts`: The main entry point for the GitHub Action.
+  - `errors.ts`: Custom error definitions for the application.
+- `tests/`: This directory contains all unit tests for the source code, mirroring the `src/` directory structure to ensure comprehensive test coverage.
+- `dist/`: This directory stores the compiled JavaScript output and other build artifacts, ready for deployment.
+- `scripts/`: Contains various utility scripts, primarily for building and preparing the project.
+- `.github/workflows/`: Contains the GitHub Actions workflow definitions for CI/CD, including testing, releasing, and version bumping.
 
 ## GitHub Action Inputs
 
