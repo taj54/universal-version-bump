@@ -38,8 +38,9 @@ export class CustomUpdater implements UpdaterInterface {
         // console.log(extension, this.filePath);
 
         const regex: RegExp = new RegExp(
-          `(${this.variableName}\\s*(=|=>|:)\\s*['"])([0-9]+\\.[0-9]+\\.[0-9]+(?:-[a-zA-Z0-9_.-]+)?(?:\\+[a-zA-Z0-9_.-]+)?)(['"])`,
+          `(${this.variableName}\\s*(?:=|=>|:)\\s*['"])([0-9]+\\.[0-9]+\\.[0-9]+(?:-[a-zA-Z0-9_.-]+)?(?:\\+[a-zA-Z0-9_.-]+)?)(['"])`,
         );
+
         this.currentVersion = this.manifestParser.getVersion(this.filePath, 'regex', {
           regex,
         });
@@ -68,8 +69,9 @@ export class CustomUpdater implements UpdaterInterface {
     } else {
       // eslint-disable-next-line no-useless-escape
       const regexReplace: RegExp = new RegExp(
-        `(${this.variableName}\\s*(=|=>|:)\\s*['"])([0-9]+\\.[0-9]+\\.[0-9]+(?:-[a-zA-Z0-9_.-]+)?(?:\\+[a-zA-Z0-9_.-]+)?)(['"])`,
+        `(${this.variableName}\\s*(?:=|=>|:)\\s*['"])([0-9]+\\.[0-9]+\\.[0-9]+(?:-[a-zA-Z0-9_.-]+)?(?:\\+[a-zA-Z0-9_.-]+)?)(['"])`,
       );
+
       this.manifestParser.updateVersion(this.filePath, newVersion, 'regex', {
         regexReplace,
       });
