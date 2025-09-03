@@ -6,7 +6,7 @@
  * Author: Taj <tajulislamj200@gmail.com>
  * Homepage: https://github.com/taj54/universal-version-bump#readme
  * License: MIT
- * Generated on Wed, 03 Sep 2025 14:49:27 GMT
+ * Generated on Wed, 03 Sep 2025 15:09:23 GMT
  */
 require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
@@ -33450,7 +33450,7 @@ class CustomUpdater {
             }
             else {
                 // console.log(extension, this.filePath);
-                const regex = new RegExp(`(${this.variableName}\\s*(?:=|=>|:)\\s*['"])([0-9]+\\.[0-9]+\\.[0-9]+(?:-[a-zA-Z0-9_.-]+)?(?:\\+[a-zA-Z0-9_.-]+)?)(['"])`);
+                const regex = new RegExp(`\\$${this.variableName}\\s*(?:=|=>|:)\\s*['"]([0-9]+\\.[0-9]+\\.[0-9]+(?:-[A-Za-z0-9_.-]+)?(?:\\+[A-Za-z0-9_.-]+)?)['"]`);
                 this.currentVersion = this.manifestParser.getVersion(this.filePath, 'regex', {
                     regex,
                 });
@@ -33476,7 +33476,7 @@ class CustomUpdater {
         }
         else {
             // eslint-disable-next-line no-useless-escape
-            const regexReplace = new RegExp(`(${this.variableName}\\s*(?:=|=>|:)\\s*['"])([0-9]+\\.[0-9]+\\.[0-9]+(?:-[a-zA-Z0-9_.-]+)?(?:\\+[a-zA-Z0-9_.-]+)?)(['"])`);
+            const regexReplace = new RegExp(`(.*?\\$${this.variableName}\\s*(?:=|=>|:)\\s*['"])([0-9]+\\.[0-9]+\\.[0-9]+(?:-[A-Za-z0-9_.-]+)?(?:\\+[A-Za-z0-9_.-]+)?)(['"];?)`);
             this.manifestParser.updateVersion(this.filePath, newVersion, 'regex', {
                 regexReplace,
             });
