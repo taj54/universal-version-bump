@@ -29,8 +29,7 @@ export class CustomUpdater implements UpdaterInterface {
     }
 
     try {
-      const lastPath = this.filePath.split('/').pop() || '';
-      const extension = lastPath.split('.').pop() || '';
+      const extension = this.filePath.split('.').pop() || '';
       if (extension === 'json') {
         this.currentVersion = this.manifestParser.getVersion(this.filePath, 'json', {
           jsonPath: [this.variableName],
@@ -59,8 +58,7 @@ export class CustomUpdater implements UpdaterInterface {
     }
 
     const newVersion = calculateNextVersion(oldVersion, releaseType);
-    const lastPath = this.filePath.split('/').pop() || '';
-    const extension = lastPath.split('.').pop() || '';
+    const extension = this.filePath.split('.').pop() || '';
     if (extension === 'json') {
       this.manifestParser.updateVersion(this.filePath, newVersion, 'json', {
         jsonPath: [this.variableName],
