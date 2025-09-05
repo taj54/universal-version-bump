@@ -33,7 +33,7 @@ To use this action in your workflow, add the following step:
 
 ```yaml
 - name: Bump version
-  uses: taj54/universal-version-bump@v0.8.2
+  uses: taj54/universal-version-bump@v0.14.0
   with:
     release_type: 'patch' # patch, minor, or major
 ```
@@ -44,7 +44,7 @@ To bump a version in a specific directory, use the `target_path` input:
 
 ```yaml
 - name: Bump version in my-app
-  uses: taj54/universal-version-bump@v0.8.2
+  uses: taj54/universal-version-bump@v0.14.0
   with:
     release_type: 'patch'
     target_path: 'my-app'
@@ -56,7 +56,7 @@ To explicitly target a platform, use the `target_platform` input:
 
 ```yaml
 - name: Bump Node.js version
-  uses: taj54/universal-version-bump@v0.8.2
+  uses: taj54/universal-version-bump@v0.14.0
   with:
     release_type: 'patch'
     target_platform: 'node' # Explicitly target Node.js
@@ -70,7 +70,7 @@ For JSON files, the `variable` should be the JSON path to the version field. For
 
 ```yaml
 - name: Bump custom version
-  uses: taj54/universal-version-bump@v0.8.2
+  uses: taj54/universal-version-bump@v0.14.0
   with:
     release_type: 'patch'
     target_platform: 'custom'
@@ -130,7 +130,7 @@ jobs:
           fetch-depth: 0
 
       - name: Universal Version Bump
-        uses: taj54/universal-version-bump@v0.9.0
+        uses: taj54/universal-version-bump@v0.14.0
         with:
           release_type: ${{ inputs.release_type }}
         env:
