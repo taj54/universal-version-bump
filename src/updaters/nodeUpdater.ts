@@ -9,10 +9,11 @@ export class NodeUpdater implements UpdaterInterface {
   platform = 'node';
   private manifestPath: string | null = null;
   private manifestParser: ManifestParser;
+  private fileHandler: FileHandler;
 
   constructor() {
-    const fileHandler = new FileHandler();
-    this.manifestParser = new ManifestParser(fileHandler);
+    this.fileHandler = new FileHandler();
+    this.manifestParser = new ManifestParser(this.fileHandler);
   }
 
   /**
@@ -49,6 +50,14 @@ export class NodeUpdater implements UpdaterInterface {
     this.manifestParser.updateVersion(this.manifestPath, newVersion, 'json', {
       jsonPath: ['version'],
     });
+
+    // Also bump deno.json/jsr.json if present to keep versions in sync
+    const extraManifests = ['deno.json', 'jsr.json'];
+    for (const manifest of extraManifests) {
+      if (this.fileHandler.fileExists(manifest)) {
+        this.manifestParser.updateVersion(manifest, newVersion, 'json', { jsonPath: ['version'] });
+      }
+    }
 
     return newVersion;
   }
