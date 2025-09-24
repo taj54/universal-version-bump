@@ -4,6 +4,37 @@ All notable changes for each version of the Ambient Music extension.
 
 ---
 
+## v0.14.1 2025-09-24
+
+### Added
+
+- sync deno/jsr manifests during version bump
+
+### Changed
+
+- Merge pull request #63 from taj54/renovate/major-typescript-eslint-monorepo
+- Merge pull request #62 from taj54/renovate/eslint-config-prettier-10.x
+- update typescript-eslint monorepo to v8
+- update dependency eslint-config-prettier to v10
+- Merge pull request #60 from taj54/renovate/pnpm-10.x
+- Merge pull request #59 from taj54/renovate/node-24.x-lockfile
+- Merge pull request #57 from taj54/renovate/vercel-ncc-0.x-lockfile
+- update pnpm to v10.17.1
+- update dependency @types/node to v24.5.2
+- Merge pull request #56 from taj54/renovate/semver-7.x-lockfile
+- update dependency @vercel/ncc to v0.38.4
+- update dependency @types/semver to v7.7.1
+- Merge pull request #55 from taj54/renovate/configure
+- Add renovate.json
+- Merge pull request #53 from nyaomaru/feature/jsr-version-bump-support
+- build file for deno and jsr support
+- Merge pull request #51 from taj54/dependabot/npm_and_yarn/vite-7.1.5
+- bump vite from 7.1.3 to 7.1.5
+- Add GitHub Sponsors funding
+- update example action version to v0.14.0
+- improve project structure documentation
+- enhance README with custom updater usage
+
 ## v0.14.0 2025-09-03
 
 ## v0.13.2 2025-09-02
