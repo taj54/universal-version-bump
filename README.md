@@ -16,6 +16,7 @@ The action will first try to detect the platform of the project by looking for c
 
 | Platform | Version File                 |
 | -------- | ---------------------------- |
+| Deno     | `deno.json`, `jsr.json`      |
 | Docker   | `Dockerfile`                 |
 | Go       | `go.mod`                     |
 | Node     | `package.json`               |
