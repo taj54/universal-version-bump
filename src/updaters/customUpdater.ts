@@ -66,7 +66,6 @@ export class CustomUpdater implements UpdaterInterface {
         jsonPath: [this.variableName],
       });
     } else {
-      // eslint-disable-next-line no-useless-escape
       const regexReplace: RegExp = new RegExp(
         `(['"]?${this.variableName}['"]?\\s*(?:=|=>|:)?\\s*['"])([0-9]+\\.[0-9]+\\.[0-9]+(?:-[A-Za-z0-9_.-]+)?(?:\\+[A-Za-z0-9_.-]+)?)(['"])`,
       );

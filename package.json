@@ -5,7 +5,7 @@
   "description": "A GitHub Action to automatically bump versions across any app (Node, Python, PHP, Docker, etc.)",
   "main": "dist/index.js",
   "scripts": {
-    "build": "pnpm exec ts-node scripts/build.ts",
+    "build": "pnpm exec ts-node  scripts/build.ts",
     "test": "vitest --config vitest.config.mts ",
     "lint": "eslint . --ext .ts",
     "format": "prettier --write .",
@@ -37,19 +37,22 @@
     "semver": "^7.7.2"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "^3.3.1",
+    "@eslint/js": "^9.36.0",
     "@types/node": "^24.3.0",
     "@types/semver": "^7.7.0",
-    "@typescript-eslint/eslint-plugin": "^8.0.0",
-    "@typescript-eslint/parser": "^8.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.44.1",
+    "@typescript-eslint/parser": "^8.44.1",
     "@vercel/ncc": "^0.38.3",
     "@vitest/coverage-v8": "^3.2.4",
     "@vitest/ui": "3.2.4",
-    "eslint": "^8.57.0",
+    "eslint": "^9.36.0",
     "eslint-config-prettier": "^10.0.0",
     "eslint-plugin-prettier": "^5.2.1",
     "prettier": "^3.3.3",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.2",
+    "typescript-eslint": "^8.44.1",
     "vitest": "^3.2.4",
     "yaml": "^2.8.1"
   }
