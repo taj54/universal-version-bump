@@ -31,7 +31,7 @@
   },
   "packageManager": "pnpm@10.28.1",
   "dependencies": {
-    "@actions/core": "^2.0.0",
+    "@actions/core": "^3.0.0",
     "@actions/exec": "^2.0.0",
     "@actions/github": "^7.0.0",
     "semver": "^7.7.2"
