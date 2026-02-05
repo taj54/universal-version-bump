@@ -1,6 +1,6 @@
 import * as exec from '@actions/exec';
 import * as core from '@actions/core';
-import * as github from '@actions/github';
+import { context, getOctokit } from '@actions/github';
 
 /**
  * Service for interacting with Git.
@@ -120,8 +120,8 @@ export class GitService {
       throw new Error('❌ GITHUB_TOKEN not found in environment');
     }
 
-    const octokit = github.getOctokit(token);
-    const { owner, repo } = github.context.repo;
+    const octokit = getOctokit(token);
+    const { owner, repo } = context.repo;
 
     const prTitle = `chore(release): bump version to v${version}`;
     const prBody = `This PR bumps the version to **v${version}** 🚀`;
