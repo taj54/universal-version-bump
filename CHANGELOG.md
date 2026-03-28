@@ -4,6 +4,147 @@ All notable changes for each version of the Ambient Music extension.
 
 ---
 
+## v0.14.2 2026-03-28
+
+### Added
+
+- sync deno/jsr manifests during version bump
+
+### Changed
+
+- Merge pull request #120 from taj54/renovate/eslint-eslintrc-3.x-lockfile
+- Merge pull request #123 from taj54/renovate/typescript-6.x
+- update dependency typescript to v6
+- Merge pull request #122 from taj54/renovate/yaml-2.x-lockfile
+- update dependency @eslint/eslintrc to v3.3.5
+- Merge pull request #118 from taj54/renovate/typescript-eslint-monorepo
+- Merge pull request #121 from taj54/renovate/pnpm-action-setup-5.x
+- update typescript-eslint monorepo to v8.57.2
+- Merge pull request #115 from taj54/renovate/semver-7.x-lockfile
+- Merge pull request #117 from taj54/renovate/pnpm-10.x
+- Merge pull request #116 from taj54/renovate/major-eslint-monorepo
+- update dependency yaml to v2.8.3
+- Merge pull request #114 from taj54/renovate/node-24.x-lockfile
+- update pnpm to v10.33.0
+- update eslint monorepo to v10
+- update pnpm/action-setup action to v5
+- update dependency @types/node to v24.12.0
+- update dependency semver to v7.7.4
+- Merge pull request #113 from taj54/renovate/node-24.x-lockfile
+- Merge pull request #109 from taj54/renovate/actions-core-2.x-lockfile
+- Merge pull request #108 from taj54/renovate/typescript-eslint-monorepo
+- Merge pull request #106 from taj54/renovate/pnpm-10.x
+- Merge pull request #105 from taj54/renovate/prettier-3.x-lockfile
+- update dependency @types/node to v24.10.10
+- update dependency @actions/core to v2.0.3
+- update typescript-eslint monorepo to v8.54.0
+- update pnpm to v10.28.2
+- update dependency prettier to v3.8.1
+- Merge pull request #104 from taj54/renovate/prettier-3.x-lockfile
+- update dependency prettier to v3.8.0
+- Merge pull request #100 from taj54/renovate/actions-exec-2.x
+- Merge pull request #103 from taj54/renovate/eslint-plugin-prettier-5.x-lockfile
+- Merge pull request #102 from taj54/renovate/actions-github-7.x
+- update dependency eslint-plugin-prettier to v5.5.5
+- Merge pull request #101 from taj54/renovate/eslint-monorepo
+- Merge pull request #99 from taj54/renovate/actions-core-2.x
+- Merge pull request #98 from taj54/renovate/node-24.x-lockfile
+- update eslint monorepo to v9.39.2
+- Merge pull request #97 from taj54/renovate/typescript-eslint-monorepo
+- Merge pull request #96 from taj54/renovate/pnpm-10.x
+- update typescript-eslint monorepo to v8.53.1
+- update pnpm to v10.28.1
+- update dependency @types/node to v24.10.9
+- Merge pull request #95 from taj54/renovate/yaml-2.x-lockfile
+- Merge pull request #94 from taj54/renovate/eslint-eslintrc-3.x-lockfile
+- Merge pull request #93 from taj54/renovate/prettier-3.x-lockfile
+- Merge pull request #92 from taj54/renovate/actions-checkout-6.x
+- Merge pull request #91 from taj54/renovate/pnpm-10.x
+- Merge pull request #90 from taj54/renovate/typescript-eslint-monorepo
+- update dependency prettier to v3.7.4
+- update typescript-eslint monorepo to v8.48.1
+- update dependency yaml to v2.8.2
+- update dependency @eslint/eslintrc to v3.3.3
+- update pnpm to v10.24.0
+- update actions/checkout action to v6
+- Merge pull request #89 from taj54/renovate/typescript-eslint-monorepo
+- update typescript-eslint monorepo to v8.46.4
+- Merge pull request #87 from taj54/renovate/node-24.x-lockfile
+- Merge pull request #88 from taj54/renovate/eslint-monorepo
+- Merge pull request #85 from taj54/renovate/pnpm-10.x
+- update pnpm to v10.22.0
+- update dependency @types/node to v24.10.1
+- update eslint monorepo to v9.39.1
+- Merge pull request #84 from taj54/renovate/node-24.x-lockfile
+- Merge pull request #83 from taj54/renovate/typescript-eslint-monorepo
+- update dependency @types/node to v24.9.1
+- update typescript-eslint monorepo to v8.46.2
+- Merge pull request #82 from taj54/renovate/eslint-monorepo
+- Merge pull request #81 from taj54/renovate/node-24.x-lockfile
+- Merge pull request #80 from taj54/renovate/pnpm-10.x
+- update eslint monorepo to v9.38.0
+- Merge pull request #79 from taj54/renovate/typescript-eslint-monorepo
+- update dependency @types/node to v24.8.1
+- update pnpm to v10.18.3
+- update typescript-eslint monorepo to v8.46.1
+- Merge pull request #78 from taj54/renovate/pnpm-10.x
+- Merge pull request #77 from taj54/renovate/node-24.x-lockfile
+- Merge pull request #76 from taj54/renovate/semver-7.x-lockfile
+- update dependency @types/node to v24.7.2
+- update pnpm to v10.18.2
+- update dependency semver to v7.7.3
+- Merge pull request #75 from taj54/renovate/typescript-eslint-monorepo
+- Merge pull request #74 from taj54/renovate/pnpm-10.x
+- Merge pull request #73 from taj54/renovate/node-24.x-lockfile
+- update typescript-eslint monorepo to v8.46.0
+- update pnpm to v10.18.1
+- update dependency @types/node to v24.7.0
+- Merge pull request #72 from taj54/renovate/eslint-monorepo
+- update eslint monorepo to v9.37.0
+- Merge pull request #70 from taj54/renovate/typescript-5.x-lockfile
+- update dependency typescript to v5.9.3
+- Merge pull request #71 from taj54/renovate/pnpm-10.x
+- Merge pull request #69 from taj54/renovate/node-24.x-lockfile
+- Merge pull request #68 from taj54/renovate/typescript-eslint-monorepo
+- update pnpm to v10.18.0
+- update dependency @types/node to v24.6.2
+- update typescript-eslint monorepo to v8.45.0
+- update eslint ignores
+- Merge pull request #67 from taj54/feat/eslint-update
+- use flat config for eslint
+- add Deno platform to platform table
+- Merge pull request #64 from taj54/version-bump/v0.14.1
+- bump version to v0.14.1
+- Merge pull request #63 from taj54/renovate/major-typescript-eslint-monorepo
+- Merge pull request #62 from taj54/renovate/eslint-config-prettier-10.x
+- update typescript-eslint monorepo to v8
+- update dependency eslint-config-prettier to v10
+- Merge pull request #60 from taj54/renovate/pnpm-10.x
+- Merge pull request #59 from taj54/renovate/node-24.x-lockfile
+- Merge pull request #57 from taj54/renovate/vercel-ncc-0.x-lockfile
+- update pnpm to v10.17.1
+- update dependency @types/node to v24.5.2
+- Merge pull request #56 from taj54/renovate/semver-7.x-lockfile
+- update dependency @vercel/ncc to v0.38.4
+- update dependency @types/semver to v7.7.1
+- Merge pull request #55 from taj54/renovate/configure
+- Add renovate.json
+- Merge pull request #53 from nyaomaru/feature/jsr-version-bump-support
+- build file for deno and jsr support
+- Merge pull request #51 from taj54/dependabot/npm_and_yarn/vite-7.1.5
+- bump vite from 7.1.3 to 7.1.5
+- Add GitHub Sponsors funding
+- update example action version to v0.14.0
+- improve project structure documentation
+- enhance README with custom updater usage
+
+### Fixed
+
+- update dependency @actions/exec to v2
+- update dependency @actions/github to v7
+- update dependency @actions/core to v2
+- update version to 0.14.1 and timestamp
+
 ## v0.14.1 2025-09-24
 
 ### Added
