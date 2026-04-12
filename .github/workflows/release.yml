@@ -42,7 +42,7 @@ jobs:
           git push origin HEAD:${{ github.ref_name }}
 
       - name: Upload release artifacts
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           files: dist/**/*
         env:
