@@ -89,7 +89,7 @@ jobs:
 
       - name: Create GitHub Release
         if: env.release_type != 'patch'
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           tag_name: v${{ env.version }}
           name: Release v${{ env.version }}
