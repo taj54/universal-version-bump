@@ -90,6 +90,8 @@ For JSON files, the `variable` should be the JSON path to the version field. For
 | `git_tag`         | Whether to create a Git tag after bump                                                                                                                                                                                                           | `true`  |
 | `target_platform` | Explicitly specify the platform to update (e.g., `node`, `python`). If not provided, the platform will be detected automatically.                                                                                                                | `''`    |
 | `target_path`     | The target path where the version bump should be applied. If not provided, the action will run in the root directory.                                                                                                                            | `.`     |
+| `changelog_path`  | Path to the changelog file.                                                                                                                                                                                                                       | `CHANGELOG.md` |
+| `changelog_mode`  | Create a missing changelog file (`auto`) or fail if it is missing (`fail`).                                                                                                                                                                       | `auto` |
 | `bump_targets`    | Optional list of version update targets. Provide the `path` and the `variable` to update, the Action will build regex automatically. Example: `[{"path": "setup.py", "variable": "version"}, {"path": "Dockerfile", "variable": "APP_VERSION"}]` | `[]`    |
 
 ## Outputs

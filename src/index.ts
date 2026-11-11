@@ -7,7 +7,15 @@ import {
   FileNotFoundError,
   InvalidManifestError,
 } from './errors';
-import { RELEASE_TYPE, TARGET_PLATFORM, GIT_TAG, TARGET_PATH, BUMP_TARGETS } from './config';
+import {
+  RELEASE_TYPE,
+  TARGET_PLATFORM,
+  GIT_TAG,
+  TARGET_PATH,
+  CHANGELOG_PATH,
+  CHANGELOG_MODE,
+  BUMP_TARGETS,
+} from './config';
 
 import * as core from '@actions/core';
 
@@ -17,7 +25,15 @@ async function initializeServices() {
   const updaterService = new UpdaterService(updaterRegistry);
   const gitService = new GitService('main');
   const fileHandler = new FileHandler();
-  const changelogService = new ChangelogService(fileHandler, gitService, 'CHANGELOG.md');
+  if (CHANGELOG_MODE !== 'auto' && CHANGELOG_MODE !== 'fail') {
+    throw new Error(`Invalid changelog_mode: ${CHANGELOG_MODE}. Expected 'auto' or 'fail'.`);
+  }
+  const changelogService = new ChangelogService(
+    fileHandler,
+    gitService,
+    CHANGELOG_PATH,
+    CHANGELOG_MODE,
+  );
   return {
     updaterRegistry,
     updaterService,

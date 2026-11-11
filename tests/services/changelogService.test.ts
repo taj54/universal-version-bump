@@ -67,10 +67,28 @@ describe('ChangelogService', () => {
     );
   });
 
-  it('should throw FileNotFoundError if changelog file does not exist', async () => {
+  it('should create a minimal changelog if the file does not exist', async () => {
+    vi.spyOn(fileHandler, 'readFile').mockImplementation(() => {
+      throw new FileNotFoundError('File not found');
+    });
+    const writeFileSpy = vi.spyOn(fileHandler, 'writeFile').mockResolvedValue(undefined);
+    const newChangelog = '## v1.1.0\n\n- New feature';
+
+    await changelogService.updateChangelog(newChangelog);
+
+    expect(writeFileSpy).toHaveBeenCalledWith(
+      'CHANGELOG.md',
+      `# Changelog\n\n---\n\n${newChangelog}`,
+    );
+  });
+
+  it('should throw FileNotFoundError if changelog mode is fail and the file does not exist', async () => {
     const changelogPath = 'CHANGELOG.md';
+    changelogService = new ChangelogService(fileHandler, gitService, changelogPath, 'fail');
     const error = new FileNotFoundError('File not found');
-    vi.spyOn(fileHandler, 'readFile').mockRejectedValue(error);
+    vi.spyOn(fileHandler, 'readFile').mockImplementation(() => {
+      throw error;
+    });
 
     await expect(changelogService.updateChangelog('## v1.1.0\n\n- New feature')).rejects.toThrow(
       new FileNotFoundError(`Changelog file not found at ${changelogPath}`),

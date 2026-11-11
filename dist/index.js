@@ -6,7 +6,7 @@
  * Author: Taj <tajulislamj200@gmail.com>
  * Homepage: https://github.com/taj54/universal-version-bump#readme
  * License: MIT
- * Generated on Wed, 11 Nov 2026 19:59:19 GMT
+ * Generated on Wed, 11 Nov 2026 20:10:34 GMT
  */
 require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
@@ -61718,13 +61718,15 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.BUMP_TARGETS = exports.TARGET_PATH = exports.GIT_TAG = exports.TARGET_PLATFORM = exports.RELEASE_TYPE = void 0;
+exports.BUMP_TARGETS = exports.CHANGELOG_MODE = exports.CHANGELOG_PATH = exports.TARGET_PATH = exports.GIT_TAG = exports.TARGET_PLATFORM = exports.RELEASE_TYPE = void 0;
 const core = __importStar(__nccwpck_require__(2701));
 const utils_1 = __nccwpck_require__(5184);
 exports.RELEASE_TYPE = (core.getInput('release_type') || 'patch');
 exports.TARGET_PLATFORM = core.getInput('target_platform');
 exports.GIT_TAG = core.getInput('git_tag') === 'true';
 exports.TARGET_PATH = core.getInput('target_path') || '.';
+exports.CHANGELOG_PATH = core.getInput('changelog_path') || 'CHANGELOG.md';
+exports.CHANGELOG_MODE = core.getInput('changelog_mode') || 'auto';
 exports.BUMP_TARGETS = (0, utils_1.safeParseJSON)(core.getInput('bump_targets'));
 
 
@@ -61838,7 +61840,10 @@ async function initializeServices() {
     const updaterService = new services_1.UpdaterService(updaterRegistry);
     const gitService = new services_1.GitService('main');
     const fileHandler = new utils_1.FileHandler();
-    const changelogService = new services_1.ChangelogService(fileHandler, gitService, 'CHANGELOG.md');
+    if (config_1.CHANGELOG_MODE !== 'auto' && config_1.CHANGELOG_MODE !== 'fail') {
+        throw new Error(`Invalid changelog_mode: ${config_1.CHANGELOG_MODE}. Expected 'auto' or 'fail'.`);
+    }
+    const changelogService = new services_1.ChangelogService(fileHandler, gitService, config_1.CHANGELOG_PATH, config_1.CHANGELOG_MODE);
     return {
         updaterRegistry,
         updaterService,
@@ -62032,10 +62037,11 @@ const errors_1 = __nccwpck_require__(1967);
  * Service for managing the changelog file.
  */
 class ChangelogService {
-    constructor(fileHandler, gitService, changelogPath = 'CHANGELOG.md') {
+    constructor(fileHandler, gitService, changelogPath = 'CHANGELOG.md', changelogMode = 'auto') {
         this.fileHandler = fileHandler;
         this.gitService = gitService;
         this.changelogPath = changelogPath;
+        this.changelogMode = changelogMode;
     }
     /**
      * Generate a changelog from the given commits.
@@ -62081,9 +62087,14 @@ class ChangelogService {
         }
         catch (error) {
             if (error instanceof errors_1.FileNotFoundError) {
-                throw new errors_1.FileNotFoundError(`Changelog file not found at ${changelogPath}`);
+                if (this.changelogMode === 'fail') {
+                    throw new errors_1.FileNotFoundError(`Changelog file not found at ${changelogPath}`);
+                }
+                existingChangelog = '# Changelog\n\n---\n\n';
             }
-            throw error;
+            else {
+                throw error;
+            }
         }
         const versionMatch = changelogContent.match(/## v(\d+\.\d+\.\d+)/);
         if (versionMatch) {

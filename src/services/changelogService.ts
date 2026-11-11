@@ -3,6 +3,8 @@ import { GitService } from './gitService';
 import * as core from '@actions/core';
 import { FileNotFoundError } from '../errors';
 
+export type ChangelogMode = 'auto' | 'fail';
+
 /**
  * Service for managing the changelog file.
  */
@@ -11,6 +13,7 @@ export class ChangelogService {
     private fileHandler: FileHandler,
     private gitService: GitService,
     private changelogPath: string = 'CHANGELOG.md',
+    private changelogMode: ChangelogMode = 'auto',
   ) {}
 
   /**
@@ -56,9 +59,13 @@ export class ChangelogService {
       existingChangelog = await this.fileHandler.readFile(changelogPath);
     } catch (error: unknown) {
       if (error instanceof FileNotFoundError) {
-        throw new FileNotFoundError(`Changelog file not found at ${changelogPath}`);
+        if (this.changelogMode === 'fail') {
+          throw new FileNotFoundError(`Changelog file not found at ${changelogPath}`);
+        }
+        existingChangelog = '# Changelog\n\n---\n\n';
+      } else {
+        throw error;
       }
-      throw error;
     }
 
     const versionMatch = changelogContent.match(/## v(\d+\.\d+\.\d+)/);

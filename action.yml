@@ -22,6 +22,14 @@ inputs:
     description: 'The target path where the version bump should be applied. If not provided, the action will run in the root directory.'
     required: false
     default: '.'
+  changelog_path:
+    description: 'The path to the changelog file.'
+    required: false
+    default: 'CHANGELOG.md'
+  changelog_mode:
+    description: 'Whether to create a missing changelog file (auto) or fail (fail).'
+    required: false
+    default: 'auto'
   bump_targets:
     description: |
       Optional list of version update targets.
