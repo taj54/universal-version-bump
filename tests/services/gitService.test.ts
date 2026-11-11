@@ -1,24 +1,28 @@
 import { GitService } from '../../src/services/gitService';
-import * as exec from '@actions/exec';
-import { vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+const { execMock } = vi.hoisted(() => ({ execMock: vi.fn() }));
+
+vi.mock('@actions/exec', () => ({ exec: execMock }));
 
 describe('GitService', () => {
   let gitService: GitService;
 
   beforeEach(() => {
+    execMock.mockReset();
     gitService = new GitService();
   });
 
   describe('getLatestTag', () => {
     it('should throw an error if no tags are found', async () => {
-      vi.spyOn(exec, 'exec').mockResolvedValue(1); // Simulate git command failure
+      execMock.mockResolvedValue(1);
       await expect(gitService.getLatestTag()).rejects.toThrow(
         'No tags found in the repository. Please create a tag first.',
       );
     });
 
     it('should return the latest tag if tags are found', async () => {
-      const execSpy = vi.spyOn(exec, 'exec').mockImplementation(async (command, args, options) => {
+      execMock.mockImplementation(async (_command, _args, options) => {
         if (options && options.listeners && options.listeners.stdout) {
           options.listeners.stdout(Buffer.from('v1.0.0'));
         }
@@ -26,7 +30,6 @@ describe('GitService', () => {
       });
       const latestTag = await gitService.getLatestTag();
       expect(latestTag).toBe('v1.0.0');
-      execSpy.mockRestore();
     });
   });
 });
