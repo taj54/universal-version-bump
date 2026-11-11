@@ -1,17 +1,14 @@
-import { describe, it, expect, vi, beforeEach, beforeAll } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { CustomUpdater } from '../../src/updaters/customUpdater';
 import { FileHandler, ManifestParser } from '../../src/utils';
-// Mock the utils directory
+
+vi.mock('../../src/utils/fileHandler');
+vi.mock('../../src/utils/manifestParser');
 
 describe('CustomUpdater', () => {
   describe('with mocked files', () => {
     let fileHandler: FileHandler;
     let manifestParser: ManifestParser;
-
-    beforeAll(() => {
-      vi.mock('../../src/utils/fileHandler');
-      vi.mock('../../src/utils/manifestParser');
-    });
 
     beforeEach(() => {
       fileHandler = new FileHandler();
