@@ -6,6 +6,11 @@ import {
   PHPUpdater,
   PythonUpdater,
   RustUpdater,
+  DenoUpdater,
+  JavaUpdater,
+  DotNetUpdater,
+  RubyUpdater,
+  DartUpdater,
   CustomUpdater,
 } from '../updaters';
 
@@ -27,6 +32,11 @@ export class UpdaterRegistry {
     this.registerUpdater(new PHPUpdater());
     this.registerUpdater(new PythonUpdater());
     this.registerUpdater(new RustUpdater());
+    this.registerUpdater(new DenoUpdater());
+    this.registerUpdater(new JavaUpdater());
+    this.registerUpdater(new DotNetUpdater());
+    this.registerUpdater(new RubyUpdater());
+    this.registerUpdater(new DartUpdater());
     this.registerUpdater(new CustomUpdater());
   }
 

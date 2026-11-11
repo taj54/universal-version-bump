@@ -8,7 +8,7 @@ describe('UpdaterRegistry', () => {
     const allUpdaters = registry.getAllUpdaters();
 
     // There are all updaters in the src/updaters directory
-    expect(allUpdaters).toHaveLength(7);
+    expect(allUpdaters).toHaveLength(12);
 
     // Check if all platforms are loaded
     const platforms = allUpdaters.map((updater) => updater.platform);
@@ -18,5 +18,10 @@ describe('UpdaterRegistry', () => {
     expect(platforms).toContain('go');
     expect(platforms).toContain('docker');
     expect(platforms).toContain('php');
+    expect(platforms).toContain('deno');
+    expect(platforms).toContain('java');
+    expect(platforms).toContain('dotnet');
+    expect(platforms).toContain('ruby');
+    expect(platforms).toContain('dart');
   });
 });

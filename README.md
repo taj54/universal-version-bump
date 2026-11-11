@@ -14,15 +14,21 @@ This action will automatically detect the version file and bump the version acco
 
 The action will first try to detect the platform of the project by looking for common version files in the root directory. The following files are supported:
 
-| Platform | Version File                 |
-| -------- | ---------------------------- |
-| Deno     | `deno.json`, `jsr.json`      |
-| Docker   | `Dockerfile`                 |
-| Go       | `go.mod`                     |
-| Node     | `package.json`               |
-| PHP      | `composer.json`              |
-| Python   | `pyproject.toml`, `setup.py` |
-| Rust     | `Cargo.toml`                 |
+| Platform       | Version File                                                |
+| -------------- | ----------------------------------------------------------- |
+| Deno           | `deno.json`, `jsr.json`                                     |
+| Dart / Flutter | `pubspec.yaml`                                              |
+| Docker         | `Dockerfile`                                                |
+| Go             | `go.mod`                                                    |
+| Java           | `pom.xml`, `build.gradle`, `build.gradle.kts`               |
+| Node           | `package.json`                                              |
+| PHP            | `composer.json`                                             |
+| Python         | `pyproject.toml`, `setup.py`                                |
+| Ruby           | `*.gemspec`, `version.rb`                                   |
+| Rust           | `Cargo.toml`                                                |
+| .NET           | `Directory.Build.props`, `*.csproj`, `*.fsproj`, `*.vbproj` |
+
+Ruby gemspec support expects a literal version assignment such as `spec.version = "1.2.3"`. .NET projects use the first root-level project file alphabetically when no `Directory.Build.props` is present; set `target_path` to a project directory to select a project explicitly.
 
 If a version file is found, the action will bump the version in that file. If no version file is found, the action will fail.
 
@@ -84,15 +90,15 @@ For JSON files, the `variable` should be the JSON path to the version field. For
 
 ## Inputs
 
-| Name              | Description                                                                                                                                                                                                                                      | Default |
-| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------- |
-| `release_type`    | Select the version bump type (patch, minor, major)                                                                                                                                                                                               | `patch` |
-| `git_tag`         | Whether to create a Git tag after bump                                                                                                                                                                                                           | `true`  |
-| `target_platform` | Explicitly specify the platform to update (e.g., `node`, `python`). If not provided, the platform will be detected automatically.                                                                                                                | `''`    |
-| `target_path`     | The target path where the version bump should be applied. If not provided, the action will run in the root directory.                                                                                                                            | `.`     |
-| `changelog_path`  | Path to the changelog file.                                                                                                                                                                                                                       | `CHANGELOG.md` |
-| `changelog_mode`  | Create a missing changelog file (`auto`) or fail if it is missing (`fail`).                                                                                                                                                                       | `auto` |
-| `bump_targets`    | Optional list of version update targets. Provide the `path` and the `variable` to update, the Action will build regex automatically. Example: `[{"path": "setup.py", "variable": "version"}, {"path": "Dockerfile", "variable": "APP_VERSION"}]` | `[]`    |
+| Name              | Description                                                                                                                                                                                                                                      | Default        |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------- |
+| `release_type`    | Select the version bump type (patch, minor, major)                                                                                                                                                                                               | `patch`        |
+| `git_tag`         | Whether to create a Git tag after bump                                                                                                                                                                                                           | `true`         |
+| `target_platform` | Explicitly specify the platform to update (e.g., `node`, `python`, `java`, `dotnet`, `ruby`, `dart`). If not provided, the platform will be detected automatically.                                                                              | `''`           |
+| `target_path`     | The target path where the version bump should be applied. If not provided, the action will run in the root directory.                                                                                                                            | `.`            |
+| `changelog_path`  | Path to the changelog file.                                                                                                                                                                                                                      | `CHANGELOG.md` |
+| `changelog_mode`  | Create a missing changelog file (`auto`) or fail if it is missing (`fail`).                                                                                                                                                                      | `auto`         |
+| `bump_targets`    | Optional list of version update targets. Provide the `path` and the `variable` to update, the Action will build regex automatically. Example: `[{"path": "setup.py", "variable": "version"}, {"path": "Dockerfile", "variable": "APP_VERSION"}]` | `[]`           |
 
 ## Outputs
 

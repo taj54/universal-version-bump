@@ -6,3 +6,7 @@ export * from './dockerUpdater';
 export * from './phpUpdater';
 export * from './customUpdater';
 export * from './denoUpdater';
+export * from './javaUpdater';
+export * from './dotnetUpdater';
+export * from './rubyUpdater';
+export * from './dartUpdater';
