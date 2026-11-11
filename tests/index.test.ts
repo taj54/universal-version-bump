@@ -41,22 +41,43 @@ describe('Main Action Logic', () => {
     // Reset mocks before each test
     vi.clearAllMocks();
 
-    mockUpdaterService = new UpdaterService(new UpdaterRegistry()) as vi.Mocked<UpdaterService>;
-    mockGitService = new GitService('main') as vi.Mocked<GitService>;
-    mockChangelogService = new ChangelogService(
-      new FileHandler(),
-      new GitService('main'),
-      'CHANGELOG.md',
-    ) as vi.Mocked<ChangelogService>;
-    mockUpdaterRegistry = new UpdaterRegistry() as vi.Mocked<UpdaterRegistry>;
-    mockFileHandler = new FileHandler() as vi.Mocked<FileHandler>;
+    mockUpdaterService = {
+      getPlatform: vi.fn(),
+      updateVersion: vi.fn(),
+    } as unknown as vi.Mocked<UpdaterService>;
+    mockGitService = {
+      getLatestTag: vi.fn(),
+      getCommitsSinceTag: vi.fn(),
+      configureGitUser: vi.fn(),
+      createReleaseBranch: vi.fn(),
+      createPullRequest: vi.fn(),
+      createAndPushTag: vi.fn(),
+    } as unknown as vi.Mocked<GitService>;
+    mockChangelogService = {
+      generateChangelog: vi.fn(),
+      updateChangelog: vi.fn(),
+    } as unknown as vi.Mocked<ChangelogService>;
+    mockUpdaterRegistry = {
+      loadUpdaters: vi.fn(),
+    } as unknown as vi.Mocked<UpdaterRegistry>;
+    mockFileHandler = {} as vi.Mocked<FileHandler>;
 
     // Mock implementations for services
-    (UpdaterService as unknown as vi.Mock).mockImplementation(() => mockUpdaterService);
-    (GitService as unknown as vi.Mock).mockImplementation(() => mockGitService);
-    (ChangelogService as unknown as vi.Mock).mockImplementation(() => mockChangelogService);
-    (UpdaterRegistry as unknown as vi.Mock).mockImplementation(() => mockUpdaterRegistry);
-    (FileHandler as unknown as vi.Mock).mockImplementation(() => mockFileHandler);
+    (UpdaterService as unknown as vi.Mock).mockImplementation(function () {
+      return mockUpdaterService;
+    });
+    (GitService as unknown as vi.Mock).mockImplementation(function () {
+      return mockGitService;
+    });
+    (ChangelogService as unknown as vi.Mock).mockImplementation(function () {
+      return mockChangelogService;
+    });
+    (UpdaterRegistry as unknown as vi.Mock).mockImplementation(function () {
+      return mockUpdaterRegistry;
+    });
+    (FileHandler as unknown as vi.Mock).mockImplementation(function () {
+      return mockFileHandler;
+    });
 
     // Default mock return values
     mockUpdaterRegistry.loadUpdaters.mockResolvedValue(undefined);

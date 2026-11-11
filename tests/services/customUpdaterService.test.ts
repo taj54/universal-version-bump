@@ -45,7 +45,7 @@ describe('CustomUpdaterService', () => {
     const mockBumpVersion = vi.fn();
     mockBumpVersion.mockReturnValueOnce('1.0.1').mockReturnValueOnce('2.0.1');
 
-    vi.mocked(CustomUpdater).mockImplementation(() => {
+    vi.mocked(CustomUpdater).mockImplementation(function () {
       return {
         bumpVersion: mockBumpVersion,
       } as unknown as CustomUpdater;
