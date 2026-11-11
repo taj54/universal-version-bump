@@ -29,7 +29,7 @@
     "name": "Taj",
     "email": "tajulislamj200@gmail.com"
   },
-  "packageManager": "pnpm@10.34.9",
+  "packageManager": "pnpm@12.18.0",
   "dependencies": {
     "@actions/core": "^2.0.3",
     "@actions/exec": "^2.0.0",
