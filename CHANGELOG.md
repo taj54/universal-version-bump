@@ -4,6 +4,30 @@ All notable changes for each version of the Ambient Music extension.
 
 ---
 
+## v1.1.0 2026-11-13
+
+### Added
+
+- add support for multiple new updaters (Deno, Java, .NET, Ruby, Dart)
+- add changelog path and mode configuration
+
+### Changed
+
+- Update version bump action to use external repository
+- Merge pull request #149 from taj54/renovate/prettier-3.x-lockfile
+- update dependency prettier to v3.10.1
+- simplify exec mocking in GitService tests
+- Merge pull request #154 from taj54/renovate/actions-github-9.x
+- Merge pull request #153 from taj54/renovate/actions-exec-3.x
+- Merge pull request #152 from taj54/renovate/actions-core-3.x
+- //github.com/taj54/universal-version-bump
+
+### Fixed
+
+- update dependency @actions/github to v9
+- update dependency @actions/exec to v3
+- update dependency @actions/core to v3
+
 ## v1.0.0 2026-11-11
 
 ### Added
