@@ -20,6 +20,16 @@ export default defineConfig([
     ignores: ['node_modules/*', 'dist/*', 'tests/*'],
   },
   {
+    files: ['docs/**/*.js'],
+    languageOptions: {
+      globals: {
+        document: 'readonly',
+        module: 'readonly',
+        navigator: 'readonly',
+      },
+    },
+  },
+  {
     extends: compat.extends(
       'eslint:recommended',
       'plugin:@typescript-eslint/recommended',

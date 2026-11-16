@@ -1,8 +1,6 @@
-(function (root) {
+(function () {
   const versionPattern =
     /^v?(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|[0-9A-Za-z-]*[A-Za-z-][0-9A-Za-z-]*)(?:\.(?:0|[1-9]\d*|[0-9A-Za-z-]*[A-Za-z-][0-9A-Za-z-]*))*))?(?:\+([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?$/;
-  const maxSafeInteger = Number.MAX_SAFE_INTEGER;
-
   function calculateNextVersion(version, releaseType) {
     if (!['patch', 'minor', 'major'].includes(releaseType)) {
       throw new TypeError('Choose patch, minor, or major.');
@@ -66,7 +64,8 @@
     } catch (error) {
       resultOutput.value = '';
       resultOutput.textContent = '\u2014';
-      message.textContent = error instanceof Error ? error.message : 'Unable to calculate the next version.';
+      message.textContent =
+        error instanceof Error ? error.message : 'Unable to calculate the next version.';
       message.classList.add('error');
       copyButton.disabled = true;
     }
@@ -86,4 +85,4 @@
   });
 
   updatePreview();
-})(globalThis);
+})();
