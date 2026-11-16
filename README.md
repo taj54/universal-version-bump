@@ -19,18 +19,6 @@ This action automatically detects the most likely version manifest in your proje
 
 To publish it, enable GitHub Pages in the repository settings and select **GitHub Actions** as the build and deployment source. The deployment workflow publishes updates to `docs/` automatically.
 
-```drawio width=800
-<mxfile>
-  <diagram id="Un8fIOuK9kPP7IHMA4VW" name="Page-1">
-    <mxGraphModel>
-      <root>
-        <mxCell id="0"/>
-        <mxCell id="1" parent="0"/>
-      </root>
-    </mxGraphModel>
-  </diagram>
-</mxfile>
-```
 
 ## Release flow
 
