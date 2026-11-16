@@ -17,7 +17,6 @@ This action automatically detects the most likely version manifest in your proje
 
 [Open the calculator](https://taj54.github.io/universal-version-bump/) to enter a version and preview a patch, minor, or major bump.
 
-To publish it, enable GitHub Pages in the repository settings and select **GitHub Actions** as the build and deployment source. The deployment workflow publishes updates to `docs/` automatically.
 
 
 ## Release flow
