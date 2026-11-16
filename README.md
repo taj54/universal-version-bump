@@ -13,6 +13,12 @@ A GitHub Action for bumping semantic versions across a wide range of project typ
 
 This action automatically detects the most likely version manifest in your project, bumps it according to `release_type`, and can optionally create a Git tag and update your changelog.
 
+## Live version-bump calculator
+
+[Open the calculator](https://taj54.github.io/universal-version-bump/) to enter a version and preview a patch, minor, or major bump.
+
+To publish it, enable GitHub Pages in the repository settings and select **GitHub Actions** as the build and deployment source. The deployment workflow publishes updates to `docs/` automatically.
+
 ```drawio width=800
 <mxfile>
   <diagram id="Un8fIOuK9kPP7IHMA4VW" name="Page-1">
