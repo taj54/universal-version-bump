@@ -5,10 +5,26 @@
 [![Test](https://github.com/taj54/universal-version-bump/actions/workflows/test.yml/badge.svg)](https://github.com/taj54/universal-version-bump/actions/workflows/test.yml)
 [![License](https://img.shields.io/github/license/taj54/universal-version-bump)](LICENSE)
 [![Code of Conduct](https://img.shields.io/badge/code%20of%20conduct-enforced-blue)](CODE_OF_CONDUCT.md)
+[![GitHub stars](https://img.shields.io/github/stars/taj54/universal-version-bump?style=social)](https://github.com/taj54/universal-version-bump/stargazers)
+[![Open issues](https://img.shields.io/github/issues/taj54/universal-version-bump)](https://github.com/taj54/universal-version-bump/issues)
+[![Last commit](https://img.shields.io/github/last-commit/taj54/universal-version-bump)](https://github.com/taj54/universal-version-bump/commits)
 
 A GitHub Action for bumping semantic versions across a wide range of project types, including Node, Python, Java, .NET, Ruby, Go, Rust, Docker, and custom files.
 
 This action automatically detects the most likely version manifest in your project, bumps it according to `release_type`, and can optionally create a Git tag and update your changelog.
+
+```drawio width=800
+<mxfile>
+  <diagram id="Un8fIOuK9kPP7IHMA4VW" name="Page-1">
+    <mxGraphModel>
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
+```
 
 ## Release flow
 
