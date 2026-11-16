@@ -15,6 +15,8 @@ This action automatically detects the most likely version manifest in your proje
 
 ## Live version-bump calculator
 
+[![Preview of the live version-bump calculator](docs/calculator-preview.svg)](https://taj54.github.io/universal-version-bump/)
+
 [Open the calculator](https://taj54.github.io/universal-version-bump/) to enter a version and preview a patch, minor, or major bump.
 
 

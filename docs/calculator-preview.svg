@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 620" role="img" aria-labelledby="title description">
+  <title id="title">Version bump calculator preview</title>
+  <desc id="description">A preview of the calculator with version 1.2.3 and a patch release selected, producing version 1.2.4.</desc>
+  <defs>
+    <linearGradient id="background" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#e8edff"/>
+      <stop offset="1" stop-color="#f3f6fb"/>
+    </linearGradient>
+    <linearGradient id="result" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#f0f4ff"/>
+      <stop offset="1" stop-color="#f8faff"/>
+    </linearGradient>
+  </defs>
+  <rect width="1100" height="620" fill="url(#background)"/>
+  <rect x="70" y="38" width="960" height="544" rx="28" fill="#fff" stroke="#e1e7f0"/>
+  <text x="128" y="100" fill="#3158d5" font-family="Arial, sans-serif" font-size="17" font-weight="700" letter-spacing="2.4">UNIVERSAL VERSION BUMP</text>
+  <text x="128" y="167" fill="#172033" font-family="Arial, sans-serif" font-size="48" font-weight="700">Version bump calculator</text>
+  <text x="128" y="209" fill="#59667d" font-family="Arial, sans-serif" font-size="19">Enter your current semantic version and choose a release type</text>
+  <text x="128" y="238" fill="#59667d" font-family="Arial, sans-serif" font-size="19">to preview the version this action would produce.</text>
+  <text x="128" y="293" fill="#34415a" font-family="Arial, sans-serif" font-size="16" font-weight="700">Current version</text>
+  <text x="570" y="293" fill="#34415a" font-family="Arial, sans-serif" font-size="16" font-weight="700">Release type</text>
+  <rect x="128" y="309" width="400" height="64" rx="13" fill="#fff" stroke="#cbd4e2"/>
+  <rect x="570" y="309" width="402" height="64" rx="13" fill="#fff" stroke="#cbd4e2"/>
+  <text x="150" y="349" fill="#172033" font-family="Arial, sans-serif" font-size="20">1.2.3</text>
+  <text x="593" y="349" fill="#172033" font-family="Arial, sans-serif" font-size="20">Patch</text>
+  <path d="m940 335 10 10 10-10" fill="none" stroke="#34415a" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+  <rect x="128" y="403" width="844" height="140" rx="18" fill="url(#result)" stroke="#dce5ff"/>
+  <text x="158" y="447" fill="#59667d" font-family="Arial, sans-serif" font-size="16" font-weight="700">New version</text>
+  <text x="158" y="504" fill="#1e3fae" font-family="Consolas, monospace" font-size="44" font-weight="700">1.2.4</text>
+  <rect x="770" y="462" width="164" height="52" rx="11" fill="#fff" stroke="#cbd4e2"/>
+  <text x="792" y="494" fill="#34415a" font-family="Arial, sans-serif" font-size="16" font-weight="700">Copy version</text>
+  <text x="158" y="529" fill="#59667d" font-family="Arial, sans-serif" font-size="15">Patch release: 1.2.3 becomes 1.2.4.</text>
+</svg>
