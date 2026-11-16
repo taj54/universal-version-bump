@@ -6,78 +6,109 @@
 [![License](https://img.shields.io/github/license/taj54/universal-version-bump)](LICENSE)
 [![Code of Conduct](https://img.shields.io/badge/code%20of%20conduct-enforced-blue)](CODE_OF_CONDUCT.md)
 
-A GitHub Action to automatically bump versions for any project that has a version file.
+A GitHub Action for bumping semantic versions across a wide range of project types, including Node, Python, Java, .NET, Ruby, Go, Rust, Docker, and custom files.
 
-This action will automatically detect the version file and bump the version according to the `release_type` input. If multiple version files are found, the action will use the one that is most commonly used for the project type.
+This action automatically detects the most likely version manifest in your project, bumps it according to `release_type`, and can optionally create a Git tag and update your changelog.
 
-## How it works
+## Release flow
 
-The action will first try to detect the platform of the project by looking for common version files in the root directory. The following files are supported:
+```mermaid
+flowchart LR
+    A[Push or trigger workflow] --> B{Version file detected?}
+    B -->|Yes| C[Find target manifest]
+    B -->|No| D[Use custom target if configured]
+    C --> E[Bump version by release_type]
+    D --> E
+    E --> F{Create tag?}
+    F -->|Yes| G[Create Git tag]
+    F -->|No| H[Finish]
+    G --> H
+```
 
-| Platform       | Version File                                                |
-| -------------- | ----------------------------------------------------------- |
-| Deno           | `deno.json`, `jsr.json`                                     |
-| Dart / Flutter | `pubspec.yaml`                                              |
-| Docker         | `Dockerfile`                                                |
-| Go             | `go.mod`                                                    |
-| Java           | `pom.xml`, `build.gradle`, `build.gradle.kts`               |
-| Node           | `package.json`                                              |
-| PHP            | `composer.json`                                             |
-| Python         | `pyproject.toml`, `setup.py`                                |
-| Ruby           | `*.gemspec`, `version.rb`                                   |
-| Rust           | `Cargo.toml`                                                |
-| .NET           | `Directory.Build.props`, `*.csproj`, `*.fsproj`, `*.vbproj` |
+This gives you a simple, repeatable release pipeline that is fast to adopt and easy to customize.
 
-Ruby gemspec support expects a literal version assignment such as `spec.version = "1.2.3"`. .NET projects use the first root-level project file alphabetically when no `Directory.Build.props` is present; set `target_path` to a project directory to select a project explicitly.
+## Why use this action?
 
-If a version file is found, the action will bump the version in that file. If no version file is found, the action will fail.
+- Auto-detects version files without hardcoding project-specific logic
+- Works across many ecosystems with a single reusable workflow
+- Supports monorepos and nested projects with `target_path`
+- Lets you override detection when a project has multiple possible manifests
+- Handles custom version files when your project is not using a standard manifest
+- Can create a changelog entry and Git tag as part of the release workflow
 
-You can also explicitly specify the platform to update by using the `target_platform` input. This is useful for monorepos or projects with multiple potential manifest files.
+## Supported ecosystems
 
-## Usage
+The action inspects common version files in the repository root or in a selected target directory and updates the most likely candidate.
 
-To use this action in your workflow, add the following step:
+| Platform | Typical version file(s) |
+| --- | --- |
+| Deno | `deno.json`, `jsr.json` |
+| Dart / Flutter | `pubspec.yaml` |
+| Docker | `Dockerfile` |
+| Go | `go.mod` |
+| Java | `pom.xml`, `build.gradle`, `build.gradle.kts` |
+| Node.js | `package.json` |
+| PHP | `composer.json` |
+| Python | `pyproject.toml`, `setup.py` |
+| Ruby | `*.gemspec`, `version.rb` |
+| Rust | `Cargo.toml` |
+| .NET | `Directory.Build.props`, `*.csproj`, `*.fsproj`, `*.vbproj` |
+
+Notes:
+
+- For Ruby gemspecs, the action expects a literal assignment such as `spec.version = "1.2.3"`.
+- For .NET projects, if no `Directory.Build.props` is found, the action uses the first project file alphabetically from the root. Use `target_path` to target a project explicitly.
+- If no supported version file is found, the action fails unless you are using `target_platform: 'custom'` and `bump_targets`.
+
+## Quick start
+
+Add the action to a workflow:
 
 ```yaml
 - name: Bump version
-  uses: taj54/universal-version-bump@v0.14.0
+  uses: taj54/universal-version-bump@v1.0.0
   with:
     release_type: 'patch' # patch, minor, or major
 ```
 
-### Bumping a version in a specific directory
+This will:
 
-To bump a version in a specific directory, use the `target_path` input:
+1. Detect the project type and version file
+2. Increment the version according to `release_type`
+3. Update the changelog if configured
+4. Create a Git tag if `git_tag` is enabled
 
-```yaml
-- name: Bump version in my-app
-  uses: taj54/universal-version-bump@v0.14.0
-  with:
-    release_type: 'patch'
-    target_path: 'my-app'
-```
+## Common usage patterns
 
-### Explicitly targeting a platform
-
-To explicitly target a platform, use the `target_platform` input:
+### Bump a specific directory
 
 ```yaml
-- name: Bump Node.js version
-  uses: taj54/universal-version-bump@v0.14.0
+- name: Bump app version
+  uses: taj54/universal-version-bump@v1.0.0
   with:
     release_type: 'patch'
-    target_platform: 'node' # Explicitly target Node.js
+    target_path: 'apps/web'
 ```
 
-### Custom Updater Usage
+Use this for monorepos or when the repository contains multiple apps, libraries, or services.
 
-For custom version updates in arbitrary files, use `target_platform: 'custom'` along with the `bump_targets` input. The `bump_targets` input should be a JSON array of objects, where each object specifies the `path` to the file and the `variable` name containing the version.
+### Force a platform explicitly
 
-For JSON files, the `variable` should be the JSON path to the version field. For other text files, the `variable` will be used in a regular expression to find and replace the version.
+```yaml
+- name: Bump Node.js package version
+  uses: taj54/universal-version-bump@v1.0.0
+  with:
+    release_type: 'minor'
+    target_platform: 'node'
+```
+
+This is especially useful when multiple manifests exist or when your repository contains a mix of ecosystem files.
+
+### Keep versioning consistent with a custom file
 
 ```yaml
 - name: Bump custom version
-  uses: taj54/universal-version-bump@v0.14.0
+  uses: taj54/universal-version-bump@v1.0.0
   with:
     release_type: 'patch'
     target_platform: 'custom'
@@ -88,39 +119,40 @@ For JSON files, the `variable` should be the JSON path to the version field. For
       ]
 ```
 
+For JSON files, `variable` should be a JSON path, such as `app.version`. For plain text files, it is used as a regex target to find and replace the version string.
+
 ## Inputs
 
-| Name              | Description                                                                                                                                                                                                                                      | Default        |
-| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------- |
-| `release_type`    | Select the version bump type (patch, minor, major)                                                                                                                                                                                               | `patch`        |
-| `git_tag`         | Whether to create a Git tag after bump                                                                                                                                                                                                           | `true`         |
-| `target_platform` | Explicitly specify the platform to update (e.g., `node`, `python`, `java`, `dotnet`, `ruby`, `dart`). If not provided, the platform will be detected automatically.                                                                              | `''`           |
-| `target_path`     | The target path where the version bump should be applied. If not provided, the action will run in the root directory.                                                                                                                            | `.`            |
-| `changelog_path`  | Path to the changelog file.                                                                                                                                                                                                                      | `CHANGELOG.md` |
-| `changelog_mode`  | Create a missing changelog file (`auto`) or fail if it is missing (`fail`).                                                                                                                                                                      | `auto`         |
-| `bump_targets`    | Optional list of version update targets. Provide the `path` and the `variable` to update, the Action will build regex automatically. Example: `[{"path": "setup.py", "variable": "version"}, {"path": "Dockerfile", "variable": "APP_VERSION"}]` | `[]`           |
+| Name | Description | Default |
+| --- | --- | --- |
+| `release_type` | Version bump style: `patch`, `minor`, or `major` | `patch` |
+| `git_tag` | Whether to create a Git tag after the version bump | `false` |
+| `target_platform` | Explicitly select a platform such as `node`, `python`, `java`, `dotnet`, `ruby`, `dart`, or `custom` | `''` |
+| `target_path` | Directory to inspect for the target version file | `.` |
+| `changelog_path` | Path to the changelog file | `CHANGELOG.md` |
+| `changelog_mode` | Whether to create a missing changelog (`auto`) or fail (`fail`) | `auto` |
+| `bump_targets` | Custom file targets for `target_platform: 'custom'`; JSON array of `{ "path": "...", "variable": "..." }` entries | `[]` |
 
 ## Outputs
 
-| Name          | Description                      |
-| ------------- | -------------------------------- |
-| `new_version` | The new bumped version           |
-| `tag`         | The created Git tag (if enabled) |
+| Name | Description |
+| --- | --- |
+| `new_version` | The bumped version after the update |
+| `tag` | The created Git tag, if `git_tag` is enabled |
 
-## Example Workflow
+## Example workflow
 
 ```yaml
-name: Version Bump
+name: Version bump
 
 permissions:
   contents: write
-  pull-requests: write
 
 on:
   workflow_dispatch:
     inputs:
       release_type:
-        description: 'Select version bump type'
+        description: 'Version bump type'
         required: true
         default: 'patch'
         type: choice
@@ -139,25 +171,32 @@ jobs:
           fetch-depth: 0
 
       - name: Universal Version Bump
-        uses: taj54/universal-version-bump@v0.14.0
+        uses: taj54/universal-version-bump@v1.0.0
         with:
           release_type: ${{ inputs.release_type }}
+          git_tag: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
+## Behavior and platform detection
+
+The action tries to detect the target version file based on the files present in the project directory. When multiple candidates exist, it prefers the file most commonly associated with the project type. This helps keep auto-detection reliable for standard repositories while still letting you override it explicitly with `target_platform`.
+
+If you maintain a monorepo, nested service, or an application that contains several project manifests, use `target_path` or `target_platform` to avoid updating the wrong package or module.
+
 ## Development
 
-For more information on how to develop this action, see the [developer guide](DEVELOPER.md).
+For development and local contribution instructions, see [DEVELOPER.md](DEVELOPER.md).
 
 ## Contributing
 
-Contributions are welcome! Please see the [contributing guidelines](CONTRIBUTING.md) for more information.
+Contributions are welcome. Please review [CONTRIBUTING.md](CONTRIBUTING.md) before submitting changes.
 
 ## Code of Conduct
 
-This project is governed by the [Code of Conduct](CODE_OF_CONDUCT.md).
+This project follows the [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the [MIT License](LICENSE).
