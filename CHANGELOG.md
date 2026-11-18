@@ -4,6 +4,14 @@ All notable changes for each version of the Ambient Music extension.
 
 ---
 
+## v1.2.1 2026-11-18
+
+### Changed
+
+- Downgrade universal-version-bump action version
+- update dependencies to lower versions and add licenses
+- Update universal-version-bump action to v1.2.0
+
 ## v1.2.0 2026-11-18
 
 ### Added
