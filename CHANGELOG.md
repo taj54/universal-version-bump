@@ -4,6 +4,13 @@ All notable changes for each version of the Ambient Music extension.
 
 ---
 
+## v1.4.0 2026-11-18
+
+### Changed
+
+- update universal-version-bump action to v1.3.0
+- update Node.js version to 24 in action.yml
+
 ## v1.3.0 2026-11-18
 
 ### Changed
