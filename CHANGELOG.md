@@ -4,6 +4,35 @@ All notable changes for each version of the Ambient Music extension.
 
 ---
 
+## v1.1.1 2026-11-18
+
+### Added
+
+- add live version-bump calculator preview to README
+- add version bump calculator and deploy workflow for GitHub Pages
+
+### Changed
+
+- Downgrade universal-version-bump action to v1.0.0
+- Merge pull request #164 from taj54/renovate/actions-upload-pages-artifact-5.x
+- update actions/upload-pages-artifact action to v5
+- remove GitHub Pages publishing instructions for clarity
+- remove draw.io diagram from README for clarity
+- enhance README with additional badges  for clarity
+- update README for clarity and improved structure Release flow
+- Merge pull request #159 from taj54/renovate/pnpm-12.x
+- update pnpm to v12.21.0
+- update code structure for better readability and maintainability
+- Merge pull request #157 from taj54/renovate/taj54-universal-version-bump-1.x
+- Merge pull request #156 from taj54/renovate/minimatch10.2.6-11.x
+- update taj54/universal-version-bump action to v1.1.0
+- update dependency minimatch@10.2.6 to v11.0.8
+- update pnpm workspace configuration to include minimatch override
+
+### Fixed
+
+- update calculator.js to remove unnecessary root parameter and improve error message formatting feat: enhance eslint configuration to include globals for documentation scripts
+
 ## v1.1.0 2026-11-13
 
 ### Added
