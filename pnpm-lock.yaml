@@ -217,7 +217,7 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  minimatch@10.2.6: 11.0.8
+  minimatch@10.2.6: 11.0.9
 
 importers:
 
