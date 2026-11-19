@@ -4,6 +4,22 @@ All notable changes for each version of the Ambient Music extension.
 
 ---
 
+## v1.4.1 2026-11-19
+
+### Changed
+
+- Merge pull request #169 from taj54/renovate/actions-core-3.x
+- Merge pull request #173 from taj54/renovate/actions-exec-3.x
+- Merge pull request #174 from taj54/renovate/actions-github-9.x
+- Merge pull request #167 from taj54/renovate/taj54-universal-version-bump-1.x
+- update taj54/universal-version-bump action to v1.4.0
+
+### Fixed
+
+- update dependency @actions/core to v3
+- update dependency @actions/exec to v3
+- update dependency @actions/github to v9
+
 ## v1.4.0 2026-11-18
 
 ### Changed
