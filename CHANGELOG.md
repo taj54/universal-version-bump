@@ -78,7 +78,7 @@ All notable changes for each version of the Ambient Music extension.
 - update actions/upload-pages-artifact action to v5
 - remove GitHub Pages publishing instructions for clarity
 - remove draw.io diagram from README for clarity
-- enhance README with additional badges  for clarity
+- enhance README with additional badges for clarity
 - update README for clarity and improved structure Release flow
 - Merge pull request #159 from taj54/renovate/pnpm-12.x
 - update pnpm to v12.21.0

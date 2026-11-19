@@ -19,8 +19,6 @@ This action automatically detects the most likely version manifest in your proje
 
 [Open the calculator](https://taj54.github.io/universal-version-bump/) to enter a version and preview a patch, minor, or major bump.
 
-
-
 ## Release flow
 
 ```mermaid
@@ -51,19 +49,19 @@ This gives you a simple, repeatable release pipeline that is fast to adopt and e
 
 The action inspects common version files in the repository root or in a selected target directory and updates the most likely candidate.
 
-| Platform | Typical version file(s) |
-| --- | --- |
-| Deno | `deno.json`, `jsr.json` |
-| Dart / Flutter | `pubspec.yaml` |
-| Docker | `Dockerfile` |
-| Go | `go.mod` |
-| Java | `pom.xml`, `build.gradle`, `build.gradle.kts` |
-| Node.js | `package.json` |
-| PHP | `composer.json` |
-| Python | `pyproject.toml`, `setup.py` |
-| Ruby | `*.gemspec`, `version.rb` |
-| Rust | `Cargo.toml` |
-| .NET | `Directory.Build.props`, `*.csproj`, `*.fsproj`, `*.vbproj` |
+| Platform       | Typical version file(s)                                     |
+| -------------- | ----------------------------------------------------------- |
+| Deno           | `deno.json`, `jsr.json`                                     |
+| Dart / Flutter | `pubspec.yaml`                                              |
+| Docker         | `Dockerfile`                                                |
+| Go             | `go.mod`                                                    |
+| Java           | `pom.xml`, `build.gradle`, `build.gradle.kts`               |
+| Node.js        | `package.json`                                              |
+| PHP            | `composer.json`                                             |
+| Python         | `pyproject.toml`, `setup.py`                                |
+| Ruby           | `*.gemspec`, `version.rb`                                   |
+| Rust           | `Cargo.toml`                                                |
+| .NET           | `Directory.Build.props`, `*.csproj`, `*.fsproj`, `*.vbproj` |
 
 Notes:
 
@@ -134,22 +132,22 @@ For JSON files, `variable` should be a JSON path, such as `app.version`. For pla
 
 ## Inputs
 
-| Name | Description | Default |
-| --- | --- | --- |
-| `release_type` | Version bump style: `patch`, `minor`, or `major` | `patch` |
-| `git_tag` | Whether to create a Git tag after the version bump | `false` |
-| `target_platform` | Explicitly select a platform such as `node`, `python`, `java`, `dotnet`, `ruby`, `dart`, or `custom` | `''` |
-| `target_path` | Directory to inspect for the target version file | `.` |
-| `changelog_path` | Path to the changelog file | `CHANGELOG.md` |
-| `changelog_mode` | Whether to create a missing changelog (`auto`) or fail (`fail`) | `auto` |
-| `bump_targets` | Custom file targets for `target_platform: 'custom'`; JSON array of `{ "path": "...", "variable": "..." }` entries | `[]` |
+| Name              | Description                                                                                                       | Default        |
+| ----------------- | ----------------------------------------------------------------------------------------------------------------- | -------------- |
+| `release_type`    | Version bump style: `patch`, `minor`, or `major`                                                                  | `patch`        |
+| `git_tag`         | Whether to create a Git tag after the version bump                                                                | `false`        |
+| `target_platform` | Explicitly select a platform such as `node`, `python`, `java`, `dotnet`, `ruby`, `dart`, or `custom`              | `''`           |
+| `target_path`     | Directory to inspect for the target version file                                                                  | `.`            |
+| `changelog_path`  | Path to the changelog file                                                                                        | `CHANGELOG.md` |
+| `changelog_mode`  | Whether to create a missing changelog (`auto`) or fail (`fail`)                                                   | `auto`         |
+| `bump_targets`    | Custom file targets for `target_platform: 'custom'`; JSON array of `{ "path": "...", "variable": "..." }` entries | `[]`           |
 
 ## Outputs
 
-| Name | Description |
-| --- | --- |
-| `new_version` | The bumped version after the update |
-| `tag` | The created Git tag, if `git_tag` is enabled |
+| Name          | Description                                  |
+| ------------- | -------------------------------------------- |
+| `new_version` | The bumped version after the update          |
+| `tag`         | The created Git tag, if `git_tag` is enabled |
 
 ## Example workflow
 
