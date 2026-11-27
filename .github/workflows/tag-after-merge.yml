@@ -56,6 +56,7 @@ jobs:
           echo "tag=$LAST_TAG" >> "$GITHUB_OUTPUT"
           echo "version=$LAST_VERSION" >> "$GITHUB_OUTPUT"
 
+
       - name: Check release type
         id: release_type
         shell: bash
@@ -63,13 +64,26 @@ jobs:
           NEW_VERSION: ${{ steps.version.outputs.version }}
           OLD_VERSION: ${{ steps.last_tag.outputs.version }}
         run: |
-          IFS='.' read -r NEW_MAJOR NEW_MINOR NEW_PATCH <<< "$NEW_VERSION"
-          IFS='.' read -r OLD_MAJOR OLD_MINOR OLD_PATCH <<< "$OLD_VERSION"
+          set -euo pipefail
 
-          if [ "$NEW_VERSION" = "$OLD_VERSION" ]; then
-            echo "::error::Version $NEW_VERSION has already been released."
+          NEW="$NEW_VERSION"
+          OLD="$OLD_VERSION"
+
+          if [ "$NEW" = "$OLD" ]; then
+            echo "type=skip" >> "$GITHUB_OUTPUT"
+            echo "Version $NEW is already released. Skipping release."
+            exit 0
+          fi
+
+          HIGHEST=$(printf '%s\n' "$OLD" "$NEW" | sort -V | tail -n 1)
+
+          if [ "$HIGHEST" != "$NEW" ]; then
+            echo "::error::Version $NEW is lower than latest release $OLD."
             exit 1
           fi
+
+          IFS='.' read -r NEW_MAJOR NEW_MINOR NEW_PATCH <<< "$NEW"
+          IFS='.' read -r OLD_MAJOR OLD_MINOR OLD_PATCH <<< "$OLD"
 
           if [ "$NEW_MAJOR" -gt "$OLD_MAJOR" ]; then
             TYPE="major"
@@ -82,16 +96,21 @@ jobs:
           echo "type=$TYPE" >> "$GITHUB_OUTPUT"
           echo "Release type: $TYPE"
 
+
       - name: Setup pnpm
+        if: steps.release_type.outputs.type != 'skip'
         uses: pnpm/action-setup@v6
         with:
           version: 12.23.0
 
       - name: Install dependencies
+        if: steps.release_type.outputs.type != 'skip'
         run: pnpm install --frozen-lockfile
 
       - name: Build
+        if: steps.release_type.outputs.type != 'skip'
         run: pnpm run build
+
 
       - name: Extract release notes from CHANGELOG
         env:
