@@ -1,5 +1,6 @@
 minimumReleaseAgeExclude:
   - prettier@3.10.0
+  - eslint-config-prettier
 
 overrides:
   minimatch@10.2.6: 11.0.9
