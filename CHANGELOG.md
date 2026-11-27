@@ -4,6 +4,34 @@ All notable changes for each version of the Ambient Music extension.
 
 ---
 
+## v1.7.0 2026-11-27
+
+### Changed
+
+- improve release workflow and automate semver tags
+- Merge pull request #199 from taj54/renovate/typescript-eslint-monorepo
+- update typescript-eslint monorepo to v8.74.0
+- Merge pull request #198 from taj54/renovate/vitest-monorepo
+- update vitest monorepo to v5.1.2
+- Merge pull request #197 from taj54/renovate/node-26.x-lockfile
+- update dependency @types/node to v26.6.11
+- Merge pull request #195 from taj54/renovate/eslint-config-prettier-10.x-lockfile
+- update dependency eslint-config-prettier to v10.1.9
+- Merge pull request #183 from taj54/renovate/pnpm-12.x
+- update pnpm to v12.23.0
+- Merge pull request #181 from taj54/renovate/actions-deploy-pages-5.x
+- Merge pull request #180 from taj54/renovate/actions-configure-pages-6.x
+- Merge pull request #179 from taj54/renovate/minimatch10.2.6-11.x
+- update actions/deploy-pages action to v5
+- update actions/configure-pages action to v6
+- update dependency minimatch@10.2.6 to v11.0.9
+- Merge pull request #177 from taj54/renovate/vitest-monorepo
+- update dependency @vitest/ui to v5.1.1
+
+### Fixed
+
+- pin eslint-config-prettier to satisfy minimumReleaseAge policy
+
 ## v1.5.0 2026-11-19
 
 ### Changed
