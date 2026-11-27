@@ -27,6 +27,8 @@ jobs:
         id: version
         shell: bash
         run: |
+          set -euo pipefail
+
           VERSION=$(jq -r '.version' package.json)
 
           if ! [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
@@ -41,21 +43,26 @@ jobs:
         id: last_tag
         shell: bash
         run: |
-          LAST_TAG=$(git tag --list 'v*' \
-            | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' \
-            | sort -V \
-            | tail -n 1 || true)
+          set -euo pipefail
 
-          LAST_VERSION="${LAST_TAG#v}"
+          git fetch --tags
+
+          LAST_TAG=$(
+            git tag --list 'v*' \
+              | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' \
+              | sort -V \
+              | tail -n 1 || true
+          )
 
           if [ -z "$LAST_TAG" ]; then
             LAST_TAG="v0.0.0"
             LAST_VERSION="0.0.0"
+          else
+            LAST_VERSION="${LAST_TAG#v}"
           fi
 
           echo "tag=$LAST_TAG" >> "$GITHUB_OUTPUT"
           echo "version=$LAST_VERSION" >> "$GITHUB_OUTPUT"
-
 
       - name: Check release type
         id: release_type
@@ -96,7 +103,6 @@ jobs:
           echo "type=$TYPE" >> "$GITHUB_OUTPUT"
           echo "Release type: $TYPE"
 
-
       - name: Setup pnpm
         if: steps.release_type.outputs.type != 'skip'
         uses: pnpm/action-setup@v6
@@ -111,13 +117,15 @@ jobs:
         if: steps.release_type.outputs.type != 'skip'
         run: pnpm run build
 
-
       - name: Extract release notes from CHANGELOG
+        if: steps.release_type.outputs.type != 'skip'
         env:
           VERSION: ${{ steps.version.outputs.version }}
           RELEASE_TYPE: ${{ steps.release_type.outputs.type }}
         shell: bash
         run: |
+          set -euo pipefail
+
           awk "/^## v${VERSION}[[:space:]]/{flag=1; next} /^## /{flag=0} flag" \
             CHANGELOG.md > RELEASE_NOTES.md
 
@@ -133,14 +141,17 @@ jobs:
           } > FINAL_NOTES.md
 
       - name: Create and push version tag
+        if: steps.release_type.outputs.type != 'skip'
         env:
           VERSION: ${{ steps.version.outputs.version }}
         shell: bash
         run: |
+          set -euo pipefail
+
           TAG="v${VERSION}"
 
           if git rev-parse "$TAG" >/dev/null 2>&1; then
-            echo "::error::Tag $TAG already exists."
+            echo "::error::Tag $TAG already exists unexpectedly."
             exit 1
           fi
 
@@ -152,6 +163,7 @@ jobs:
           git push origin "$TAG"
 
       - name: Create GitHub Release
+        if: steps.release_type.outputs.type != 'skip'
         uses: softprops/action-gh-release@v3
         with:
           tag_name: v${{ steps.version.outputs.version }}
@@ -163,32 +175,40 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Update floating major tag
+        if: steps.release_type.outputs.type != 'skip'
         env:
           VERSION: ${{ steps.version.outputs.version }}
         shell: bash
         run: |
+          set -euo pipefail
+
           MAJOR=$(echo "$VERSION" | cut -d. -f1)
           MAJOR_TAG="v${MAJOR}"
+          VERSION_TAG="v${VERSION}"
 
-          git tag -f "$MAJOR_TAG" "$GITHUB_SHA"
+          git tag -f "$MAJOR_TAG" "$VERSION_TAG"
           git push origin "$MAJOR_TAG" --force
 
-          echo "Updated floating tag: $MAJOR_TAG"
+          echo "Updated floating tag: $MAJOR_TAG -> $VERSION_TAG"
 
       - name: Add release summary
+        if: steps.release_type.outputs.type != 'skip'
         env:
           VERSION: ${{ steps.version.outputs.version }}
           RELEASE_TYPE: ${{ steps.release_type.outputs.type }}
         shell: bash
         run: |
+          set -euo pipefail
+
           RELEASE_URL="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/releases/edit/v${VERSION}"
+          MAJOR=$(echo "$VERSION" | cut -d. -f1)
 
           {
             echo "## 🚀 Release Published"
             echo ""
             echo "- **Version:** v${VERSION}"
             echo "- **Type:** ${RELEASE_TYPE}"
-            echo "- **Floating tag:** v$(echo "$VERSION" | cut -d. -f1)"
+            echo "- **Floating tag:** v${MAJOR}"
             echo ""
             echo "### GitHub Marketplace"
             echo ""
